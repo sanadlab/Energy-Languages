@@ -145,13 +145,30 @@ validate:
 	    exit 1 ; \
 	fi
 	@echo "validate: running $(TEST) at N=$(VALIDATION_N)..."
-	@$(_FULL_VALIDATE_CMD) > $(_VALIDATION_ACTUAL) 2>/dev/null
+	@# Capture child stderr to a temp file so a Python traceback / C++
+	@# runtime abort / rust panic reaches the caller (which surfaces it
+	@# in the runner's error_log field). Previously stderr was swallowed
+	@# via 2>/dev/null and the only diagnostic was make's own "target
+	@# failed" line — useless for debugging model-generated code.
+	@$(_FULL_VALIDATE_CMD) > $(_VALIDATION_ACTUAL) 2> $(_VALIDATION_ACTUAL).err ; rc=$$? ; \
+	    if [ $$rc -ne 0 ]; then \
+	        echo "validate: FAIL (program exited $$rc)" >&2 ; \
+	        cat $(_VALIDATION_ACTUAL).err >&2 ; \
+	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; \
+	        exit $$rc ; \
+	    fi
 	@if [ "$(BINARY_OUTPUT)" = "1" ]; then \
 	    cmp -s $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) ; \
 	else \
 	    diff -q $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) > /dev/null ; \
-	fi && echo "validate: PASS" || { echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; exit 1 ; }
-	@rm -f $(_VALIDATION_ACTUAL)
+	fi && echo "validate: PASS" || { \
+	    echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; \
+	    echo "--- first 20 lines of divergence ---" >&2 ; \
+	    diff $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | head -20 >&2 ; \
+	    rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; \
+	    exit 1 ; \
+	}
+	@rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err
 
 clean:
 	rm -f $(OUTPUT)

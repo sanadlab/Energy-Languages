@@ -1,101 +1,72 @@
 import sys
-from collections import Counter
-from typing import List, Tuple
 
-def solve():
-    """
-    Reads a FASTA sequence from stdin, calculates 1-mer and 2-mer frequencies,
-    and counts specific k-mers, printing the results according to the benchmark spec.
-    """
-    # 1. Read and preprocess the input sequence
-    try:
-        # Read all input from stdin
-        data = sys.stdin.read()
-    except Exception:
-        # Handle case where stdin might be empty or inaccessible
-        data = ""
+class Solution:
+    def solve(self):
+        # Read stdin and parse the THREE section of the fasta input
+        # The input is fasta format:
+        # >THREE
+        # sequence lines ...
+        # possibly other sections but problem states only THREE section input
 
-    # Filter out header lines (starting with '>') and strip all whitespace
-    sequence_lines = []
-    for line in data.splitlines():
-        line = line.strip()
-        if line and not line.startswith('>'):
-            sequence_lines.append(line)
-    
-    sequence = "".join(sequence_lines).upper()
-    L = len(sequence)
+        lines = sys.stdin.read().splitlines()
+        # Find the start of the THREE section
+        seq_lines = []
+        in_three = False
+        for line in lines:
+            if line.startswith('>'):
+                in_three = (line[1:].strip() == 'THREE')
+                continue
+            if in_three:
+                seq_lines.append(line)
 
-    if L == 0:
-        # If no sequence is read, print nothing and exit gracefully.
-        return
+        # Combine and normalize sequence to upper case
+        seq = "".join(seq_lines).upper()
 
-    # --- 1. 1-mer Frequencies ---
-    
-    # Count all characters, then filter for A, C, G, T
-    all_counts = Counter(sequence)
-    one_mer_counts = {}
-    for base in 'ACGT':
-        one_mer_counts[base] = all_counts.get(base, 0)
+        # Count 1-mers frequencies
+        freq_1 = {}
+        for c in seq:
+            freq_1[c] = freq_1.get(c, 0) + 1
 
-    # Prepare for sorted output: list of (count, base) tuples
-    one_mers_sorted: List[Tuple[int, str]] = []
-    for base in 'ACGT':
-        count = one_mer_counts[base]
-        one_mers_sorted.append((-count, base)) # Use negative count for descending sort on count
+        # Count 2-mers frequencies
+        freq_2 = {}
+        for i in range(len(seq) - 1):
+            k2 = seq[i:i+2]
+            freq_2[k2] = freq_2.get(k2, 0) + 1
 
-    one_mers_sorted.sort()
+        # Report 1-mer frequencies sorted descending count, then lex
+        for k, v in sorted(freq_1.items(), key=lambda x: (-x[1], x[0])):
+            print(f"{k} {v}")
 
-    # Output 1-mer frequencies
-    for neg_count, base in one_mers_sorted:
-        print(f"{abs(neg_count)}")
+        # Blank line between sections
+        print()
 
-    # --- 2. 2-mer Frequencies ---
-    
-    two_mers = []
-    if L >= 2:
-        # Efficiently generate all overlapping 2-mers
-        two_mers = (sequence[i:i+2] for i in range(L - 1))
-        two_mer_counts = Counter(two_mers)
-    else:
-        two_mer_counts = Counter()
+        # Report 2-mer frequencies sorted descending count, then lex
+        for k, v in sorted(freq_2.items(), key=lambda x: (-x[1], x[0])):
+            print(f"{k} {v}")
 
-    # Prepare for sorted output: list of (count, mer) tuples
-    two_mers_sorted: List[Tuple[int, str]] = []
-    for mer, count in two_mer_counts.items():
-        two_mers_sorted.append((-count, mer)) # Use negative count for descending sort
+        # Blank line between sections
+        print()
 
-    two_mers_sorted.sort()
-
-    # Output 2-mer frequencies
-    for neg_count, mer in two_mers_sorted:
-        print(f"{abs(neg_count)}")
-
-    # --- 3. Specific K-mer Counts ---
-    
-    target_kmers: List[str] = [
-        "GGT",
-        "GGTA",
-        "GGTATT",
-        "GGTATTTTAATT",
-        "GGTATTTTAATTTATAGT"
-    ]
-    
-    # Calculate counts using a sliding window approach for robustness
-    target_counts = {}
-    for kmer in target_kmers:
-        k = len(kmer)
-        count = 0
-        if L >= k:
-            for i in range(L - k + 1):
-                if sequence[i:i+k] == kmer:
-                    count += 1
-        target_counts[kmer] = count
-
-    # Output specific k-mer counts (Count\tKMER)
-    for kmer in target_kmers:
-        count = target_counts[kmer]
-        # Use sys.stdout.write for precise control over output format (tab separation)
-        sys.stdout.write(f"{count}\t{kmer}\n")
+        # Count occurrences of the specific fragments:
+        fragments = [
+            "GGT",
+            "GGTA",
+            "GGTATT",
+            "GGTATTTTAATT",
+            "GGTATTTTAATTTATAGT",
+        ]
+        for fragment in fragments:
+            count = 0
+            start = 0
+            flen = len(fragment)
+            # count occurrences including overlapping
+            while True:
+                pos = seq.find(fragment, start)
+                if pos == -1:
+                    break
+                count += 1
+                start = pos + 1
+            print(f"{count}\t{fragment}")
 
 if __name__ == "__main__":
-    solve()
+    Solution().solve()

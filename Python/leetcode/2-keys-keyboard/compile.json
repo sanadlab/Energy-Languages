@@ -1,0 +1,16 @@
+{
+  "command": [
+    "python3",
+    "-m",
+    "py_compile",
+    "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/Python/leetcode/2-keys-keyboard/solution.py"
+  ],
+  "duration_s": 0.04039666696917266,
+  "language": "python",
+  "ok": false,
+  "returncode": 1,
+  "skipped": false,
+  "source": "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/Python/leetcode/2-keys-keyboard/solution.py",
+  "stderr": "  File \"/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/Python/leetcode/2-keys-keyboard/solution.py\", line 1\n    class Solution\n                  ^\nSyntaxError: expected ':'\n",
+  "stdout": ""
+}
