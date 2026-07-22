@@ -1,0 +1,14 @@
+{
+  "command": [
+    "javac",
+    "/var/folders/dt/t8hbtj5j7z58qfbvgp0k1yjr0000gq/T/tmp_9kh4fuv/Solution.java"
+  ],
+  "duration_s": 1.754570082994178,
+  "language": "java",
+  "ok": true,
+  "returncode": 0,
+  "skipped": false,
+  "source": "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/Java/leetcode/2-keys-keyboard/solution.java",
+  "stderr": "",
+  "stdout": ""
+}

@@ -2354,8 +2354,29 @@ def run_workload_once(
     expected_file: Path,
     repeat: int = 1,
 ) -> dict[str, Any]:
+    # Non-Python cells: fall back to a compile-only check. LC-style
+    # solutions in other languages ship as `class Solution` without a
+    # main() entry — validating them per-case would need a language-
+    # specific wrapper harness (parse input, instantiate, call method,
+    # serialise result) that we don't ship yet. Compile-check catches
+    # syntax errors + unresolved references, which is what LC's own
+    # first-pass judge does before running any test case.
     if language.key != "python":
-        raise ValueError("leetcode-workload-run currently supports python only")
+        compile_res = compile_solution(language, source)
+        return {
+            "ok":       compile_res.ok,
+            "problem":  problem_slug,
+            "language": language.key,
+            "compile_only": True,
+            "note":     ("compile-only check for non-Python LC cell — "
+                         "per-case correctness needs a language-specific "
+                         "runner that isn't wired yet."),
+            "compile": {
+                "returncode": compile_res.returncode,
+                "stdout":     compile_res.stdout[-2000:],
+                "stderr":     compile_res.stderr[-2000:],
+            },
+        }
     workload = _read_json(workload_file)
     expected = _read_json(expected_file)
     if workload.get("skipped"):

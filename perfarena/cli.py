@@ -666,11 +666,34 @@ def leetcode_workload_measure_cmd(
     `energy_source: "codecarbon"`. When it isn't, rows still have
     valid wall_ms but energy stays 0 / `energy_source: "none"`.
     """
+    # Non-Python cells: emit a single "compile-only" JSONL row so the
+    # arena runner's JSONL parser still lands a valid Run, but with
+    # energy_source="compile-only" and wall_ms=0. LC-style non-Python
+    # solutions have no main() so we can't time them without a
+    # per-language wrapper harness (future work).
     if language != "python":
-        console.print(
-            "[red]leetcode-workload-measure currently supports python only[/red]"
-        )
-        raise typer.Exit(code=2)
+        lang_obj = leetcode.get_language(language)
+        compile_res = leetcode.compile_solution(lang_obj, source)
+        from perfarena.runners.codecarbon_runner import _write_row
+        out_path = Path(f"../{language_folder}.jsonl")
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with out_path.open("a") as out:
+            _write_row(
+                out, test=problem, language=language_folder,
+                iteration=1,
+                phase="measure" if compile_res.ok else "compile-fail",
+                wall_ms=0.0, energy_uj=0, energy_source="compile-only",
+                samples=0,
+                exit_code=0 if compile_res.ok else compile_res.returncode,
+                extra={"note": "compile-only for non-Python LC cell — "
+                              "no per-case runtime yet",
+                       "compile_stderr": compile_res.stderr[-1000:]},
+            )
+        console.print(f"leetcode-workload-measure: {problem} "
+                      f"(compile-only, language={language}) → {out_path}")
+        if not compile_res.ok:
+            raise typer.Exit(code=1)
+        return
     workload_data = leetcode._read_json(workload)
     if workload_data.get("skipped"):
         console.print(json.dumps({
