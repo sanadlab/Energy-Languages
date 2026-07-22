@@ -41,19 +41,55 @@ PERFARENA_WARMUP  ?= 10
 PERFARENA_MEASURE ?= 20
 PERFARENA_IDLE_S  ?= 5
 
-# Auto-detect the measurement runner.
-#   Linux with the RAPL runner built:  use the C binary (direct MSR, 10 Hz).
-#   macOS or Linux without RAPL:       use the Python CodeCarbon runner.
-# Override with: make measure PERFARENA_RUNNER=...
-_RAPL_RUNNER   = ../../RAPL/perfarena_runner
-_CC_RUNNER     = python3 -m perfarena.runners.codecarbon_runner
+# Energy-measurement runner selection.
+#
+# Three backends are supported. Every backend emits the same JSONL row
+# schema (see perfarena/runners/*.py::_write_row) so downstream ingest
+# doesn't need to care which one produced a row — the row's
+# `energy_source` field tells you.
+#
+#   rapl          Direct MSR read via RAPL/perfarena_runner (Linux
+#                 x86 only; requires the C binary built and sudo).
+#                 Highest fidelity — 10 Hz counter, no daemon in
+#                 the way.
+#   codecarbon    Python wrapper via `perfarena.runners.codecarbon_runner`.
+#                 Uses CodeCarbon which calls RAPL on Linux and
+#                 powermetrics on macOS (with fallback to TDP est).
+#                 Works everywhere codecarbon does.
+#   powermetrics  Direct `powermetrics` sampling on macOS via
+#                 `perfarena.runners.powermetrics_runner`. Sidesteps
+#                 CodeCarbon's overhead + calibration issues. Needs
+#                 sudo. Apple Silicon or Intel Mac.
+#
+# Selection precedence:
+#   1. Explicit PERFARENA_RUNNER=... (advanced — set a full command).
+#   2. PERFARENA_PROFILER=rapl|codecarbon|powermetrics (kind selector).
+#   3. Auto: rapl on Linux with the binary built, powermetrics on
+#      Darwin, codecarbon as universal fallback.
+_RAPL_RUNNER          = ../../../RAPL/perfarena_runner
+_CC_RUNNER            = python3 -m perfarena.runners.codecarbon_runner
+_POWERMETRICS_RUNNER  = python3 -m perfarena.runners.powermetrics_runner
 
-ifeq ($(shell uname -s),Darwin)
-  PERFARENA_RUNNER  ?= $(_CC_RUNNER)
-else ifeq ($(wildcard $(_RAPL_RUNNER)),)
-  PERFARENA_RUNNER  ?= $(_CC_RUNNER)
+PERFARENA_PROFILER ?= auto
+
+ifeq ($(PERFARENA_PROFILER),rapl)
+  PERFARENA_RUNNER ?= $(_RAPL_RUNNER)
+else ifeq ($(PERFARENA_PROFILER),codecarbon)
+  PERFARENA_RUNNER ?= $(_CC_RUNNER)
+else ifeq ($(PERFARENA_PROFILER),powermetrics)
+  PERFARENA_RUNNER ?= $(_POWERMETRICS_RUNNER)
 else
-  PERFARENA_RUNNER  ?= $(_RAPL_RUNNER)
+  # auto: prefer OS-native (rapl on Linux, powermetrics on Darwin),
+  # fall back to codecarbon for portability. Users on Linux without
+  # RAPL built get codecarbon; users on macOS without sudo get
+  # codecarbon (which internally does TDP estimation).
+  ifeq ($(shell uname -s),Darwin)
+    PERFARENA_RUNNER  ?= $(_POWERMETRICS_RUNNER)
+  else ifeq ($(wildcard $(_RAPL_RUNNER)),)
+    PERFARENA_RUNNER  ?= $(_CC_RUNNER)
+  else
+    PERFARENA_RUNNER  ?= $(_RAPL_RUNNER)
+  endif
 endif
 
 CC  ?= gcc
