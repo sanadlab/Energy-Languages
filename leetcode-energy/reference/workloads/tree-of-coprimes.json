@@ -1,0 +1,8 @@
+{
+  "cases": [],
+  "language_independent": true,
+  "problem": "tree-of-coprimes",
+  "schema_version": 1,
+  "skipped": true,
+  "skipped_reason": "unsupported problem tag(s): Tree"
+}

@@ -1,0 +1,35 @@
+{
+  "code_snippets": {
+    "c": "int howManyProductGraphs(int* arr, int arrSize) {\n    \n}",
+    "cpp": "class Solution {\npublic:\n    int howManyProductGraphs(vector<int>& arr) {\n        \n    }\n};",
+    "csharp": "public class Solution {\n    public int NumFactoredBinaryTrees(int[] arr) {\n        \n    }\n}",
+    "dart": "class Solution {\n  int howManyProductGraphs(List<int> arr) {\n    \n  }\n}",
+    "elixir": "defmodule Solution do\n  @spec num_factored_binary_trees(arr :: [integer]) :: integer\n  def num_factored_binary_trees(arr) do\n    \n  end\nend",
+    "erlang": "-spec num_factored_binary_trees(Arr :: [integer()]) -> integer().\nnum_factored_binary_trees(Arr) ->\n  .",
+    "golang": "func howManyProductGraphs(arr []int) int {\n    \n}",
+    "java": "class Solution {\n    public int howManyProductGraphs(int[] arr) {\n        \n    }\n}",
+    "javascript": "/**\n * @param {number[]} arr\n * @return {number}\n */\nvar howManyProductGraphs = function(arr) {\n    \n};",
+    "kotlin": "class Solution {\n    fun howManyProductGraphs(arr: IntArray): Int {\n        \n    }\n}",
+    "php": "class Solution {\n\n    /**\n     * @param Integer[] $arr\n     * @return Integer\n     */\n    function howManyProductGraphs($arr) {\n        \n    }\n}",
+    "python": "class Solution(object):\n    def howManyProductGraphs(self, arr):\n        \"\"\"\n        :type arr: List[int]\n        :rtype: int\n        \"\"\"\n        ",
+    "python3": "class Solution:\n    def howManyProductGraphs(self, arr: List[int]) -> int:\n        ",
+    "racket": "(define/contract (num-factored-binary-trees arr)\n  (-> (listof exact-integer?) exact-integer?)\n  )",
+    "ruby": "# @param {Integer[]} arr\n# @return {Integer}\ndef num_factored_binary_trees(arr)\n    \nend",
+    "rust": "impl Solution {\n    pub fn num_factored_binary_trees(arr: Vec<i32>) -> i32 {\n        \n    }\n}",
+    "scala": "object Solution {\n    def howManyProductGraphs(arr: Array[Int]): Int = {\n        \n    }\n}",
+    "swift": "class Solution {\n    func howManyProductGraphs(_ arr: [Int]) -> Int {\n        \n    }\n}",
+    "typescript": "function howManyProductGraphs(arr: number[]): number {\n    \n};"
+  },
+  "content": "Suppose `arr` is an array of unique integers, each entry `arr[i]` strictly above `1`.\n\nWe assemble a binary tree from these integers, allowing every value to appear as often as desired. For each interior node, its value must equal the product of its two children's values.\n\nReturn _the count of binary trees that can be assembled_. Because the count can be enormous, give the result **modulo** `109 + 7`.\n\n**Example 1:**\n\n**Input:** arr = \\[2,4\\]\n**Output:** 3\n**Explanation:** The trees available are: `[2], [4], [4, 2, 2]`\n\n**Example 2:**\n\n**Input:** arr = \\[2,4,5,10\\]\n**Output:** 7\n**Explanation:** The trees available are: `[2], [4], [5], [10], [4, 2, 2], [10, 2, 5], [10, 5, 2]`.\n\n**Constraints:**\n\n*   `1 <= arr.length <= 1000`\n*   `2 <= arr[i] <= 109`\n*   All the values of `arr` are **unique**.",
+  "hints": null,
+  "id": 168,
+  "level": "Medium",
+  "tags": [
+    "Array",
+    "Hash Table",
+    "Dynamic Programming",
+    "Sorting"
+  ],
+  "title": "Count Product Trees From Array",
+  "title_slug": "count-product-trees-from-array"
+}

@@ -1,0 +1,42 @@
+{
+  "expected": [
+    {
+      "name": "example_1",
+      "output": 2,
+      "source": "statement"
+    },
+    {
+      "name": "example_2",
+      "output": 0,
+      "source": "statement"
+    },
+    {
+      "name": "example_3",
+      "output": 7,
+      "source": "statement"
+    },
+    {
+      "name": "synthetic_1",
+      "output": 0,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_2",
+      "output": 1,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_3",
+      "output": 3,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_4",
+      "output": 7,
+      "source": "accepted_python_solution"
+    }
+  ],
+  "problem": "count-vowel-substrings-of-a-string",
+  "schema_version": 1,
+  "workload_hash": "fceb003ac775e11a3975c03fc590c3659cff0e7bc308b2c86ffb64c2038a5a69"
+}

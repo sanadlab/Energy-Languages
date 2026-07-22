@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "input": {
+        "left": 1,
+        "right": 4
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "left": 2,
+        "right": 11
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "left": 371,
+        "right": 375
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int",
+      "int"
+    ],
+    "args": [
+      "left",
+      "right"
+    ],
+    "class": "Solution",
+    "method": "abbreviateProduct"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "abbreviating-the-product-of-a-range",
+  "schema_version": 1,
+  "seed": "05d474e73bfe8ef429454e96adde2b4bc701ed06482922435fbd259e8492d746",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'abbreviateProduct'"
+}

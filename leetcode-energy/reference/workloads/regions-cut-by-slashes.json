@@ -1,0 +1,51 @@
+{
+  "cases": [
+    {
+      "input": {
+        "grid": [
+          " / ",
+          "/  "
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "grid": [
+          " / ",
+          "   "
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "grid": [
+          "/\\\\ ",
+          "\\/ "
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[str]"
+    ],
+    "args": [
+      "grid"
+    ],
+    "class": "Solution",
+    "method": "regionsBySlashes"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "regions-cut-by-slashes",
+  "schema_version": 1,
+  "seed": "91c75dc93e2cc61b2b697a5bbb9154a6f66eb757f71e28a1a027db28a8330e37",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'regionsBySlashes'"
+}

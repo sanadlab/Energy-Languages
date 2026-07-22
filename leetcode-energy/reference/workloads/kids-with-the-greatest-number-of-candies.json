@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "input": {
+        "candies": [
+          2,
+          3,
+          5,
+          1,
+          3
+        ],
+        "extraCandies": 3
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "candies": [
+          4,
+          2,
+          1,
+          1,
+          2
+        ],
+        "extraCandies": 1
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "candies": [
+          12,
+          1,
+          12
+        ],
+        "extraCandies": 10
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int"
+    ],
+    "args": [
+      "candies",
+      "extraCandies"
+    ],
+    "class": "Solution",
+    "method": "kidsWithCandies"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "kids-with-the-greatest-number-of-candies",
+  "schema_version": 1,
+  "seed": "c0d1970044923ece5c52092561f55e6e93b3a175c7a3f5ba9552d62db23c0b12",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'kidsWithCandies'"
+}

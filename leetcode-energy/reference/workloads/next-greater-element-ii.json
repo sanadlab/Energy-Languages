@@ -1,0 +1,45 @@
+{
+  "cases": [
+    {
+      "input": {
+        "nums": [
+          1,
+          2,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "nums": [
+          1,
+          2,
+          3,
+          4,
+          3
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "nums"
+    ],
+    "class": "Solution",
+    "method": "nextGreaterElements"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "next-greater-element-ii",
+  "schema_version": 1,
+  "seed": "7e3d5eaa2caa08a827ddd8339d8fda7cb7fc3e78cf9bd84ef208039a403a1081",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'nextGreaterElements'"
+}

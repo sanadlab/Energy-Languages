@@ -1,0 +1,53 @@
+{
+  "cases": [
+    {
+      "input": {
+        "numSlots": 3,
+        "nums": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "numSlots": 9,
+        "nums": [
+          1,
+          3,
+          10,
+          4,
+          7,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int"
+    ],
+    "args": [
+      "nums",
+      "numSlots"
+    ],
+    "class": "Solution",
+    "method": "maximumANDSum"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-and-sum-of-array",
+  "schema_version": 1,
+  "seed": "0dde1528eed66293b25dbdc06c52a547197e839c2802af8cb5d638c4e9aa76e4",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maximumANDSum'"
+}

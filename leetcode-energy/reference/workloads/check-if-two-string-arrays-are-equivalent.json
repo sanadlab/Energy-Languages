@@ -1,0 +1,65 @@
+{
+  "cases": [
+    {
+      "input": {
+        "word1": [
+          "ab ",
+          "c "
+        ],
+        "word2": [
+          "a ",
+          "bc "
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "word1": [
+          "a ",
+          "cb "
+        ],
+        "word2": [
+          "ab ",
+          "c "
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "word1": [
+          "abc ",
+          "d ",
+          "defg "
+        ],
+        "word2": [
+          "abcddefg "
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[str]",
+      "List[str]"
+    ],
+    "args": [
+      "word1",
+      "word2"
+    ],
+    "class": "Solution",
+    "method": "arrayStringsAreEqual"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "check-if-two-string-arrays-are-equivalent",
+  "schema_version": 1,
+  "seed": "a3814bcb66c2d769dcbfe84a1cfaeb41f404701a4f88ad280d98a12aa5b02bc2",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'arrayStringsAreEqual'"
+}

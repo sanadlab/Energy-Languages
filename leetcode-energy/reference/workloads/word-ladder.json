@@ -1,0 +1,140 @@
+{
+  "case_counts": {
+    "examples": 2,
+    "synthetic": 4,
+    "total": 6
+  },
+  "cases": [
+    {
+      "input": {
+        "beginWord": "hit ",
+        "endWord": "cog ",
+        "wordList": [
+          "hot ",
+          "dot ",
+          "dog ",
+          "lot ",
+          "log ",
+          "cog "
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "beginWord": "hit ",
+        "endWord": "cog ",
+        "wordList": [
+          "hot ",
+          "dot ",
+          "dog ",
+          "lot ",
+          "log "
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "beginWord": "bcd",
+        "endWord": "bcd",
+        "wordList": [
+          "b"
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_1"
+    },
+    {
+      "input": {
+        "beginWord": "cdefghij",
+        "endWord": "cdefghij",
+        "wordList": [
+          "c",
+          "de",
+          "efg",
+          "fghi"
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_2"
+    },
+    {
+      "input": {
+        "beginWord": "defghijabcde",
+        "endWord": "defghijabcde",
+        "wordList": [
+          "d",
+          "ef",
+          "fgh",
+          "ghij",
+          "h",
+          "ij",
+          "jkl",
+          "klmn",
+          "l",
+          "mn"
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_3"
+    },
+    {
+      "input": {
+        "beginWord": "efghijabcdef",
+        "endWord": "efghijabcdef",
+        "wordList": [
+          "e",
+          "fg",
+          "ghi",
+          "hijk",
+          "i",
+          "jk",
+          "klm",
+          "lmno",
+          "m",
+          "no",
+          "opq",
+          "pqrs",
+          "q",
+          "rs",
+          "stu",
+          "tuvw",
+          "u",
+          "vw",
+          "wxy",
+          "xyza",
+          "y",
+          "za",
+          "abc",
+          "bcde",
+          "c"
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_4"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str",
+      "List[str]"
+    ],
+    "args": [
+      "beginWord",
+      "endWord",
+      "wordList"
+    ],
+    "class": "Solution",
+    "method": "ladderLength"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "word-ladder",
+  "schema_version": 1,
+  "seed": "0bdb305427217fb782395531539e1a8dc5780fcedbdcb00648c8c3c2524f68ba",
+  "workload_hash": "91b74e488c930ec0b015e1cf79ab942facbb1dfcab2e5c7cb52d1a66d39e9716"
+}

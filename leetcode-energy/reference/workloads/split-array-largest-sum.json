@@ -1,0 +1,172 @@
+{
+  "case_counts": {
+    "examples": 2,
+    "synthetic": 4,
+    "total": 6
+  },
+  "cases": [
+    {
+      "input": {
+        "k": 2,
+        "nums": [
+          7,
+          2,
+          5,
+          10,
+          8
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "k": 2,
+        "nums": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "k": 1,
+        "nums": [
+          1,
+          0,
+          1
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_1"
+    },
+    {
+      "input": {
+        "k": 2,
+        "nums": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_2"
+    },
+    {
+      "input": {
+        "k": 5,
+        "nums": [
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_3"
+    },
+    {
+      "input": {
+        "k": 5,
+        "nums": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_4"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int"
+    ],
+    "args": [
+      "nums",
+      "k"
+    ],
+    "class": "Solution",
+    "method": "splitArray"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "split-array-largest-sum",
+  "schema_version": 1,
+  "seed": "0efdf7a9c0c04c865fd8f74db54f569bd9b1a80fbf1b26f1ed8182ffa66e3c21",
+  "workload_hash": "c1538f809fe58b46c7bf30de14c0591f31fa474cb0ebb40f6442d23048f9e88c"
+}

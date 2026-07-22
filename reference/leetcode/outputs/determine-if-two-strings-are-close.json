@@ -1,0 +1,854 @@
+{
+  "workload_hash": "3e408dd8b3c62c02220fca7b253dbbee6fff7bfb9896854ca7251bc933c9a368",
+  "problem": "determine-if-two-strings-are-close",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "word1": "leetcode",
+        "word2": "coeddlet"
+      },
+      "output": false
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "word1": "aaa",
+        "word2": "bbb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "word1": "aaabbbbccdddd",
+        "word2": "bbbbaacdddd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "word1": "abcdefghijklmnopqrstuvwxyz",
+        "word2": "zyxwvutsrqponmlkjihgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "word1": "aabbcc",
+        "word2": "ccbbaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "word1": "abc",
+        "word2": "bca"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "word1": "abcabcabc",
+        "word2": "bcbcbcbcb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "word1": "abcde",
+        "word2": "edcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "word1": "cabbba",
+        "word2": "abbccc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "word1": "xyzz",
+        "word2": "zzxy"
+      },
+      "output": true
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "word1": "xyz",
+        "word2": "zyx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "word1": "abcd",
+        "word2": "abce"
+      },
+      "output": false
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "word1": "aaabbbbcc",
+        "word2": "bbbcccaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "word1": "uau",
+        "word2": "ssx"
+      },
+      "output": false
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "word1": "aaabbbbccddd",
+        "word2": "bbbccdddcccc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "word1": "aabbbbccc",
+        "word2": "bbcccaaaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "word1": "abab",
+        "word2": "baba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "word1": "aaabbbbcc",
+        "word2": "aaaabbbcc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "word1": "a",
+        "word2": "aa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "word1": "aab",
+        "word2": "bba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "word1": "abcd",
+        "word2": "dcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "word1": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "word2": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "word1": "aaaabbbbccccdddd",
+        "word2": "ddddeeeeffffgggg"
+      },
+      "output": false
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "word1": "aaabbcccddeeefffggghhhhiiiii",
+        "word2": "iiiiihhhgggfffeeedddcccbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "word1": "xyzxyzxyz",
+        "word2": "zyxzyxzyx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "word1": "abacabadabacaba",
+        "word2": "bbacabadabacaba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "word1": "aaabbcccddddeeeeeffffffgggggghhhhhiiiijjjjkkkkklllllmmmmnnooooppqqrrsstttuuuuuvvvvvvvwwxxxxxyyyyzzzzz",
+        "word2": "zzzzzyyyyxxxwwwvvvvvvuuuuutttssrrqqppoonnmmllkkjjiihhhgggfffddddccccbbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "word1": "aabbccddeeff",
+        "word2": "ffeeddccbbaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "word1": "aaabbbcccdddeeefff",
+        "word2": "ffeeeedddcccbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "word1": "mississippi",
+        "word2": "ppissimissi"
+      },
+      "output": true
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "word1": "abcdabcabcabcd",
+        "word2": "dcbaababdcbaabab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "word1": "abacabadabacaba",
+        "word2": "bacabacababacab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzxxyywwvvuuttssrrqqppoonnmmllkkjjiihhggffeeeeddccbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "word1": "ppppoooonnnnmmmlllkkeeeeeddcccbbbaaa",
+        "word2": "aaaaaaaaabbbbbbccccdddddeeeeeeeekkkkkklllllmmmmmmmnnnnnnnnoooooooooppppppp"
+      },
+      "output": false
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "word1": "qqqwwwweeerrrttt",
+        "word2": "tttwwweerrrqqq"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "word1": "abcabcabc",
+        "word2": "ccbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "word1": "qwertypoiuytrewq",
+        "word2": "poiuytrewqqwertypo"
+      },
+      "output": false
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "word1": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "word2": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "word1": "abcdefabcdefabcdef",
+        "word2": "fedcbafedcbafedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "word1": "abcdefghij",
+        "word2": "jihgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "word1": "abcdefgh",
+        "word2": "hgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "word1": "abacabadabacaba",
+        "word2": "cbacbacbcacbacb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "word1": "abcdefg",
+        "word2": "gfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "word1": "loooooonnnngggggwwwoooorrrrddddsssaaammmmeeeerrttttyyyyyyyyyyyynnnnnnnnnn",
+        "word2": "nnnnnnnnnnyyyyyyyyyyyttttyyyyymmmeeraatttddddsssaaawwwggggnnnllllloooooo"
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "word1": "xylophone",
+        "word2": "phonexylo"
+      },
+      "output": true
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "word1": "abcdefghijklopqrstuvwxyz",
+        "word2": "zyxwvutsrqponmlkjihgfedcba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "word1": "abcdefghijklmnopqrstuvwxyz",
+        "word2": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "word1": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz",
+        "word2": "zyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "word1": "abcdefabcabc",
+        "word2": "abcabcabcdef"
+      },
+      "output": true
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "word1": "aaaaabbbbcccccccdddddddd",
+        "word2": "ddddddddcccccccbbbbaaaaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "word1": "mnopqr",
+        "word2": "rpqomn"
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "word1": "mississippi",
+        "word2": "ppiimssisss"
+      },
+      "output": false
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzyyxxwwvvuuttssrrqppoonnmlkkjjiihhggffeeeeddccbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "word1": "anotherexample",
+        "word2": "mpleaxarnothee"
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "word1": "aaaaabbbbbccccc",
+        "word2": "bbbbbcccccaaaaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "word1": "zzzzzzyyyxxx",
+        "word2": "yyyxxxzzzzzy"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "word1": "xyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "word2": "yzxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxyxy"
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "word1": "xyzxyzxyzxyzxyzxyzxyz",
+        "word2": "zyxzyxzyxzyxzyxzyxzyxzyxzyx"
+      },
+      "output": false
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "word1": "aabccddddeeeeefffffff",
+        "word2": "eeeeeeffffffdddddcccbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "word1": "mnopqr",
+        "word2": "rstuvw"
+      },
+      "output": false
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "word1": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+        "word2": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "word1": "aabbccddeeff",
+        "word2": "abcdeffedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "abcdefghijklmnopqrstuvxyzmnopqrstuvwxyzabcdefg"
+      },
+      "output": false
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "word1": "uniqueletters",
+        "word2": "letterniquesu"
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzxxyywwvvuuttssrrqqlloonnmmllkkjjiihhggeeddbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "word1": "abcabcabcabcabcabcabcabcabcabc",
+        "word2": "bcabacabcabacabcabacabcabacabcabac"
+      },
+      "output": false
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "word1": "abcdefghijk",
+        "word2": "abcdefghijl"
+      },
+      "output": false
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "word1": "thisisatest",
+        "word2": "esttasisthi"
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "word1": "qqwweerrttyyuuiiooppllaaassddffgg",
+        "word2": "ggffddssaallooppuiiyyttreeewwqq"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "word1": "abacabadaba",
+        "word2": "dabacababad"
+      },
+      "output": false
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "word1": "pneumonoultramicroscopicsilicovolcanoconiosis",
+        "word2": "oconsinolpnacirosccvilcooimmutapernovulcrosmicn"
+      },
+      "output": false
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "word1": "abcabcabcabc",
+        "word2": "cccbbbaaabbb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "word1": "leetcode",
+        "word2": "codeleet"
+      },
+      "output": true
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "word1": "z",
+        "word2": "z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "word1": "aabbaa",
+        "word2": "bbaabb"
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "word1": "aaabbbccc",
+        "word2": "bbbaaacc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "word1": "transform",
+        "word2": "rmorfnapt"
+      },
+      "output": false
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "word1": "aaaabbbbccccddddeeeeeffffffgggggg",
+        "word2": "ggggggffffffeeeeeeeeeccccbbbbaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "word1": "abacabadabacabad",
+        "word2": "badacabdacabad"
+      },
+      "output": false
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzyyxxwwvvuuttssrrqqppoonnmmllkkjjiihhggffeeddccbbaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "word1": "hello",
+        "word2": "ollhe"
+      },
+      "output": true
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "word1": "uniquestring",
+        "word2": "stringunique"
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "word1": "abcdef",
+        "word2": "gfedcb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "word1": "xyxyxyxyxyxyxyxyxyxy",
+        "word2": "yyxyxyxyxyxyxyxyxyxxyx"
+      },
+      "output": false
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "word1": "aaaaabbbbccccdddd",
+        "word2": "ddddccccbbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "word1": "abcde",
+        "word2": "fghij"
+      },
+      "output": false
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "word1": "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcd",
+        "word2": "ddddccccbbbbaaaaaaddddccccbbbbaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "word1": "aabbbcccc",
+        "word2": "cccbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "word1": "aabbccddeee",
+        "word2": "eeeedddccbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "word1": "thisisatest",
+        "word2": "esttisita"
+      },
+      "output": false
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "word1": "aaabbbcccddd",
+        "word2": "ddddcccbbbbaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "word1": "abcdefghijabcdefghijabcdefghij",
+        "word2": "abcdefghijabcdefghijabcdefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "word1": "zzzzzzzzzz",
+        "word2": "zzzzzzzzzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "word1": "abcdeabcde",
+        "word2": "edcbaedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "word1": "abcdabcdabcdabcdabcdabcd",
+        "word2": "dcbaabcdabcdabcdabcdabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzzyyxwwvvuuttrrqqppoonnmmllkkiijjgghhffeeeeddccbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "word1": "abcdexyz",
+        "word2": "zyxwvuts"
+      },
+      "output": false
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "word1": "qqwweerrttyyuuiiooppaassddffgg",
+        "word2": "ggffddssaappoouuiittyyerrrwwqq"
+      },
+      "output": false
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "word1": "abcdefg",
+        "word2": "ghijklm"
+      },
+      "output": false
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "word1": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "word2": "zzxxwwvvuuttssrrqqlloonnmmllkkjjiihhggeeddbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "word1": "aaaabbbbccccddddeee",
+        "word2": "eeedddccccbbbbaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "word1": "abcdabcd",
+        "word2": "dcbaabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "word1": "closestrings",
+        "word2": "stringsclose"
+      },
+      "output": true
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "word1": "aaaabbbbccccdddd",
+        "word2": "ddddccccbbbbaaaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "word1": "xyzzzz",
+        "word2": "zzzzxy"
+      },
+      "output": true
+    }
+  ]
+}

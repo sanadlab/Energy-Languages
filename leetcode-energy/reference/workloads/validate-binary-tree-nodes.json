@@ -1,0 +1,8 @@
+{
+  "cases": [],
+  "language_independent": true,
+  "problem": "validate-binary-tree-nodes",
+  "schema_version": 1,
+  "skipped": true,
+  "skipped_reason": "unsupported problem tag(s): Binary Tree, Tree"
+}

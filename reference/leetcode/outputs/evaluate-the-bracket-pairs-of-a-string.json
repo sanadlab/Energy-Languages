@@ -1,0 +1,2343 @@
+{
+  "workload_hash": "13b6375d7dbd4e7566f55be2f94552653dd0437b5e2e7d80797bfeee37a9dc90",
+  "problem": "evaluate-the-bracket-pairs-of-a-string",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "s": "(a)(a)(a)aaa",
+        "knowledge": [
+          [
+            "a",
+            "yes"
+          ]
+        ]
+      },
+      "output": "yesyesyesaaa"
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "s": "(a)(b)(c)(d)",
+        "knowledge": [
+          [
+            "a",
+            "1"
+          ],
+          [
+            "b",
+            "2"
+          ],
+          [
+            "c",
+            "3"
+          ]
+        ]
+      },
+      "output": "123?"
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "s": "hi(name)",
+        "knowledge": [
+          [
+            "a",
+            "b"
+          ]
+        ]
+      },
+      "output": "hi?"
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "s": "(a)(a)(a)aaa",
+        "knowledge": [
+          [
+            "a",
+            "yes"
+          ]
+        ]
+      },
+      "output": "yesyesyesaaa"
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "s": "",
+        "knowledge": []
+      },
+      "output": ""
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "s": "noknowledgehere",
+        "knowledge": []
+      },
+      "output": "noknowledgehere"
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "s": "no(brackets)here",
+        "knowledge": []
+      },
+      "output": "no?here"
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "s": "hi(name)",
+        "knowledge": [
+          [
+            "a",
+            "b"
+          ]
+        ]
+      },
+      "output": "hi?"
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "s": "(nested)but(not)really",
+        "knowledge": [
+          [
+            "nested",
+            "nested"
+          ],
+          [
+            "not",
+            "not"
+          ]
+        ]
+      },
+      "output": "nestedbutnotreally"
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "s": "(key1)(key2)(key3)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ]
+        ]
+      },
+      "output": "value1value2?"
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "s": "this(is)a(test)",
+        "knowledge": [
+          [
+            "is",
+            "was"
+          ],
+          [
+            "test",
+            "trial"
+          ]
+        ]
+      },
+      "output": "thiswasatrial"
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "s": "(name)is(age)yearsold",
+        "knowledge": [
+          [
+            "name",
+            "bob"
+          ],
+          [
+            "age",
+            "two"
+          ]
+        ]
+      },
+      "output": "bobistwoyearsold"
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "s": "(key1)(key2)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ]
+        ]
+      },
+      "output": "value1value2"
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "s": "(single)",
+        "knowledge": [
+          [
+            "single",
+            "one"
+          ]
+        ]
+      },
+      "output": "one"
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "s": "(last)one",
+        "knowledge": [
+          [
+            "last",
+            "final"
+          ]
+        ]
+      },
+      "output": "finalone"
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "s": "single",
+        "knowledge": [
+          [
+            "single",
+            "word"
+          ]
+        ]
+      },
+      "output": "single"
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "s": "hello",
+        "knowledge": []
+      },
+      "output": "hello"
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "s": "(unknown)key",
+        "knowledge": [
+          [
+            "known",
+            "value"
+          ]
+        ]
+      },
+      "output": "?key"
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "s": "(name)is(age)yearsold",
+        "knowledge": [
+          [
+            "name",
+            "bob"
+          ],
+          [
+            "age",
+            "two"
+          ]
+        ]
+      },
+      "output": "bobistwoyearsold"
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "s": "(key1)(key2)(key3)",
+        "knowledge": [
+          [
+            "key1",
+            "val1"
+          ],
+          [
+            "key2",
+            "val2"
+          ],
+          [
+            "key3",
+            "val3"
+          ]
+        ]
+      },
+      "output": "val1val2val3"
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "s": "(book)written(by)(author)",
+        "knowledge": [
+          [
+            "book",
+            "1984"
+          ],
+          [
+            "author",
+            "George"
+          ]
+        ]
+      },
+      "output": "1984written?George"
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "s": "(city)(in)(country)",
+        "knowledge": [
+          [
+            "city",
+            "Tokyo"
+          ],
+          [
+            "country",
+            "Japan"
+          ]
+        ]
+      },
+      "output": "Tokyo?Japan"
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "s": "(nested)(key)(nested)",
+        "knowledge": [
+          [
+            "key",
+            "value"
+          ],
+          [
+            "nested",
+            "deep"
+          ]
+        ]
+      },
+      "output": "deepvaluedeep"
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "s": "(ingredient)requiresto(cooktime)mins",
+        "knowledge": [
+          [
+            "ingredient",
+            "Cookies"
+          ],
+          [
+            "cooktime",
+            "15"
+          ]
+        ]
+      },
+      "output": "Cookiesrequiresto15mins"
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "s": "(one)(two)(three)(four)(five)",
+        "knowledge": [
+          [
+            "one",
+            "1"
+          ],
+          [
+            "two",
+            "2"
+          ],
+          [
+            "three",
+            "3"
+          ],
+          [
+            "four",
+            "4"
+          ]
+        ]
+      },
+      "output": "1234?"
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "s": "(customer)(order)at(store)",
+        "knowledge": [
+          [
+            "customer",
+            "Alice"
+          ],
+          [
+            "order",
+            "Order123"
+          ]
+        ]
+      },
+      "output": "AliceOrder123at?"
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "s": "(keyA)and(keyB)and(keyC)and(keyD)",
+        "knowledge": [
+          [
+            "keyA",
+            "valA"
+          ],
+          [
+            "keyB",
+            "valB"
+          ]
+        ]
+      },
+      "output": "valAandvalBand?and?"
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "s": "(key)with(missing)knowledge",
+        "knowledge": [
+          [
+            "key",
+            "value1"
+          ],
+          [
+            "missing",
+            "value2"
+          ],
+          [
+            "knowledge",
+            "value3"
+          ]
+        ]
+      },
+      "output": "value1withvalue2knowledge"
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "s": "(greeting)(world)(planet)",
+        "knowledge": [
+          [
+            "greeting",
+            "hello"
+          ],
+          [
+            "world",
+            "earth"
+          ],
+          [
+            "planet",
+            "mars"
+          ]
+        ]
+      },
+      "output": "helloearthmars"
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "s": "(this)(is)(a)(test)(string)(with)(multiple)(keys)",
+        "knowledge": [
+          [
+            "this",
+            "it"
+          ],
+          [
+            "is",
+            "be"
+          ],
+          [
+            "a",
+            "an"
+          ],
+          [
+            "test",
+            "example"
+          ],
+          [
+            "string",
+            "sequence"
+          ],
+          [
+            "with",
+            "having"
+          ],
+          [
+            "multiple",
+            "several"
+          ],
+          [
+            "keys",
+            "identifiers"
+          ]
+        ]
+      },
+      "output": "itbeanexamplesequencehavingseveralidentifiers"
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "s": "(language)programmingis(fun)",
+        "knowledge": [
+          [
+            "language",
+            "python"
+          ],
+          [
+            "fun",
+            "awesome"
+          ]
+        ]
+      },
+      "output": "pythonprogrammingisawesome"
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "s": "(fruit)(vegetable)",
+        "knowledge": [
+          [
+            "fruit",
+            "apple"
+          ],
+          [
+            "vegetable",
+            "carrot"
+          ]
+        ]
+      },
+      "output": "applecarrot"
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "s": "(animal)lives(in)(habitat)",
+        "knowledge": [
+          [
+            "animal",
+            "tiger"
+          ],
+          [
+            "habitat",
+            "jungle"
+          ]
+        ]
+      },
+      "output": "tigerlives?jungle"
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "s": "(name)has(age)yearsand(occupation)",
+        "knowledge": [
+          [
+            "name",
+            "Alice"
+          ],
+          [
+            "age",
+            "30"
+          ]
+        ]
+      },
+      "output": "Alicehas30yearsand?"
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "s": "(longkey)(anotherkey)(yetanotherkey)",
+        "knowledge": [
+          [
+            "longkey",
+            "averylongvalue"
+          ],
+          [
+            "anotherkey",
+            "shortval"
+          ],
+          [
+            "yetanotherkey",
+            "value"
+          ]
+        ]
+      },
+      "output": "averylongvalueshortvalvalue"
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "s": "(language)is(cool)",
+        "knowledge": [
+          [
+            "language",
+            "Python"
+          ],
+          [
+            "cool",
+            "awesome"
+          ]
+        ]
+      },
+      "output": "Pythonisawesome"
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "s": "(first)and(last)name",
+        "knowledge": [
+          [
+            "first",
+            "john"
+          ],
+          [
+            "last",
+            "doe"
+          ]
+        ]
+      },
+      "output": "johnanddoename"
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "s": "(name)is(living)(in)(city)",
+        "knowledge": [
+          [
+            "name",
+            "bob"
+          ],
+          [
+            "in",
+            "at"
+          ],
+          [
+            "city",
+            "london"
+          ]
+        ]
+      },
+      "output": "bobis?atlondon"
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "s": "(animal)(eats)(food)",
+        "knowledge": [
+          [
+            "animal",
+            "lion"
+          ],
+          [
+            "food",
+            "meat"
+          ]
+        ]
+      },
+      "output": "lion?meat"
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "s": "(user)likes(to)(eat)(food)",
+        "knowledge": [
+          [
+            "user",
+            "alice"
+          ],
+          [
+            "eat",
+            "enjoy"
+          ],
+          [
+            "food",
+            "pizza"
+          ]
+        ]
+      },
+      "output": "alicelikes?enjoypizza"
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "s": "(prefix)middle(suffix)",
+        "knowledge": [
+          [
+            "prefix",
+            "start"
+          ],
+          [
+            "suffix",
+            "end"
+          ]
+        ]
+      },
+      "output": "startmiddleend"
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "s": "(flower)grows(in)(soil)",
+        "knowledge": [
+          [
+            "flower",
+            "rose"
+          ],
+          [
+            "soil",
+            "dirt"
+          ]
+        ]
+      },
+      "output": "rosegrows?dirt"
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "s": "(first)nameis(last)name",
+        "knowledge": [
+          [
+            "first",
+            "john"
+          ],
+          [
+            "last",
+            "doe"
+          ]
+        ]
+      },
+      "output": "johnnameisdoename"
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "s": "(longkey1)and(longkey2)and(longkey3)and(longkey4)",
+        "knowledge": [
+          [
+            "longkey1",
+            "value1"
+          ],
+          [
+            "longkey2",
+            "value2"
+          ],
+          [
+            "longkey3",
+            "value3"
+          ],
+          [
+            "longkey4",
+            "value4"
+          ]
+        ]
+      },
+      "output": "value1andvalue2andvalue3andvalue4"
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "s": "(department)islocatedat(address)",
+        "knowledge": [
+          [
+            "department",
+            "Sales"
+          ],
+          [
+            "address",
+            "123BusinessSt"
+          ]
+        ]
+      },
+      "output": "Salesislocatedat123BusinessSt"
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "s": "(name)has(a)(pet)",
+        "knowledge": [
+          [
+            "name",
+            "Mary"
+          ],
+          [
+            "pet",
+            "dog"
+          ]
+        ]
+      },
+      "output": "Maryhas?dog"
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "s": "(drink)is(served)in(glass)",
+        "knowledge": [
+          [
+            "drink",
+            "water"
+          ],
+          [
+            "glass",
+            "big"
+          ]
+        ]
+      },
+      "output": "wateris?inbig"
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "s": "prefix(key1)middle(key2)suffix",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ]
+        ]
+      },
+      "output": "prefixvalue1middlevalue2suffix"
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "s": "(key1)(key2)(key1)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ]
+        ]
+      },
+      "output": "value1value2value1"
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "s": "(item1)(item2)(item3)(item4)",
+        "knowledge": [
+          [
+            "item1",
+            "itemA"
+          ],
+          [
+            "item2",
+            "itemB"
+          ],
+          [
+            "item4",
+            "itemD"
+          ]
+        ]
+      },
+      "output": "itemAitemB?itemD"
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "s": "(greeting)world",
+        "knowledge": [
+          [
+            "greeting",
+            "hello"
+          ],
+          [
+            "farewell",
+            "bye"
+          ]
+        ]
+      },
+      "output": "helloworld"
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "s": "(user)(name)livesin(city)with(zip)",
+        "knowledge": [
+          [
+            "user",
+            "John"
+          ],
+          [
+            "city",
+            "San Francisco"
+          ],
+          [
+            "zip",
+            "94111"
+          ]
+        ]
+      },
+      "output": "John?livesinSan Franciscowith94111"
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "s": "(person)(from)(place)isvisiting(placeofinterest)",
+        "knowledge": [
+          [
+            "person",
+            "Bob"
+          ],
+          [
+            "from",
+            "LosAngeles"
+          ],
+          [
+            "place",
+            "SanFrancisco"
+          ],
+          [
+            "placeofinterest",
+            "Alcatraz"
+          ]
+        ]
+      },
+      "output": "BobLosAngelesSanFranciscoisvisitingAlcatraz"
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "s": "(longkeyname)is(longervaluename)",
+        "knowledge": [
+          [
+            "longkeyname",
+            "longervaluename"
+          ]
+        ]
+      },
+      "output": "longervaluenameis?"
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "s": "(name)has(a)(pet)(dog)",
+        "knowledge": [
+          [
+            "name",
+            "john"
+          ],
+          [
+            "pet",
+            "dog"
+          ],
+          [
+            "dog",
+            "buddy"
+          ]
+        ]
+      },
+      "output": "johnhas?dogbuddy"
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "s": "(key1)and(key2)and(key3)and(key4)and(key5)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ],
+          [
+            "key3",
+            "value3"
+          ],
+          [
+            "key4",
+            "value4"
+          ]
+        ]
+      },
+      "output": "value1andvalue2andvalue3andvalue4and?"
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "s": "(prefix)_(suffix)",
+        "knowledge": [
+          [
+            "prefix",
+            "start"
+          ],
+          [
+            "suffix",
+            "end"
+          ]
+        ]
+      },
+      "output": "start_end"
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "s": "(number)plus(number)equals(twice_number)",
+        "knowledge": [
+          [
+            "number",
+            "10"
+          ],
+          [
+            "twice_number",
+            "20"
+          ]
+        ]
+      },
+      "output": "10plus10equals20"
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "s": "(name)livesat(address)andworksat(company)",
+        "knowledge": [
+          [
+            "name",
+            "Alice"
+          ],
+          [
+            "address",
+            "Wonderland"
+          ],
+          [
+            "company",
+            "TechCorp"
+          ]
+        ]
+      },
+      "output": "AlicelivesatWonderlandandworksatTechCorp"
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "s": "(repeated)(key)(repeated)(key)",
+        "knowledge": [
+          [
+            "key",
+            "value"
+          ]
+        ]
+      },
+      "output": "?value?value"
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "s": "(planet)(orbits)around(star)",
+        "knowledge": [
+          [
+            "planet",
+            "Earth"
+          ],
+          [
+            "star",
+            "Sun"
+          ]
+        ]
+      },
+      "output": "Earth?aroundSun"
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "s": "(item)isavaliablefrom(date)",
+        "knowledge": [
+          [
+            "item",
+            "Smartphone"
+          ],
+          [
+            "date",
+            "2023-12-15"
+          ]
+        ]
+      },
+      "output": "Smartphoneisavaliablefrom2023-12-15"
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "s": "(conference)heldon(date)",
+        "knowledge": [
+          [
+            "conference",
+            "GDC"
+          ],
+          [
+            "date",
+            "2024-03-19"
+          ]
+        ]
+      },
+      "output": "GDCheldon2024-03-19"
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "s": "(first)(second)(third)(fourth)",
+        "knowledge": [
+          [
+            "first",
+            "one"
+          ],
+          [
+            "second",
+            "two"
+          ],
+          [
+            "third",
+            "three"
+          ]
+        ]
+      },
+      "output": "onetwothree?"
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "s": "(color)(animal)",
+        "knowledge": [
+          [
+            "color",
+            "blue"
+          ],
+          [
+            "animal",
+            "dog"
+          ],
+          [
+            "bird",
+            "sparrow"
+          ]
+        ]
+      },
+      "output": "bluedog"
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "s": "(firstName)(lastName)isfrom(city)in(country)",
+        "knowledge": [
+          [
+            "firstName",
+            "Alice"
+          ],
+          [
+            "lastName",
+            "Wonderland"
+          ],
+          [
+            "city",
+            "Wonderland"
+          ],
+          [
+            "country",
+            "Fantasia"
+          ]
+        ]
+      },
+      "output": "AliceWonderlandisfromWonderlandinFantasia"
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "s": "(product)costs(dollars)and(euros)",
+        "knowledge": [
+          [
+            "product",
+            "Laptop"
+          ],
+          [
+            "dollars",
+            "1200"
+          ],
+          [
+            "euros",
+            "1020"
+          ]
+        ]
+      },
+      "output": "Laptopcosts1200and1020"
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "s": "(nested)but(notreally)nested",
+        "knowledge": [
+          [
+            "nested",
+            "deep"
+          ],
+          [
+            "notreally",
+            "shallow"
+          ]
+        ]
+      },
+      "output": "deepbutshallownested"
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "s": "(first)(last)(age)",
+        "knowledge": [
+          [
+            "first",
+            "john"
+          ],
+          [
+            "last",
+            "doe"
+          ],
+          [
+            "age",
+            "thirty"
+          ]
+        ]
+      },
+      "output": "johndoethirty"
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "s": "(city)(has)(many)(buildings)",
+        "knowledge": [
+          [
+            "city",
+            "newyork"
+          ],
+          [
+            "many",
+            "lots"
+          ]
+        ]
+      },
+      "output": "newyork?lots?"
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "s": "(language)(framework)",
+        "knowledge": [
+          [
+            "language",
+            "Python"
+          ],
+          [
+            "framework",
+            "Django"
+          ],
+          [
+            "version",
+            "3.9"
+          ]
+        ]
+      },
+      "output": "PythonDjango"
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "s": "(model)releasedon(year)",
+        "knowledge": [
+          [
+            "model",
+            "iPhone15"
+          ],
+          [
+            "year",
+            "2023"
+          ]
+        ]
+      },
+      "output": "iPhone15releasedon2023"
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "s": "(multiple)(keys)(here)",
+        "knowledge": [
+          [
+            "multiple",
+            "many"
+          ],
+          [
+            "keys",
+            "some"
+          ],
+          [
+            "here",
+            "there"
+          ]
+        ]
+      },
+      "output": "manysomethere"
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "s": "(username)lastloggedin(on)",
+        "knowledge": [
+          [
+            "username",
+            "Alice"
+          ],
+          [
+            "on",
+            "2023-10-01"
+          ]
+        ]
+      },
+      "output": "Alicelastloggedin2023-10-01"
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "s": "(planet)is(almost)full",
+        "knowledge": [
+          [
+            "planet",
+            "Earth"
+          ],
+          [
+            "almost",
+            "not"
+          ],
+          [
+            "full",
+            "occupied"
+          ]
+        ]
+      },
+      "output": "Earthisnotfull"
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "s": "(person)loves(to)(eat)",
+        "knowledge": [
+          [
+            "person",
+            "John"
+          ],
+          [
+            "eat",
+            "pizza"
+          ]
+        ]
+      },
+      "output": "Johnloves?pizza"
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "s": "(car)is(fast)and(economical)",
+        "knowledge": [
+          [
+            "car",
+            "Ferrari"
+          ],
+          [
+            "fast",
+            "very"
+          ],
+          [
+            "economical",
+            "not"
+          ]
+        ]
+      },
+      "output": "Ferrariisveryandnot"
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "s": "(key1)and(key2)and(key3)and(key4)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ],
+          [
+            "key4",
+            "value4"
+          ]
+        ]
+      },
+      "output": "value1andvalue2and?andvalue4"
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "s": "(part1)(part2)(part3)",
+        "knowledge": [
+          [
+            "part1",
+            "first"
+          ],
+          [
+            "part2",
+            "second"
+          ],
+          [
+            "part3",
+            "third"
+          ]
+        ]
+      },
+      "output": "firstsecondthird"
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "s": "(color)(is)(used)in(art)",
+        "knowledge": [
+          [
+            "color",
+            "red"
+          ],
+          [
+            "used",
+            "frequently"
+          ]
+        ]
+      },
+      "output": "red?frequentlyin?"
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "s": "(key1)is(key2)and(key3)is(key4)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ],
+          [
+            "key3",
+            "value3"
+          ]
+        ]
+      },
+      "output": "value1isvalue2andvalue3is?"
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "s": "(name)from(country)is(visitor)",
+        "knowledge": [
+          [
+            "name",
+            "Bob"
+          ],
+          [
+            "country",
+            "USA"
+          ]
+        ]
+      },
+      "output": "BobfromUSAis?"
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "s": "(prefix)example(suffix)",
+        "knowledge": [
+          [
+            "prefix",
+            "pre"
+          ],
+          [
+            "suffix",
+            "post"
+          ]
+        ]
+      },
+      "output": "preexamplepost"
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "s": "(unknown)(key)(not)(present)",
+        "knowledge": [
+          [
+            "present",
+            "available"
+          ]
+        ]
+      },
+      "output": "???available"
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "s": "(unknown)(key1)(unknown)(key2)(unknown)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ]
+        ]
+      },
+      "output": "?value1?value2?"
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "s": "(book)writtenby(author)publishedby(publisher)",
+        "knowledge": [
+          [
+            "book",
+            "GreatExpectations"
+          ],
+          [
+            "author",
+            "CharlesDickens"
+          ],
+          [
+            "publisher",
+            "ChapmanandHall"
+          ]
+        ]
+      },
+      "output": "GreatExpectationswrittenbyCharlesDickenspublishedbyChapmanandHall"
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "s": "(instrument)plays(music)",
+        "knowledge": [
+          [
+            "instrument",
+            "guitar"
+          ],
+          [
+            "music",
+            "beautiful"
+          ]
+        ]
+      },
+      "output": "guitarplaysbeautiful"
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "s": "(prefix)(middle)(suffix)",
+        "knowledge": [
+          [
+            "prefix",
+            "pre"
+          ],
+          [
+            "middle",
+            "mid"
+          ],
+          [
+            "suffix",
+            "suf"
+          ]
+        ]
+      },
+      "output": "premidsuf"
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "s": "(fruit)are(sweet)and(healthy)",
+        "knowledge": [
+          [
+            "fruit",
+            "apples"
+          ],
+          [
+            "sweet",
+            "very"
+          ],
+          [
+            "healthy",
+            "indeed"
+          ]
+        ]
+      },
+      "output": "applesareveryandindeed"
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "s": "(repeated)repeated(repeated)",
+        "knowledge": [
+          [
+            "repeated",
+            "again"
+          ]
+        ]
+      },
+      "output": "againrepeatedagain"
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "s": "(planet)(moon)orbiting(planet)",
+        "knowledge": [
+          [
+            "planet",
+            "Earth"
+          ],
+          [
+            "moon",
+            "Moon"
+          ]
+        ]
+      },
+      "output": "EarthMoonorbitingEarth"
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "s": "(key1)(key1)(key1)(key1)(key1)",
+        "knowledge": [
+          [
+            "key1",
+            "repeat"
+          ]
+        ]
+      },
+      "output": "repeatrepeatrepeatrepeatrepeat"
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "s": "(key1)is(key2)yearsold(key3)",
+        "knowledge": [
+          [
+            "key1",
+            "bob"
+          ],
+          [
+            "key2",
+            "two"
+          ]
+        ]
+      },
+      "output": "bobistwoyearsold?"
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "s": "(greeting)everyone(my)name(is)(unknown)",
+        "knowledge": [
+          [
+            "greeting",
+            "hi"
+          ],
+          [
+            "my",
+            "my"
+          ]
+        ]
+      },
+      "output": "hieveryonemyname??"
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "s": "(bird)can(fly)high",
+        "knowledge": [
+          [
+            "bird",
+            "eagle"
+          ],
+          [
+            "fly",
+            "soar"
+          ]
+        ]
+      },
+      "output": "eaglecansoarhigh"
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "s": "(country)has(a)(capital)",
+        "knowledge": [
+          [
+            "country",
+            "India"
+          ],
+          [
+            "capital",
+            "Delhi"
+          ]
+        ]
+      },
+      "output": "Indiahas?Delhi"
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)",
+        "knowledge": [
+          [
+            "a",
+            "one"
+          ],
+          [
+            "b",
+            "two"
+          ],
+          [
+            "c",
+            "three"
+          ],
+          [
+            "d",
+            "four"
+          ],
+          [
+            "e",
+            "five"
+          ],
+          [
+            "f",
+            "six"
+          ]
+        ]
+      },
+      "output": "onetwothreefourfivesix"
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)(m)(n)(o)(p)(q)(r)(s)(t)(u)(v)(w)(x)(y)(z)",
+        "knowledge": [
+          [
+            "a",
+            "A"
+          ],
+          [
+            "b",
+            "B"
+          ],
+          [
+            "c",
+            "C"
+          ],
+          [
+            "d",
+            "D"
+          ],
+          [
+            "e",
+            "E"
+          ],
+          [
+            "f",
+            "F"
+          ],
+          [
+            "g",
+            "G"
+          ],
+          [
+            "h",
+            "H"
+          ],
+          [
+            "i",
+            "I"
+          ],
+          [
+            "j",
+            "J"
+          ],
+          [
+            "k",
+            "K"
+          ],
+          [
+            "l",
+            "L"
+          ],
+          [
+            "m",
+            "M"
+          ],
+          [
+            "n",
+            "N"
+          ],
+          [
+            "o",
+            "O"
+          ],
+          [
+            "p",
+            "P"
+          ],
+          [
+            "q",
+            "Q"
+          ],
+          [
+            "r",
+            "R"
+          ],
+          [
+            "s",
+            "S"
+          ],
+          [
+            "t",
+            "T"
+          ],
+          [
+            "u",
+            "U"
+          ],
+          [
+            "v",
+            "V"
+          ],
+          [
+            "w",
+            "W"
+          ],
+          [
+            "x",
+            "X"
+          ],
+          [
+            "y",
+            "Y"
+          ],
+          [
+            "z",
+            "Z"
+          ]
+        ]
+      },
+      "output": "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "s": "(color)(of)the(sky)",
+        "knowledge": [
+          [
+            "color",
+            "blue"
+          ],
+          [
+            "sky",
+            "beautiful"
+          ]
+        ]
+      },
+      "output": "blue?thebeautiful"
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "s": "(name)is(unknown)but(age)yearsold",
+        "knowledge": [
+          [
+            "name",
+            "alice"
+          ],
+          [
+            "age",
+            "30"
+          ]
+        ]
+      },
+      "output": "aliceis?but30yearsold"
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "s": "(product)priceis(price)and(quantity)itemsareavailable",
+        "knowledge": [
+          [
+            "product",
+            "laptop"
+          ],
+          [
+            "price",
+            "1000"
+          ],
+          [
+            "quantity",
+            "5"
+          ]
+        ]
+      },
+      "output": "laptoppriceis1000and5itemsareavailable"
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "s": "(item)costs(amount)currency",
+        "knowledge": [
+          [
+            "item",
+            "book"
+          ],
+          [
+            "amount",
+            "10"
+          ],
+          [
+            "currency",
+            "dollars"
+          ]
+        ]
+      },
+      "output": "bookcosts10currency"
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)",
+        "knowledge": [
+          [
+            "a",
+            "alpha"
+          ],
+          [
+            "b",
+            "beta"
+          ],
+          [
+            "c",
+            "gamma"
+          ],
+          [
+            "d",
+            "delta"
+          ],
+          [
+            "e",
+            "epsilon"
+          ]
+        ]
+      },
+      "output": "alphabetagammadeltaepsilon"
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)(m)(n)(o)(p)(q)(r)(s)(t)(u)(v)(w)(x)(y)(z)",
+        "knowledge": [
+          [
+            "a",
+            "a"
+          ],
+          [
+            "b",
+            "b"
+          ],
+          [
+            "c",
+            "c"
+          ],
+          [
+            "d",
+            "d"
+          ],
+          [
+            "e",
+            "e"
+          ],
+          [
+            "f",
+            "f"
+          ],
+          [
+            "g",
+            "g"
+          ],
+          [
+            "h",
+            "h"
+          ],
+          [
+            "i",
+            "i"
+          ],
+          [
+            "j",
+            "j"
+          ],
+          [
+            "k",
+            "k"
+          ],
+          [
+            "l",
+            "l"
+          ],
+          [
+            "m",
+            "m"
+          ],
+          [
+            "n",
+            "n"
+          ],
+          [
+            "o",
+            "o"
+          ],
+          [
+            "p",
+            "p"
+          ],
+          [
+            "q",
+            "q"
+          ],
+          [
+            "r",
+            "r"
+          ],
+          [
+            "s",
+            "s"
+          ],
+          [
+            "t",
+            "t"
+          ],
+          [
+            "u",
+            "u"
+          ],
+          [
+            "v",
+            "v"
+          ],
+          [
+            "w",
+            "w"
+          ],
+          [
+            "x",
+            "x"
+          ],
+          [
+            "y",
+            "y"
+          ],
+          [
+            "z",
+            "z"
+          ]
+        ]
+      },
+      "output": "abcdefghijklmnopqrstuvwxyz"
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "s": "(repeated)(repeated)(repeated)",
+        "knowledge": [
+          [
+            "repeated",
+            "rep"
+          ]
+        ]
+      },
+      "output": "repreprep"
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "s": "(key1)and(key2)and(key3)and(key4)and(key5)and(key6)and(key7)",
+        "knowledge": [
+          [
+            "key1",
+            "value1"
+          ],
+          [
+            "key2",
+            "value2"
+          ],
+          [
+            "key3",
+            "value3"
+          ],
+          [
+            "key4",
+            "value4"
+          ],
+          [
+            "key5",
+            "value5"
+          ],
+          [
+            "key6",
+            "value6"
+          ],
+          [
+            "key7",
+            "value7"
+          ]
+        ]
+      },
+      "output": "value1andvalue2andvalue3andvalue4andvalue5andvalue6andvalue7"
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)",
+        "knowledge": [
+          [
+            "a",
+            "one"
+          ],
+          [
+            "b",
+            "two"
+          ],
+          [
+            "c",
+            "three"
+          ],
+          [
+            "d",
+            "four"
+          ],
+          [
+            "e",
+            "five"
+          ],
+          [
+            "f",
+            "six"
+          ],
+          [
+            "g",
+            "seven"
+          ],
+          [
+            "h",
+            "eight"
+          ],
+          [
+            "i",
+            "nine"
+          ],
+          [
+            "j",
+            "ten"
+          ]
+        ]
+      },
+      "output": "onetwothreefourfivesixseveneightnineten"
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)",
+        "knowledge": [
+          [
+            "a",
+            "yes"
+          ],
+          [
+            "b",
+            "no"
+          ],
+          [
+            "c",
+            "maybe"
+          ],
+          [
+            "d",
+            "sure"
+          ],
+          [
+            "e",
+            "never"
+          ],
+          [
+            "f",
+            "always"
+          ],
+          [
+            "g",
+            "often"
+          ],
+          [
+            "h",
+            "rarely"
+          ],
+          [
+            "i",
+            "sometimes"
+          ],
+          [
+            "j",
+            "usually"
+          ]
+        ]
+      },
+      "output": "yesnomaybesureneveralwaysoftenrarelysometimesusually"
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "s": "(user)hasposted(numberofposts)times",
+        "knowledge": [
+          [
+            "user",
+            "Charlie"
+          ],
+          [
+            "numberofposts",
+            "250"
+          ]
+        ]
+      },
+      "output": "Charliehasposted250times"
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "s": "(complex)(string)(with)(multiple)(keys)",
+        "knowledge": [
+          [
+            "complex",
+            "com"
+          ],
+          [
+            "string",
+            "str"
+          ],
+          [
+            "with",
+            "wi"
+          ],
+          [
+            "multiple",
+            "mul"
+          ],
+          [
+            "keys",
+            "ke"
+          ]
+        ]
+      },
+      "output": "comstrwimulke"
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "s": "(key1)is(key2)yearsold(key3)and(key4)livesin(key5)",
+        "knowledge": [
+          [
+            "key1",
+            "bob"
+          ],
+          [
+            "key2",
+            "two"
+          ],
+          [
+            "key5",
+            "NYC"
+          ]
+        ]
+      },
+      "output": "bobistwoyearsold?and?livesinNYC"
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "s": "(a)(b)(c)(d)(e)(f)",
+        "knowledge": [
+          [
+            "a",
+            "alpha"
+          ],
+          [
+            "b",
+            "beta"
+          ],
+          [
+            "c",
+            "gamma"
+          ],
+          [
+            "d",
+            "delta"
+          ],
+          [
+            "e",
+            "epsilon"
+          ]
+        ]
+      },
+      "output": "alphabetagammadeltaepsilon?"
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "s": "(nested)brackets(are)not(allowed)",
+        "knowledge": [
+          [
+            "nested",
+            "nested"
+          ],
+          [
+            "brackets",
+            "brackets"
+          ],
+          [
+            "not",
+            "not"
+          ]
+        ]
+      },
+      "output": "nestedbrackets?not?"
+    }
+  ]
+}

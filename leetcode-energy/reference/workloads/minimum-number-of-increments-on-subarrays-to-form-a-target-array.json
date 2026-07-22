@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "input": {
+        "target": [
+          1,
+          2,
+          3,
+          2,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "target": [
+          3,
+          1,
+          1,
+          2
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "target": [
+          3,
+          1,
+          5,
+          4,
+          2
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "target"
+    ],
+    "class": "Solution",
+    "method": "minNumberOperations"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-number-of-increments-on-subarrays-to-form-a-target-array",
+  "schema_version": 1,
+  "seed": "23825fd535e67fb031006667a3fd86de363576fe202d5e2de359b6ffe5ea65ca",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minNumberOperations'"
+}

@@ -1,0 +1,85 @@
+{
+  "cases": [
+    {
+      "input": {
+        "coordinates": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            6,
+            7
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "coordinates": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            7
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]"
+    ],
+    "args": [
+      "coordinates"
+    ],
+    "class": "Solution",
+    "method": "checkStraightLine"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "check-if-it-is-a-straight-line",
+  "schema_version": 1,
+  "seed": "df08a5d5b7354aa54884ca7312f04193d87204723d64e5b84549f4f7da18094b",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'checkStraightLine'"
+}

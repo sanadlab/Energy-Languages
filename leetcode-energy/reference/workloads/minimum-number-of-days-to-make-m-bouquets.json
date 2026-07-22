@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "input": {
+        "bloomDay": [
+          1,
+          10,
+          3,
+          10,
+          2
+        ],
+        "k": 1,
+        "m": 3
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "bloomDay": [
+          1,
+          10,
+          3,
+          10,
+          2
+        ],
+        "k": 2,
+        "m": 3
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "bloomDay": [
+          7,
+          7,
+          7,
+          7,
+          12,
+          7,
+          7
+        ],
+        "k": 3,
+        "m": 2
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int",
+      "int"
+    ],
+    "args": [
+      "bloomDay",
+      "m",
+      "k"
+    ],
+    "class": "Solution",
+    "method": "minDays"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-number-of-days-to-make-m-bouquets",
+  "schema_version": 1,
+  "seed": "6c7dc9e65bdb38c40e406f3e50dc5db791b14a3034633f6d68beb62f3caebc51",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minDays'"
+}

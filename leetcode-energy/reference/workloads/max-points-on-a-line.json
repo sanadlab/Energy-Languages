@@ -1,0 +1,80 @@
+{
+  "cases": [
+    {
+      "input": {
+        "points": [
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            3,
+            3
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "points": [
+          [
+            1,
+            1
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            5,
+            3
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            1,
+            4
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]"
+    ],
+    "args": [
+      "points"
+    ],
+    "class": "Solution",
+    "method": "maxPoints"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "max-points-on-a-line",
+  "schema_version": 1,
+  "seed": "812a82cb8c582c20e8c0d95a4d005dc86e6afe12264072f6cbc6f184ed4439d8",
+  "skipped": true,
+  "skipped_reason": "visible example validation failed",
+  "validation_failures": [
+    {
+      "actual": 3,
+      "expected": 4,
+      "name": "example_2"
+    }
+  ]
+}

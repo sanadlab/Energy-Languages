@@ -1,0 +1,305 @@
+{
+  "case_counts": {
+    "examples": 2,
+    "synthetic": 4,
+    "total": 6
+  },
+  "cases": [
+    {
+      "input": {
+        "grid": [
+          [
+            7,
+            1,
+            4,
+            5,
+            6
+          ],
+          [
+            2,
+            5,
+            1,
+            6,
+            4
+          ],
+          [
+            1,
+            5,
+            4,
+            3,
+            2
+          ],
+          [
+            1,
+            2,
+            7,
+            3,
+            4
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            5,
+            1,
+            3,
+            1
+          ],
+          [
+            9,
+            3,
+            3,
+            1
+          ],
+          [
+            1,
+            3,
+            3,
+            8
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6,
+            7
+          ],
+          [
+            8,
+            9,
+            10,
+            11
+          ]
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_1"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6,
+            7
+          ],
+          [
+            8,
+            9,
+            10,
+            11
+          ],
+          [
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            16,
+            0,
+            1,
+            2
+          ],
+          [
+            3,
+            4,
+            5,
+            6
+          ],
+          [
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12,
+            13,
+            14
+          ]
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_2"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6,
+            7
+          ],
+          [
+            8,
+            9,
+            10,
+            11
+          ],
+          [
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            16,
+            0,
+            1,
+            2
+          ],
+          [
+            3,
+            4,
+            5,
+            6
+          ],
+          [
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12,
+            13,
+            14
+          ],
+          [
+            15,
+            16,
+            0,
+            1
+          ],
+          [
+            2,
+            3,
+            4,
+            5
+          ]
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_3"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            4,
+            5,
+            6,
+            7
+          ],
+          [
+            8,
+            9,
+            10,
+            11
+          ],
+          [
+            12,
+            13,
+            14,
+            15
+          ],
+          [
+            16,
+            0,
+            1,
+            2
+          ],
+          [
+            3,
+            4,
+            5,
+            6
+          ],
+          [
+            7,
+            8,
+            9,
+            10
+          ],
+          [
+            11,
+            12,
+            13,
+            14
+          ],
+          [
+            15,
+            16,
+            0,
+            1
+          ],
+          [
+            2,
+            3,
+            4,
+            5
+          ]
+        ]
+      },
+      "kind": "synthetic",
+      "name": "synthetic_4"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]"
+    ],
+    "args": [
+      "grid"
+    ],
+    "class": "Solution",
+    "method": "largestMagicSquare"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "largest-magic-square",
+  "schema_version": 1,
+  "seed": "073a9654b3f0242c917e0450f3aec2670c52fd4d2bd12a2f4620e58c4bf8b1b7",
+  "workload_hash": "9e0dbcbf490356121b0720a8e4f841983893afe4e0f0777986eada6eb1b890a7"
+}

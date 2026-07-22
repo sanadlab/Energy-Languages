@@ -1,0 +1,35 @@
+{
+  "cases": [
+    {
+      "input": {
+        "s": "abacbc "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "s": "aaabb "
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str"
+    ],
+    "args": [
+      "s"
+    ],
+    "class": "Solution",
+    "method": "areOccurrencesEqual"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "check-if-all-characters-have-equal-number-of-occurrences",
+  "schema_version": 1,
+  "seed": "6537b6bb9975b674469c6d4557204698369e905d6c35430793ddbbc89d6baf05",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'areOccurrencesEqual'"
+}

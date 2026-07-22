@@ -1,0 +1,53 @@
+{
+  "cases": [
+    {
+      "input": {
+        "stones": [
+          0,
+          1,
+          3,
+          5,
+          6,
+          8,
+          12,
+          17
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "stones": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          8,
+          9,
+          11
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "stones"
+    ],
+    "class": "Solution",
+    "method": "canCross"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "frog-jump",
+  "schema_version": 1,
+  "seed": "fb54f3b357ed0a8d9c40a826651dcfc6ab2ebda200e4319c214500dba1fa7991",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'canCross'"
+}

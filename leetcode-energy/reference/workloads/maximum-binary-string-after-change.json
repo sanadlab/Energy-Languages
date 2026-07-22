@@ -1,0 +1,35 @@
+{
+  "cases": [
+    {
+      "input": {
+        "binary": "000110 "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "binary": "01 "
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str"
+    ],
+    "args": [
+      "binary"
+    ],
+    "class": "Solution",
+    "method": "maximumBinaryString"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-binary-string-after-change",
+  "schema_version": 1,
+  "seed": "4050e4dce7bfa070a7ecb7f96508f8b2b3c8aa42b4d66c1dc6bd65718cc8852c",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maximumBinaryString'"
+}

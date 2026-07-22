@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "input": {
+        "brokenLetters": "ad ",
+        "text": "hello world "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "brokenLetters": "lt ",
+        "text": "leet code "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "brokenLetters": "e ",
+        "text": "leet code "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str"
+    ],
+    "args": [
+      "text",
+      "brokenLetters"
+    ],
+    "class": "Solution",
+    "method": "canBeTypedWords"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-number-of-words-you-can-type",
+  "schema_version": 1,
+  "seed": "a838c9e96a0a94b58c9c90d84b29efa49585f1c95fcb7c8a9526c2b9f5cddb11",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'canBeTypedWords'"
+}

@@ -1,0 +1,97 @@
+{
+  "cases": [
+    {
+      "input": {
+        "mentors": [
+          [
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            1,
+            0
+          ]
+        ],
+        "students": [
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "mentors": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "students": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]",
+      "List[List[int]]"
+    ],
+    "args": [
+      "students",
+      "mentors"
+    ],
+    "class": "Solution",
+    "method": "maxCompatibilitySum"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-compatibility-score-sum",
+  "schema_version": 1,
+  "seed": "7f5cb32063e43609778c3efef29ac853773e10f11d0c0b6b8571ff0fae925fea",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maxCompatibilitySum'"
+}

@@ -1,0 +1,36 @@
+{
+  "code_snippets": {
+    "c": "char* shortestSuperstring(char** words, int wordsSize) {\n    \n}",
+    "cpp": "class Solution {\npublic:\n    string shortestSuperstring(vector<string>& words) {\n        \n    }\n};",
+    "csharp": "public class Solution {\n    public string ShortestSuperstring(string[] words) {\n        \n    }\n}",
+    "dart": "class Solution {\n  String shortestSuperstring(List<String> words) {\n    \n  }\n}",
+    "elixir": "defmodule Solution do\n  @spec shortest_superstring(words :: [String.t]) :: String.t\n  def shortest_superstring(words) do\n    \n  end\nend",
+    "erlang": "-spec shortest_superstring(Words :: [unicode:unicode_binary()]) -> unicode:unicode_binary().\nshortest_superstring(Words) ->\n  .",
+    "golang": "func shortestSuperstring(words []string) string {\n    \n}",
+    "java": "class Solution {\n    public String shortestSuperstring(String[] words) {\n        \n    }\n}",
+    "javascript": "/**\n * @param {string[]} words\n * @return {string}\n */\nvar shortestSuperstring = function(words) {\n    \n};",
+    "kotlin": "class Solution {\n    fun shortestSuperstring(words: Array<String>): String {\n        \n    }\n}",
+    "php": "class Solution {\n\n    /**\n     * @param String[] $words\n     * @return String\n     */\n    function shortestSuperstring($words) {\n        \n    }\n}",
+    "python": "class Solution(object):\n    def shortestSuperstring(self, words):\n        \"\"\"\n        :type words: List[str]\n        :rtype: str\n        \"\"\"\n        ",
+    "python3": "class Solution:\n    def shortestSuperstring(self, words: List[str]) -> str:\n        ",
+    "racket": "(define/contract (shortest-superstring words)\n  (-> (listof string?) string?)\n  )",
+    "ruby": "# @param {String[]} words\n# @return {String}\ndef shortest_superstring(words)\n    \nend",
+    "rust": "impl Solution {\n    pub fn shortest_superstring(words: Vec<String>) -> String {\n        \n    }\n}",
+    "scala": "object Solution {\n    def shortestSuperstring(words: Array[String]): String = {\n        \n    }\n}",
+    "swift": "class Solution {\n    func shortestSuperstring(_ words: [String]) -> String {\n        \n    }\n}",
+    "typescript": "function shortestSuperstring(words: string[]): string {\n    \n};"
+  },
+  "content": "Given an array of strings `words`, return _the smallest string that contains each string in_ `words` _as a substring_. If there are multiple valid strings of the smallest length, return **any of them**.\n\nYou may assume that no string in `words` is a substring of another string in `words`.\n\n**Example 1:**\n\n**Input:** words = \\[ \"alex \", \"loves \", \"leetcode \"\\]\n**Output:**  \"alexlovesleetcode \"\n**Explanation:** All permutations of  \"alex \", \"loves \", \"leetcode \" would also be accepted.\n\n**Example 2:**\n\n**Input:** words = \\[ \"catg \", \"ctaagt \", \"gcta \", \"ttca \", \"atgcatc \"\\]\n**Output:**  \"gctaagttcatgcatc \"\n\n**Constraints:**\n\n*   `1 <= words.length <= 12`\n*   `1 <= words[i].length <= 20`\n*   `words[i]` consists of lowercase English letters.\n*   All the strings of `words` are **unique**.",
+  "hints": "nan",
+  "id": 276,
+  "level": "Hard",
+  "tags": [
+    "Array",
+    "String",
+    "Dynamic Programming",
+    "Bit Manipulation",
+    "Bitmask"
+  ],
+  "title": "Find The Shortest Superstring",
+  "title_slug": "find-the-shortest-superstring"
+}

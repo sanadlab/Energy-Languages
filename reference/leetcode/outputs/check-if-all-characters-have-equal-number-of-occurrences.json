@@ -1,0 +1,643 @@
+{
+  "workload_hash": "0c421687d8924e08a231a8494166e4be9f560a25cfb56d904634278d4420d566",
+  "problem": "check-if-all-characters-have-equal-number-of-occurrences",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "s": "aabbccc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "s": "abacbc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "s": "abcabcabc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "s": "qqqq"
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "s": "aabbcc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "s": "zzzzzzzzzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "s": "aabbc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "s": "a"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "s": "abc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "s": ""
+      },
+      "output": false
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "s": "aabb"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "s": "aabbccddeeff"
+      },
+      "output": true
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "s": "abcdabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "s": "zzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "s": "xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "s": "aaabb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "s": "hello"
+      },
+      "output": false
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "s": "thisisnotagoodstring"
+      },
+      "output": false
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "s": "aaaabbbbccccdddd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "s": "almostgoodbutoneextrab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "s": "mnopqrstuvwxyzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "s": "uniquecharactersabcdefghijklmnopqrstuvwxyz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "s": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "s": "qwertyuioplkjhgfdsazxcvbnm"
+      },
+      "output": true
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "s": "kjhgfdsazxcvbnmlpoiuytrewq"
+      },
+      "output": true
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "s": "abcdabcdabcdabcdabcdabcdabcdabcdabcdabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "s": "llllkkkkjjjjiiiihhhhggggffffeeeeeeee"
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "s": "repeatedcharsrepeatedcharsrepeatedchars"
+      },
+      "output": false
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "s": "aaabbbcccdddeeefffggghhhiiiijjjkkklllmmmnnnooopppqqqrrrssstttuuuvvvwwwxxxyyyzzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "s": "samefrequencyforallcharacters"
+      },
+      "output": false
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "s": "lmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmnolmno"
+      },
+      "output": true
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "s": "mnopqrsmnopqrsmnopqrsmnopqrsmnopqrs"
+      },
+      "output": true
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "s": "abcdefabcdefabcdef"
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "s": "abacadaeafagahaibiciidieifigihiiijijikikililimimioinioipoipiqiririsititiuiujujukukululumiumiujujukvkvkwlwlxmxmylynzozp"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "s": "mnopqrstuvwxyzabcdefghijklmnopqrstuvwxyza"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzqqqq"
+      },
+      "output": false
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "s": "abracadabra"
+      },
+      "output": false
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "s": "mnopqrstuvwxymnopqrstuvwxymnopqrstuvwxymnopqrstuvwxyn"
+      },
+      "output": false
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "s": "abcdefghijabcdefghijabcdefghijabcdefghijabcdefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "s": "qwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiopqwertyuiop"
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "s": "abcdefabcdef"
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "s": "zzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "s": "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "s": "almostgoodbutoneextraa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "s": "abcdefghijklmnopabcdefghijklmnopabcdefghijklmnopabcdefghijklmnopabcdefghijklmnopabcdefghijklmnop"
+      },
+      "output": true
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "s": "jjjjkkkkllllmmmmnnnnooooppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzzaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "s": "zzzzzyyyyxxxwwvvuuttssrrqqlloommnnppekkaaiioouuyy"
+      },
+      "output": false
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "s": "racecar"
+      },
+      "output": false
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "s": "almostgoodbutoneextrac"
+      },
+      "output": false
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "s": "xyzxyzxyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "s": "qwerqwerqwer"
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "s": "abababababababab"
+      },
+      "output": true
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "s": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "s": "abcdefghijabcdefghijabcdefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "s": "ppppppqqqqqrrrrrssssstttttuuuuuvvvvvwwwwwooooo"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "s": "ababababc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "s": "mmnnnmmmnnnmmmnnnmmmnnnmmmnnnmmmnnnmmmnnnmm"
+      },
+      "output": false
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "s": "pqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrspqrs"
+      },
+      "output": true
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "s": "mmnnooppqqrrssttuuvvwwxxyyzzqqwweerrttyyuuiihhggffeeddccba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "s": "abcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxyabcdefghijklmnopqrstuvwxy"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "s": "ppppqqqqrrrrssssttttuuuuvvvvwwwwxxxxyyyyzzzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "s": "mnopmnopmnopmnopmnopmnopmnopmnop"
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "s": "xyzzzzzyzx"
+      },
+      "output": false
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "s": "abacabadabacabad"
+      },
+      "output": false
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "s": "abcdefghijklmnopqrstuvwxzyabcdefghijklmnopqrstuvwxzy"
+      },
+      "output": true
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "s": "abcdefghijklmnop"
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "s": "xyzzxyzzxyzzxyzzxyzzxyzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "s": "zzzyyyxxxwwwwvvvvuuuuuuuuutttttttsssssssrrrrrrqqqqpppooooonnnnmmmmllllkkkkjjjjiiiihhhhhgggggfffffeeeeeeeee"
+      },
+      "output": false
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "s": "mnopqrmpqrno"
+      },
+      "output": true
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "s": "qqwweerrttyyuuuiooppppllkkiijjhgffeeddccba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "s": "qrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "s": "mississippi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "s": "xyzzxyzzxyzzxyzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "s": "oneonetwoonetwothree"
+      },
+      "output": false
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "s": "zxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnmzxcvbnm"
+      },
+      "output": true
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "s": "xyzxyzxyzxyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "s": "zzzzyyyyxxxwwvvuuttssrrqqppoonnmmllkkjjiihhggffeeddccbbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "s": "qqqqwweerrrrtttyyyy"
+      },
+      "output": false
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "s": "abcdabcdabcdabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "s": "abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "s": "almostgoodbutoneextrad"
+      },
+      "output": false
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "s": "almostgoodbutoneextrae"
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "s": "programming"
+      },
+      "output": false
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "s": "equalfrequenciesequalfrequencies"
+      },
+      "output": false
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "s": "xyzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": false
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzabc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "s": "almostgoodbutoneextraf"
+      },
+      "output": false
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzabcdefghij"
+      },
+      "output": false
+    }
+  ]
+}

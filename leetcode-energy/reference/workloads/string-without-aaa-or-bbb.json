@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "input": {
+        "a": 1,
+        "b": 2
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "a": 4,
+        "b": 1
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int",
+      "int"
+    ],
+    "args": [
+      "a",
+      "b"
+    ],
+    "class": "Solution",
+    "method": "strWithout3a3b"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "string-without-aaa-or-bbb",
+  "schema_version": 1,
+  "seed": "84b36e0a5448a277f449ed7ee2c6c2bdc9ee5862bfa838d6f3c1592a7bf30649",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'strWithout3a3b'"
+}

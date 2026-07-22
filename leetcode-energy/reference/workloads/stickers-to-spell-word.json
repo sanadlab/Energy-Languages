@@ -1,0 +1,46 @@
+{
+  "cases": [
+    {
+      "input": {
+        "stickers": [
+          "with ",
+          "example ",
+          "science "
+        ],
+        "target": "thehat "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "stickers": [
+          "notice ",
+          "possible "
+        ],
+        "target": "basicbasic "
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[str]",
+      "str"
+    ],
+    "args": [
+      "stickers",
+      "target"
+    ],
+    "class": "Solution",
+    "method": "minStickers"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "stickers-to-spell-word",
+  "schema_version": 1,
+  "seed": "11b5ab33a780c8f9580b9f06ed7e823070709d6f6dc8bdd9326b1caf0de499ac",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minStickers'"
+}

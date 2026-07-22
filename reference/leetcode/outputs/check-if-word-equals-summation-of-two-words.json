@@ -1,0 +1,663 @@
+{
+  "workload_hash": "fbf0f724f0a7b796a2ff8ad46d556dfe29249508c1b2723f0bcf5bd37b122dbb",
+  "problem": "check-if-word-equals-summation-of-two-words",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "firstWord": "ij",
+        "secondWord": "ji",
+        "targetWord": "ii"
+      },
+      "output": false
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "firstWord": "fgh",
+        "secondWord": "ghf",
+        "targetWord": "ggg"
+      },
+      "output": false
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "firstWord": "ij",
+        "secondWord": "ji",
+        "targetWord": "jjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "firstWord": "b",
+        "secondWord": "c",
+        "targetWord": "d"
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "aaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "firstWord": "i",
+        "secondWord": "j",
+        "targetWord": "ji"
+      },
+      "output": false
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "firstWord": "ab",
+        "secondWord": "ba",
+        "targetWord": "bb"
+      },
+      "output": true
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "firstWord": "j",
+        "secondWord": "j",
+        "targetWord": "i"
+      },
+      "output": false
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "firstWord": "a",
+        "secondWord": "a",
+        "targetWord": "b"
+      },
+      "output": false
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "firstWord": "aaa",
+        "secondWord": "a",
+        "targetWord": "aab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "firstWord": "aaa",
+        "secondWord": "a",
+        "targetWord": "aaaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "firstWord": "acb",
+        "secondWord": "cba",
+        "targetWord": "cdb"
+      },
+      "output": true
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "firstWord": "j",
+        "secondWord": "j",
+        "targetWord": "jj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "firstWord": "acacacac",
+        "secondWord": "bdbdbdbd",
+        "targetWord": "cececece"
+      },
+      "output": false
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "firstWord": "aaaabbbb",
+        "secondWord": "ccccdddd",
+        "targetWord": "aaaabbbbccccdddd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "firstWord": "ijijijij",
+        "secondWord": "jijijiji",
+        "targetWord": "jjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "firstWord": "ijijij",
+        "secondWord": "jijiji",
+        "targetWord": "jjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "firstWord": "j",
+        "secondWord": "jj",
+        "targetWord": "jjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghi",
+        "targetWord": "aaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "firstWord": "babcbabcba",
+        "secondWord": "cbabcbabcb",
+        "targetWord": "bbbbbbaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "firstWord": "jihgfedcba",
+        "secondWord": "abcdefghij",
+        "targetWord": "aaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "jjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "firstWord": "ijkl",
+        "secondWord": "lkji",
+        "targetWord": "jjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "firstWord": "ijijij",
+        "secondWord": "ijijij",
+        "targetWord": "jjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "firstWord": "hjihj",
+        "secondWord": "ihjih",
+        "targetWord": "jjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "firstWord": "aabbcc",
+        "secondWord": "ddeeff",
+        "targetWord": "gggggh"
+      },
+      "output": false
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "abcdefgh",
+        "targetWord": "hhhhhhhh"
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "firstWord": "babababa",
+        "secondWord": "babababa",
+        "targetWord": "cacacaca"
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "firstWord": "aaa",
+        "secondWord": "bbb",
+        "targetWord": "ccc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "firstWord": "iiii",
+        "secondWord": "jjjj",
+        "targetWord": "jjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "firstWord": "abcdefghi",
+        "secondWord": "j",
+        "targetWord": "abcdefghij"
+      },
+      "output": false
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghi",
+        "targetWord": "jjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "firstWord": "abcdefghijabcdefghij",
+        "secondWord": "abcdefghijabcdefghij",
+        "targetWord": "jjjjjjjjjjjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "hgfedcba",
+        "targetWord": "aaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "hgfedcba",
+        "targetWord": "abcdefghhgfedcba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "abcdefgh",
+        "targetWord": "ggggggggg"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "firstWord": "abc",
+        "secondWord": "def",
+        "targetWord": "defabc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghi",
+        "targetWord": "abcdefghijj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "abcdefgh",
+        "targetWord": "aaaaaaaaaaaaaaaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "firstWord": "aabbccddeeff",
+        "secondWord": "ffeeddccbbaa",
+        "targetWord": "feebbaaccdd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "firstWord": "a",
+        "secondWord": "b",
+        "targetWord": "c"
+      },
+      "output": false
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "hgfedcba",
+        "targetWord": "jjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "firstWord": "abcd",
+        "secondWord": "efgh",
+        "targetWord": "ijkl"
+      },
+      "output": false
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "firstWord": "jjjjj",
+        "secondWord": "jjjjj",
+        "targetWord": "jjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "firstWord": "aaaaaaaa",
+        "secondWord": "bbbbbbbb",
+        "targetWord": "cccccccc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "firstWord": "aabbccdd",
+        "secondWord": "dccbbaaa",
+        "targetWord": "dddddddd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "iiiiiiiiii"
+      },
+      "output": false
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "firstWord": "abcabcabc",
+        "secondWord": "cbacbacba",
+        "targetWord": "bbbcccbbb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "firstWord": "iiii",
+        "secondWord": "jjjj",
+        "targetWord": "jjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "firstWord": "abcdefghi",
+        "secondWord": "abcdefghj",
+        "targetWord": "jjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "firstWord": "ijijijijij",
+        "secondWord": "jijijijiji",
+        "targetWord": "jjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "firstWord": "abcde",
+        "secondWord": "edcba",
+        "targetWord": "abcdeedcba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "firstWord": "ijijijij",
+        "secondWord": "hghghghg",
+        "targetWord": "gggggggg"
+      },
+      "output": false
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghija",
+        "targetWord": "jjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "firstWord": "jijij",
+        "secondWord": "ijiji",
+        "targetWord": "jjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "abcdefghijabcdefghij"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "firstWord": "ijijij",
+        "secondWord": "jijiji",
+        "targetWord": "jjjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "aaaaaaaaaab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "hgfedcba",
+        "targetWord": "abcdefghij"
+      },
+      "output": false
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "aaaaaaaaaabbbbbbbbbb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "firstWord": "abcdefghi",
+        "secondWord": "hgfedcba",
+        "targetWord": "jjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "firstWord": "jihgfedcba",
+        "secondWord": "abcdefghij",
+        "targetWord": "jjjjjjjjjj"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "ijijijijij"
+      },
+      "output": false
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "firstWord": "jijijijijij",
+        "secondWord": "jijijijijij",
+        "targetWord": "jjjjjjjjjjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "firstWord": "aabbccddeeffgg",
+        "secondWord": "hhiijjkkllmm",
+        "targetWord": "jjjjjjjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "firstWord": "abcdefghij",
+        "secondWord": "abcdefghij",
+        "targetWord": "aaaaaaaaaaab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "firstWord": "abcdefgh",
+        "secondWord": "hgfedcba",
+        "targetWord": "jjjjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "firstWord": "abcde",
+        "secondWord": "edcba",
+        "targetWord": "jjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "firstWord": "hgfedcba",
+        "secondWord": "abcdefgh",
+        "targetWord": "iiiiiiii"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "firstWord": "jijij",
+        "secondWord": "ijiji",
+        "targetWord": "jjjjj"
+      },
+      "output": false
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "firstWord": "j",
+        "secondWord": "ij",
+        "targetWord": "ji"
+      },
+      "output": true
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "firstWord": "aabbccdd",
+        "secondWord": "ddeeffgg",
+        "targetWord": "hhiijjkk"
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "firstWord": "jij",
+        "secondWord": "iji",
+        "targetWord": "jjjj"
+      },
+      "output": false
+    }
+  ]
+}

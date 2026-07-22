@@ -1,0 +1,790 @@
+{
+  "workload_hash": "8bcccaf751690da3f56730977e8a21c6955bf86474248d8e5fe6fde639130fd2",
+  "problem": "robot-return-to-origin",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "moves": "LULLDDRRUURRDDLL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "moves": "UUUUUUUUUUDDDDDDDDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "moves": "UDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "moves": "UUDDRRLL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "moves": "LUDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "moves": "RLUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "moves": "RRDDLLUURR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "moves": "LRLRLRLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "moves": "ULDRULDRULDR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "moves": "LDRU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "moves": "UDLRUDLRUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "moves": "UUUUUUUUUUUUUUDDDDDDDDDDDDDDLLLLLLLLRRRRRRRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "moves": "LDRRLU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "moves": "UUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "moves": "RLUDRLUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "moves": "LLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "moves": "RULD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "moves": "UUUUUUUUUUDDDDDDDDDDLLLLLLLLRRRRRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "moves": "UDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "moves": "UUUUUUUUUUUUUUUUDDDDDDDDDDDDDDDDLLLLLLLLLLLLRRRRRRRRRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "moves": "RRDDLLUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "moves": "LL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "moves": "UUUUDDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "moves": "LRUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "moves": "UUDDLLRRUUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "moves": "UUUUDDDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "moves": "RRDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "moves": "UUUUUUUUUUUUDDDDDDDDDDDDLLLLRRRRRRRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "moves": "RRRLLLDDDUUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "moves": "UD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "moves": "UUUUUUUUUUUUUUUUUUDDDDDDDDDDDDDDDDDDLLLLLLLLLLLLLLLLRRRRRRRRRRRRRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "moves": "UDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "moves": "LDDRUURLDDRUURLDDRUURLDDRUURLDDR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "moves": "LLLLLRRRRRRLLLLRRRRRRLLL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "moves": "UUDDDDUUUUUUUUUUDDDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "moves": "UDUDUDUDUDUDUDUDUDUDUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "moves": "UDUDUDUDUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "moves": "LLLLRRRRUUUUDDDDLRRRLLLLUUUUDDDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "moves": "RRDDLLUURRDDLLUURRDDLLUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "moves": "LRLRLRLRLRLRLRLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "moves": "LLRRLLRRLLRRLLRRLLRRLLRRLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "moves": "LDRULDRULDRU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "moves": "LLLLRRRRLLLLRRRRLLLLRRRRLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "moves": "LLRRDDUULLRRDDUULLRRDDUULLRRDDUULL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "moves": "RULLDDRRULLDDRRULLDDRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "moves": "LLLLUUUUUURRRRRRRRDDDDDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "moves": "RULLDRLDURDURLDLURDURLDLURDURLDL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "moves": "UDLRUDLRUDLRUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "moves": "UUDDUUDDUUDDUUDDLLLLRRRRLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "moves": "RLRLRLRLRLRLRLRL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "moves": "UUDDUUDDUUDDUUDDUUDDUUDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "moves": "UDLLRRUUDDLLRRUUDDLLRRUUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "moves": "UUUDDDLLLRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "moves": "UUUUDDDDLLLLRRRRUUUUDDDDLLLLRRRRUUUUDDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "moves": "UUDDUUDDUUDDUUDDUUDDUUDDUUDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "moves": "UUUUDDDDLLLLRRRRUUUUDDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "moves": "UUDDLLLLRRRRUUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "moves": "UDUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "moves": "RLRLRLRLUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "moves": "URDLURDLURDLURDL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "moves": "ULDRULDRLDURDLURDLURDLURDLURDL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "moves": "RRDDLLUURRDDLLUURRDDLLUURRDDLLUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "moves": "LUDRLUDRLUDRLUDRLUDRLUDR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "moves": "LRRLRLRLUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "moves": "UUDDUUDDUUDDUUDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "moves": "RRDDUULLRRDDUULL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "moves": "LRUDLRUDLRUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "moves": "LURDLURDLURDLURD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "moves": "LLLLRRRRUUDDUUDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "moves": "UDUDLRRLRLUDUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "moves": "LLLLLLLLRRRRRRRRUUUUUUUUDDDDDDDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "moves": "UDLRUDLRUDLRUDLRUDLRUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "moves": "UUDDDDUUDDDDUUDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "moves": "LLLLRRRRLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "moves": "ULLDRRDUULLDRRDU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "moves": "UUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDDUUDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "moves": "RRRRRRRRRRLLLLLLLLLLDDDDDDDDDDUUUUUUUUUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "moves": "RLRLRLRLRL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "moves": "LLLLDDDDUUUURRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "moves": "UUDDLLRRUUDDDDLLRRUUDDLLRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "moves": "LLRRUUDDUUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "moves": "LRRLRLRLUDUDUDUDLRRLRLRLUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "moves": "RLRLRLRLRLRLRLRLRLRL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "moves": "UUDDUURRDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "moves": "UUDDUULLRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "moves": "RRRRDDDDLLLLUUUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "moves": "UDLRUDLRUDLRUDLRUDLRUDLRUDLRUDLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "moves": "LLLLRRRRUUUDDDUUUDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "moves": "UUUUUUUUDDDDDDDDLLLLLLLLRRRRRRRRRRLLRRUUDDLL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "moves": "DDUUUUDDLLRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "moves": "UUDDLLUURRDDDDLLRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "moves": "RURURURURURURULULULULULULULU"
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "moves": "UUUUUUDDDDDDLLLLRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "moves": "UUDDDDLLLLRRRRUUDDDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "moves": "LLLLLLLLRRRRRRRRUUUUUUUUDDDDDDDDLLLLLLLLRRRRRRRRUUUUUUUUDDDDDDDD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "moves": "RRRDDDLLLUUUUUDDDD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "moves": "UUUUUUUUUUDDDDDDDDDDLLLLLLLLRRRRRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "moves": "RUDLRUDLRUDLRUDL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "moves": "UUDDLLRRUUDDLLRRUUDDLLRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "moves": "RUDLRULDRLUDLRULDRLUDLRULDRL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "moves": "UDUDUDUDUDUDUDUDUDUDUDUD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "moves": "URDLURDLURDL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "moves": "UUDDDDDDDLLLLRRRRUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUDDDDDDDLLLLRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "moves": "RRDDLLUURRDDLLUU"
+      },
+      "output": true
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "moves": "UUUUUUUUDDDDDDDDLLLLRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "moves": "RRRLLLLDDDUUUUUDDDLLLLURRRDDDDUUU"
+      },
+      "output": false
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "moves": "DDDDLLLLUUUUUUUUDDDDLLLLRRRRRRRR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "moves": "UDUDUDUDLRRLRLRL"
+      },
+      "output": true
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "moves": "LURDLURDLURDLURDLURDLURDLURDLURDL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "moves": "UUUUUUUUDDDDDDDDLLLLRRRRRRRR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "moves": "RRUUDDLLDDUURLLR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "moves": "ULURDLDRULURDLDRULURDLDRULURDLDR"
+      },
+      "output": true
+    }
+  ]
+}

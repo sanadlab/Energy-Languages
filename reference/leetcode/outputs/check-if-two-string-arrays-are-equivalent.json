@@ -1,0 +1,1574 @@
+{
+  "workload_hash": "80d55793df7cad67c8d0b1233c53005c3ae6ee51faba32c20abd61365fee565e",
+  "problem": "check-if-two-string-arrays-are-equivalent",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "word1": [
+          "abc",
+          "d",
+          "defg"
+        ],
+        "word2": [
+          "abcddefg"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "word1": [
+          "x"
+        ],
+        "word2": [
+          "y"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "word1": [
+          "different"
+        ],
+        "word2": [
+          "string"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "word1": [
+          "hello",
+          "world"
+        ],
+        "word2": [
+          "helloworld"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three"
+        ],
+        "word2": [
+          "onetwothree"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "word1": [
+          "abc"
+        ],
+        "word2": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "word1": [
+          "abc"
+        ],
+        "word2": [
+          "ab",
+          "c"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "word1": [
+          "xyz"
+        ],
+        "word2": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "word1": [
+          "hello",
+          "world"
+        ],
+        "word2": [
+          "helloWorld"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "word1": [
+          "ab",
+          "c"
+        ],
+        "word2": [
+          "a",
+          "bc"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "word1": [
+          "a"
+        ],
+        "word2": [
+          "a"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "word1": [
+          "a",
+          "cb"
+        ],
+        "word2": [
+          "ab",
+          "c"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "word1": [
+          "hello"
+        ],
+        "word2": [
+          "hello"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "word1": [
+          "test"
+        ],
+        "word2": [
+          "t",
+          "es",
+          "t"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "word1": [
+          "a",
+          "b"
+        ],
+        "word2": [
+          "ab"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "word1": [
+          "same",
+          "string"
+        ],
+        "word2": [
+          "same",
+          "string"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c"
+        ],
+        "word2": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f",
+          "g"
+        ],
+        "word2": [
+          "abcdefg"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "word1": [
+          "split",
+          "in",
+          "pieces"
+        ],
+        "word2": [
+          "spli",
+          "tin",
+          "pi",
+          "eces"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f"
+        ],
+        "word2": [
+          "abcdef"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "word1": [
+          "complex",
+          "string",
+          "example"
+        ],
+        "word2": [
+          "com",
+          "plex",
+          "string",
+          "ex",
+          "ample"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c"
+        ],
+        "word2": [
+          "ab",
+          "c"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "word1": [
+          "same",
+          "same",
+          "same"
+        ],
+        "word2": [
+          "same",
+          "same",
+          "same"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "word1": [
+          "split",
+          "this",
+          "up"
+        ],
+        "word2": [
+          "splitthis",
+          "up"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c"
+        ],
+        "word2": [
+          "d",
+          "e",
+          "f"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "word1": [
+          "xyz",
+          "123",
+          "abc"
+        ],
+        "word2": [
+          "xyz1",
+          "23abc"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "word1": [
+          "abcdef"
+        ],
+        "word2": [
+          "abc",
+          "d",
+          "e",
+          "f"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "word1": [
+          "abcd",
+          "efgh",
+          "ijkl"
+        ],
+        "word2": [
+          "abcdefgh",
+          "ijkl"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "word1": [
+          "abc",
+          "def"
+        ],
+        "word2": [
+          "abcdefg"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "abc",
+          "d",
+          "efghi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "word1": [
+          "complex",
+          "word"
+        ],
+        "word2": [
+          "c",
+          "o",
+          "m",
+          "p",
+          "l",
+          "e",
+          "x",
+          "word"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "word1": [
+          "partial",
+          "match"
+        ],
+        "word2": [
+          "partialm",
+          "atch"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "word1": [
+          "a",
+          "bc",
+          "def",
+          "ghij"
+        ],
+        "word2": [
+          "abc",
+          "defghij"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "word1": [
+          "equal",
+          "strings"
+        ],
+        "word2": [
+          "equalstrings"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "word1": [
+          "example"
+        ],
+        "word2": [
+          "ex",
+          "ample"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "word1": [
+          "complex",
+          "example"
+        ],
+        "word2": [
+          "com",
+          "plexex",
+          "ample"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "word1": [
+          "abcdefg",
+          "hijklmn"
+        ],
+        "word2": [
+          "abc",
+          "defghijklmn"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "word1": [
+          "same"
+        ],
+        "word2": [
+          "s",
+          "a",
+          "m",
+          "e"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "word1": [
+          "long",
+          "word",
+          "sequence"
+        ],
+        "word2": [
+          "l",
+          "ongw",
+          "ordsequ",
+          "ence"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "word1": [
+          "a",
+          "very",
+          "long",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "averylongstringhere"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "word1": [
+          "same",
+          "string"
+        ],
+        "word2": [
+          "sam",
+          "e",
+          "string"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "word1": [
+          "abc",
+          "defg",
+          "hijkl"
+        ],
+        "word2": [
+          "abcdefg",
+          "hijkl"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "abcdef",
+          "ghi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "abcdefg",
+          "hi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "word1": [
+          "long",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "longstring",
+          "here"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "word1": [
+          "x",
+          "y",
+          "z"
+        ],
+        "word2": [
+          "xyz"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "word1": [
+          "z"
+        ],
+        "word2": [
+          "z"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three",
+          "four"
+        ],
+        "word2": [
+          "onetwo",
+          "three",
+          "four"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three",
+          "four"
+        ],
+        "word2": [
+          "onetwo",
+          "threefour"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "word1": [
+          "x",
+          "y",
+          "z"
+        ],
+        "word2": [
+          "x",
+          "yz"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "word1": [
+          "xyz",
+          "uvw"
+        ],
+        "word2": [
+          "xy",
+          "zu",
+          "vw"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e"
+        ],
+        "word2": [
+          "abcd",
+          "e"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "word1": [
+          "longerstring",
+          "here"
+        ],
+        "word2": [
+          "longerstringhere"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "word1": [
+          "onetwothree"
+        ],
+        "word2": [
+          "one",
+          "two",
+          "three"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "ab",
+          "cdef",
+          "ghi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "word1": [
+          "abcd"
+        ],
+        "word2": [
+          "ab",
+          "c",
+          "d"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three",
+          "four"
+        ],
+        "word2": [
+          "onetwothreefour"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "word1": [
+          "almost",
+          "thesame"
+        ],
+        "word2": [
+          "almostthesame",
+          "extra"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "word1": [
+          "split",
+          "into",
+          "multiple",
+          "parts"
+        ],
+        "word2": [
+          "splitint",
+          "omulti",
+          "pleparts"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "word1": [
+          "ab",
+          "cde",
+          "f"
+        ],
+        "word2": [
+          "abc",
+          "def"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "word1": [
+          "same",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "samestringhere"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "word1": [
+          "xyz",
+          "uvw",
+          "mnop"
+        ],
+        "word2": [
+          "xyzu",
+          "vw",
+          "mnop"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "word1": [
+          "xyz",
+          "uvw",
+          "qrst"
+        ],
+        "word2": [
+          "xyzuvw",
+          "qrst"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "word1": [
+          "same",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "sam",
+          "e",
+          "stringhere"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "word1": [
+          "longstringhere",
+          "another"
+        ],
+        "word2": [
+          "longstringhereanother"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "word1": [
+          "this",
+          "is",
+          "a",
+          "test"
+        ],
+        "word2": [
+          "thi",
+          "sisa",
+          "test"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "word1": [
+          "abc",
+          "defg",
+          "hijk",
+          "lmnop"
+        ],
+        "word2": [
+          "abcdefg",
+          "hijklmnop"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "word1": [
+          "longstringhere",
+          "anotherlongstringhere"
+        ],
+        "word2": [
+          "longstringhereanotherlongstringhere"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e"
+        ],
+        "word2": [
+          "abcde"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "word1": [
+          "part1",
+          "part2",
+          "part3"
+        ],
+        "word2": [
+          "part",
+          "1part2",
+          "part3"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "word1": [
+          "a",
+          "longer",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "a",
+          "longerstring",
+          "here"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "word1": [
+          "part1",
+          "part2"
+        ],
+        "word2": [
+          "part1part2"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c"
+        ],
+        "word2": [
+          "abc"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "word1": [
+          "different",
+          "length"
+        ],
+        "word2": [
+          "differentlen",
+          "gth"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "word1": [
+          "longstringone",
+          "longstringtwo"
+        ],
+        "word2": [
+          "longstringone",
+          "long",
+          "string",
+          "two"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "word1": [
+          "same",
+          "string",
+          "here"
+        ],
+        "word2": [
+          "samestring",
+          "here"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "word1": [
+          "short"
+        ],
+        "word2": [
+          "loooooooonger"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "word1": [
+          "hello",
+          "world"
+        ],
+        "word2": [
+          "he",
+          "ll",
+          "o",
+          "wor",
+          "ld"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "word1": [
+          "hello",
+          "world",
+          "python"
+        ],
+        "word2": [
+          "hello",
+          "wor",
+          "ldpy",
+          "thon"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "word1": [
+          "another",
+          "example",
+          "with",
+          "spaces"
+        ],
+        "word2": [
+          "anotherexam",
+          "plewithspaces"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "word1": [
+          "xyz",
+          "uvw",
+          "rst"
+        ],
+        "word2": [
+          "xyzuvw",
+          "rst"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "word1": [
+          "abc",
+          "def"
+        ],
+        "word2": [
+          "a",
+          "bc",
+          "d",
+          "ef"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "word1": [
+          "this",
+          "is",
+          "a",
+          "test"
+        ],
+        "word2": [
+          "thisisatest"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "word1": [
+          "samestringhere"
+        ],
+        "word2": [
+          "same",
+          "string",
+          "here"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "word1": [
+          "abcd"
+        ],
+        "word2": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "abcdefghi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "word1": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        "word2": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "word1": [
+          "a",
+          "a",
+          "a",
+          "a",
+          "a"
+        ],
+        "word2": [
+          "aaaaa"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "word1": [
+          "mismatch",
+          "here"
+        ],
+        "word2": [
+          "mismatch",
+          "there"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three"
+        ],
+        "word2": [
+          "on",
+          "etwothree"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "word1": [
+          "part",
+          "one"
+        ],
+        "word2": [
+          "p",
+          "artone"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "word1": [
+          "equal",
+          "length",
+          "words"
+        ],
+        "word2": [
+          "equal",
+          "length",
+          "word"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "word1": [
+          "abc",
+          "def",
+          "ghi"
+        ],
+        "word2": [
+          "abc",
+          "def",
+          "ghi"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "word1": [
+          "equal",
+          "length"
+        ],
+        "word2": [
+          "equal",
+          "length"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "word1": [
+          "longwordhere"
+        ],
+        "word2": [
+          "l",
+          "on",
+          "g",
+          "wo",
+          "rd",
+          "here"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "word1": [
+          "longer",
+          "string",
+          "example"
+        ],
+        "word2": [
+          "longerstringexample"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "word1": [
+          "singleword"
+        ],
+        "word2": [
+          "single",
+          "word"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "word1": [
+          "different",
+          "sizes"
+        ],
+        "word2": [
+          "different",
+          "siz",
+          "es"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "word1": [
+          "a"
+        ],
+        "word2": [
+          "b"
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three"
+        ],
+        "word2": [
+          "one",
+          "twothree"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "word1": [
+          "split",
+          "this",
+          "way"
+        ],
+        "word2": [
+          "sp",
+          "lit",
+          "thi",
+          "sway"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "word1": [
+          "one",
+          "two",
+          "three"
+        ],
+        "word2": [
+          "onetwo",
+          "three"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "word1": [
+          "this",
+          "is",
+          "a",
+          "test"
+        ],
+        "word2": [
+          "thisis",
+          "atest"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "word1": [
+          "a",
+          "b",
+          "c",
+          "d"
+        ],
+        "word2": [
+          "abcd"
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "word1": [
+          "split",
+          "across",
+          "multiple",
+          "parts"
+        ],
+        "word2": [
+          "splitacrossmultip",
+          "leparts"
+        ]
+      },
+      "output": true
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "cases": [
+    {
+      "input": {
+        "slices": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "slices": [
+          8,
+          9,
+          8,
+          6,
+          1,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "slices"
+    ],
+    "class": "Solution",
+    "method": "maxSizeSlices"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "pizza-with-3n-slices",
+  "schema_version": 1,
+  "seed": "ad046a7282c5a7fdf431430ee67714c4948110e5e1310fcccc76abb31a6d2bd1",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maxSizeSlices'"
+}

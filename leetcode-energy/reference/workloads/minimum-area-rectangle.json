@@ -1,0 +1,81 @@
+{
+  "cases": [
+    {
+      "input": {
+        "points": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "points": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            4,
+            3
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]"
+    ],
+    "args": [
+      "points"
+    ],
+    "class": "Solution",
+    "method": "minAreaRect"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-area-rectangle",
+  "schema_version": 1,
+  "seed": "649f65b5c516b48e3efba38905587fe401f79ea84958b6bd3e2743375ec48bb8",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minAreaRect'"
+}

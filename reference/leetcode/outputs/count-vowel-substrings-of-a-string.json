@@ -1,0 +1,776 @@
+{
+  "workload_hash": "5042d9aa5650f05c98e6e9d5b38ec0bd15207e3a8a28d40ea2526a5044a5aebd",
+  "problem": "count-vowel-substrings-of-a-string",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "word": "aeiou"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "word": "aeiofvuaeiou"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "word": "uoiea"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "word": "aeiouxaeeiaouoieua"
+      },
+      "output": 28
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "word": "aeiaaioaaaaeiiiiouuuooaauuaeiu"
+      },
+      "output": 175
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "word": "aeiaaioaaaaeiiiiouuuoo"
+      },
+      "output": 55
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "word": "aeiouaeiouaeiou"
+      },
+      "output": 66
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "word": "unicornarihan"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "word": "aaaaaeeeeeeiiiiioooooouuuuu"
+      },
+      "output": 25
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "word": "aeiouu"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "word": "a"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "word": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "word": "vowelsaeiou"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "word": "cuaieuouac"
+      },
+      "output": 7
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "word": "aeiooauuieoiau"
+      },
+      "output": 41
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "word": "bcdfeioau"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "word": "zzzzzaeiouzzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiou"
+      },
+      "output": 43
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 496
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "word": "aeiouxyzaeiouaeiou"
+      },
+      "output": 22
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 1326
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "word": "aeiouxyzaeiou"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "word": "xyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 63
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "word": "aeiouuuueeiooiaaaeeoioioiaaaeeuuuiooiiuaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 1565
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 231
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiouaeiou"
+      },
+      "output": 63
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "word": "uoieaueoiaueoiaueoiaueoi"
+      },
+      "output": 208
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 666
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "word": "aeioubcdfghjklmnpqrstvwxyzaeiou"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 63
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "word": "aeioubaeioucaeioudeaeioufaeioubaeioucaeioudeaeioufaeioubaeioucaeioudeaeiouf"
+      },
+      "output": 15
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "word": "bcdaeioufghijklmnopqrstuvwxyz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "word": "aeiouwxyzaeiouwxyzaeiouwxyzaeiouwxyz"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "word": "xayaioeoiuaueoieoiauiouio"
+      },
+      "output": 139
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "word": "aeioubaeiouaeioubaeiouxyzaeiouaeiouaeioubaeiou"
+      },
+      "output": 90
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "word": "aeioubaeioucaeiou"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "word": "bcaeiouaeiouaieouacb"
+      },
+      "output": 77
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 42
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "word": "aieouaeiouaieouaeiouaieouaeiouaieou"
+      },
+      "output": 490
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "word": "aeiouuueeiooiaaaeeoioioiaaaeeuuuiooiiu"
+      },
+      "output": 348
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "word": "aeioubaeiouaeioucaeiou"
+      },
+      "output": 23
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouzzzzzzzzz"
+      },
+      "output": 231
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "word": "aeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiouxyz"
+      },
+      "output": 8
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "word": "aeiouxyzzyxwvutsrqponmlkjihgfedcbaeiouaeiou"
+      },
+      "output": 22
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "word": "aeiouxyaeiouaeiou"
+      },
+      "output": 22
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "word": "aeeeeiiiioouuuaeiouaaaeioueee"
+      },
+      "output": 247
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "word": "aeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiouxyz"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "word": "aeioucaeioubaeiouaeiou"
+      },
+      "output": 23
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "word": "aeiouxyzaeiouxyzaeiouxyzaeiouxyzaeiou"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "word": "xyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 42
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "word": "mnopqrstuvwxyaeiouaeiouxyzaeiouxyzzyxwvutsrqponmlkjihgfedcbaeiou"
+      },
+      "output": 23
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "word": "bcaeiouc"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 4656
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "word": "aeioueoiuaeiouaeioua"
+      },
+      "output": 125
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "word": "aabbccddeeeffgghhiijjkkllmmnnooouuupppqqrrsstttuuuvvvwwxxyyzz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 1081
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 105
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "word": "aeiouaeiouxxxaeiouaeiou"
+      },
+      "output": 42
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "word": "aebcioudfeiauoceioua"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "word": "aouieaeioueaouieaeiou"
+      },
+      "output": 139
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "word": "aeiouaeiouabcdeiouaeiouabcdeiouaeiou"
+      },
+      "output": 64
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "word": "zzzzzvvvvvaeeeiioouuuaeiou"
+      },
+      "output": 44
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "word": "uoieaueoiaueoiaueoiaueoiaeiou"
+      },
+      "output": 317
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "word": "bcdfeaioueaiouaeioueaioueaiou"
+      },
+      "output": 229
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 1596
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "word": "ueaiaoueoiuaeiouaeiouaeiou"
+      },
+      "output": 245
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "word": "aeiaeiouoieiouaeiou"
+      },
+      "output": 93
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "word": "aeioubaeioucaeioudaeioufaeioubaeioucaeioudaeioufaeioubaeioucaeioudaeioufxyzaeioubaeioucaeioudaeioufaeioubaeioucaeioudaeiouf"
+      },
+      "output": 20
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "word": "uoieaueoiaueoiaueoiaueoiaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 1027
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "word": "aeiooouiaeiouaeiou"
+      },
+      "output": 92
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "word": "aeioubaeiouaeioubaeiouxyzaeiouaeiouaeioubaeiouxyzaeiouaeioubaeiou"
+      },
+      "output": 112
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "word": "aabbccddeeffggahhiiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "word": "xyzaeiouaeiouxyz"
+      },
+      "output": 21
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "word": "aeioueoiuaeiouaeioueoiuaeiouaeioueoiu"
+      },
+      "output": 529
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "word": "zzzzzaeiouzzzzzzzzzz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "word": "zbcdefghijklmnopqrstuvwxyaeiou"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "word": "bcdfgohueaioeuncdfeoiu"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "word": "aeioubaeioucaeioudaeioubaeioucaeioudaeioubaeioucaeiou"
+      },
+      "output": 9
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "word": "xaaaeeeiiiiooooouuuuuaaaeiiiou"
+      },
+      "output": 131
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "word": "eiaouoieaueioaeioaeiaoueioea"
+      },
+      "output": 253
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "word": "aeiouaeiouaeiouxyzaeiouaeiouaeiouxyzaeiouaeiou"
+      },
+      "output": 153
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "word": "aeiouxyzaeiouxyzaeiouxyz"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "word": "mnopqrstuvwxyaeiouaeiouxyz"
+      },
+      "output": 21
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 84
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "word": "xyzaeiouaeiouaeiouaeiouaeiouaeiouxyz"
+      },
+      "output": 351
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "word": "baeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 231
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "word": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "word": "aeioubaeioucaeioudeaeiouf"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "word": "oiueaeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 461
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "word": "aeioubaeiouaeiouaeiouaeiou"
+      },
+      "output": 137
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "word": "zzzzzaeiouzzzzz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "word": "baeioucaeiouaeioucb"
+      },
+      "output": 22
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "word": "eiouaeioua"
+      },
+      "output": 21
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "word": "aeioubaeiouaeioubaeiou"
+      },
+      "output": 23
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "word": "xyzabcdeioufghijklmnopqrstuvwaeiou"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "word": "aeiouaeeeeeiioouuuuuaeiou"
+      },
+      "output": 146
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "word": "abcdeioua"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "word": "aeioubaeioucaeioudeaeioufaeioubaeioucaeioudeaeiouf"
+      },
+      "output": 10
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "word": "aeioueaioueaioueaioueaioueaiou"
+      },
+      "output": 350
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "word": "aeioubaeiouaeioubaeiouaeiou"
+      },
+      "output": 43
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "word": "aeiouaeiouaebcdeaeiouaeiou"
+      },
+      "output": 63
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 351
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "word": "aeiouaeiouaeiouaeiou"
+      },
+      "output": 136
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "word": "xyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiou"
+      },
+      "output": 84
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "word": "aeiouzyxwvutsrqponmlkjihgfedcbaeiou"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "word": "aeiouzzzzzzzzzzzzzzzzzzzz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "word": "aeiouxyzzyxwvutsrqponmlkjihgfedcbaeiouaeiouaeiouxyzaeiouxyzzyxwvutsrqponmlkjihgfedcbaeiou"
+      },
+      "output": 69
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "word": "eiouaeiouaeiouaeiouaeiouaeiou"
+      },
+      "output": 325
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "word": "aeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyzaeiouaeiouxyz"
+      },
+      "output": 147
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "word": "xzaeiouaeiouaeiouaeiouaeioux"
+      },
+      "output": 231
+    }
+  ]
+}

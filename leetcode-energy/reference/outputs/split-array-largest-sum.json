@@ -1,0 +1,37 @@
+{
+  "expected": [
+    {
+      "name": "example_1",
+      "output": 18,
+      "source": "statement"
+    },
+    {
+      "name": "example_2",
+      "output": 9,
+      "source": "statement"
+    },
+    {
+      "name": "synthetic_1",
+      "output": 2,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_2",
+      "output": 2,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_3",
+      "output": 2,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_4",
+      "output": 5,
+      "source": "accepted_python_solution"
+    }
+  ],
+  "problem": "split-array-largest-sum",
+  "schema_version": 1,
+  "workload_hash": "c1538f809fe58b46c7bf30de14c0591f31fa474cb0ebb40f6442d23048f9e88c"
+}

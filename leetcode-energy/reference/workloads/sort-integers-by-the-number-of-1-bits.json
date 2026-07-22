@@ -1,0 +1,57 @@
+{
+  "cases": [
+    {
+      "input": {
+        "arr": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "arr": [
+          1024,
+          512,
+          256,
+          128,
+          64,
+          32,
+          16,
+          8,
+          4,
+          2,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "arr"
+    ],
+    "class": "Solution",
+    "method": "sortByBits"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "sort-integers-by-the-number-of-1-bits",
+  "schema_version": 1,
+  "seed": "ee45d5cbb87435888a5211750453a44a0f227da3b391a678acfb6a4c03af16ff",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'sortByBits'"
+}

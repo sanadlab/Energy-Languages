@@ -1,0 +1,77 @@
+{
+  "cases": [
+    {
+      "input": {
+        "rec1": [
+          0,
+          0,
+          2,
+          2
+        ],
+        "rec2": [
+          1,
+          1,
+          3,
+          3
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "rec1": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "rec2": [
+          1,
+          0,
+          2,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "rec1": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "rec2": [
+          2,
+          2,
+          3,
+          3
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "List[int]"
+    ],
+    "args": [
+      "rec1",
+      "rec2"
+    ],
+    "class": "Solution",
+    "method": "isRectangleOverlap"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "rectangle-overlap",
+  "schema_version": 1,
+  "seed": "12d3a05ddfdbb501b13cd1d822e11aa2f4157f6beff40b87bb3c9dc4ea2f0ee0",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'isRectangleOverlap'"
+}

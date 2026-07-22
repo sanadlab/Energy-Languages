@@ -1,0 +1,61 @@
+{
+  "expected": [
+    {
+      "name": "example_1",
+      "output": [
+        2,
+        0,
+        3
+      ],
+      "source": "statement"
+    },
+    {
+      "name": "example_2",
+      "output": [
+        0,
+        2
+      ],
+      "source": "statement"
+    },
+    {
+      "name": "synthetic_1",
+      "output": [
+        0
+      ],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_2",
+      "output": [
+        0,
+        5
+      ],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_3",
+      "output": [
+        0,
+        9,
+        5,
+        4,
+        1
+      ],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_4",
+      "output": [
+        0,
+        9,
+        5,
+        4,
+        1
+      ],
+      "source": "accepted_python_solution"
+    }
+  ],
+  "problem": "the-k-weakest-rows-in-a-matrix",
+  "schema_version": 1,
+  "workload_hash": "c3ff0be889766fa3aacf4c6adbc1bf57e62e13193a17730a33006e31b0753270"
+}

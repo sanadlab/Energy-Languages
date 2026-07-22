@@ -1,0 +1,1678 @@
+{
+  "workload_hash": "1ec0673e8f6a2db65bb1ddecdc291c7d3940faf36b4b21450814106f95affaa8",
+  "problem": "wildcard-matching",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "s": "abcde",
+        "p": "ab*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "s": "abcde",
+        "p": "*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*?i*pi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "s": "aa",
+        "p": "a"
+      },
+      "output": false
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "s": "abcde",
+        "p": "?bcde"
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "s": "abcde",
+        "p": "a*b*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "s": "cb",
+        "p": "?a"
+      },
+      "output": false
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "s": "abcabczzzde",
+        "p": "*abc***de*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "s": "abcde",
+        "p": "abc?de"
+      },
+      "output": false
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "s": "",
+        "p": ""
+      },
+      "output": true
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "s": "abcde",
+        "p": "b*c*d*e*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "s": "abcde",
+        "p": "a?c*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "s": "abefcdgiescdfimde",
+        "p": "*a*b*ef*cd*ei*de*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "s": "abcde",
+        "p": "*****e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "s": "aa",
+        "p": "*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "s": "abcde",
+        "p": "a*de"
+      },
+      "output": true
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "s": "adceb",
+        "p": "*a*b"
+      },
+      "output": true
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "s": "abcde",
+        "p": "*****"
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "s": "abcde",
+        "p": "a*****"
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "s": "acdcb",
+        "p": "a*c?b"
+      },
+      "output": false
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "s": "a",
+        "p": "?"
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "s": "mississippi",
+        "p": "m*iss*iss*pp*i*pi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "s": "abcde",
+        "p": "a?c?e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "s": "abcde",
+        "p": "a*e?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "s": "abcde",
+        "p": "a*b?e"
+      },
+      "output": false
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "s": "abcde",
+        "p": "*b*c*d*e*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "s": "abcde",
+        "p": "a*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "s": "abcde",
+        "p": "*a*bc*e*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "s": "abcde",
+        "p": "*b*c*d*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "s": "abcde",
+        "p": "a*b*c*d*e*f"
+      },
+      "output": false
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "s": "abefcdgiescdfimde",
+        "p": "ab*ef*cd*ei*de"
+      },
+      "output": false
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "s": "abcde",
+        "p": "abc*def"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "s": "abcde",
+        "p": "*bcde"
+      },
+      "output": true
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "s": "abcde",
+        "p": "abcd*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "s": "hoop",
+        "p": "hoop*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*?si*pp*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "s": "aaaa",
+        "p": "***a"
+      },
+      "output": true
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "s": "abcde",
+        "p": "abc??"
+      },
+      "output": true
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "s": "abcde",
+        "p": "a*b*c*d*e*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "s": "bba",
+        "p": "?*a**"
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "s": "abcde",
+        "p": "a*b*c*d*e?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "s": "",
+        "p": "*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "s": "abcde",
+        "p": "abcd?"
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "s": "abcde",
+        "p": "*a*b*c*d*e*f"
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "s": "a",
+        "p": "*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "s": "",
+        "p": "?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "s": "abcde",
+        "p": "abc*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "s": "abcde",
+        "p": "*a*b*c*d*e*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "s": "abefcdgiescdfimde",
+        "p": "ab*ef*cd*de"
+      },
+      "output": true
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "s": "abefcdgiescdfimde",
+        "p": "ab*cd?i*de"
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "s": "abcde",
+        "p": "a*b*c*d*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "s": "abcde",
+        "p": "abcde"
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "s": "aaaaa",
+        "p": "a*a*a*a*a"
+      },
+      "output": true
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "s": "abcdef",
+        "p": "a*b*c*d*e*f"
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "s": "abcd",
+        "p": "a*d"
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "s": "xyxzyxytxzyxy",
+        "p": "x*y*z*x*y*z*x*y*z"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "s": "xyxxyxyxyx",
+        "p": "x*yx*yx*yx*yx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "s": "abcxyz",
+        "p": "*xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "s": "abcabcabc",
+        "p": "a*bc*a*bc*a*bc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*c*e*g*i*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*bc*de*fgh*i*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "s": "ababababab",
+        "p": "a*b*a*b*a*b*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "s": "xyz",
+        "p": "*x*y*z*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "s": "zxyxzy",
+        "p": "z*xy*z*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "s": "hellohellohello",
+        "p": "he*lo*he*lo*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "s": "xyz",
+        "p": "*z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "s": "xyxzyzyx",
+        "p": "x*y*x*y*x"
+      },
+      "output": true
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "s": "ababababa",
+        "p": "a*b*a*b*a"
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*?*c*?*e*?*g*?*i*?*j"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "s": "abefcdgiescdfimdeeeiad",
+        "p": "ab*cd?i*de"
+      },
+      "output": false
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "s": "ababababab",
+        "p": "a*b*a*b*a*b*a*b*a*b"
+      },
+      "output": true
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "s": "aabbccdd",
+        "p": "aab?cc?d*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "s": "abc",
+        "p": "*?*?*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "s": "abcdefghij",
+        "p": "?????????"
+      },
+      "output": false
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "s": "abcabcabc",
+        "p": "abc*abc*abc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*b*d*f*h*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "s": "xyzxyzxyz",
+        "p": "xyz*xyz*xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "s": "aaaaaa",
+        "p": "?*?*?*?*?*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "s": "abcd",
+        "p": "?b*d"
+      },
+      "output": true
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "s": "xxyyzz",
+        "p": "x*y*z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "s": "abcabcabcabcabcabc",
+        "p": "abcabc*abcabc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "s": "abcdabcd",
+        "p": "ab*cd*ab*cd*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*?"
+      },
+      "output": true
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k*?*l*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "s": "abababab",
+        "p": "a?b?*b?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "s": "mississippi",
+        "p": "m*is*p*i*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*d*f?j"
+      },
+      "output": false
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k*?*l*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "p": "a*b*c*d*e*f*g*h*i*j*k*l*m*n*o*p*q*r*s*t*u*v*w*x*y*z*z*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*?*?*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "s": "abcdabcdabcd",
+        "p": "*a*b*c*d*a*b*c*d*a*b*c*d*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "s": "abcabcabc",
+        "p": "abc*abc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "s": "patternmatching",
+        "p": "pa*?t*?n*?m*?a*?t*?c*?h*?i*?n*?g"
+      },
+      "output": false
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*?*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*k*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*k?*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "s": "abcabcabc",
+        "p": "*abc*abc*abc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "s": "abcdabcdabcd",
+        "p": "a*d*d*bc*bc*bc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "s": "abcabcabc",
+        "p": "a*bc*bc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j*?*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*?*?*?*?*?*?*?*?"
+      },
+      "output": true
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k*?*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "s": "abcdefg",
+        "p": "a*d?e?*g"
+      },
+      "output": false
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "s": "abcdefg",
+        "p": "abc*def*ghi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "s": "abcdefg",
+        "p": "a?c*f?g"
+      },
+      "output": false
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j????"
+      },
+      "output": false
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*a*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*?i*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "s": "abcabcabc",
+        "p": "a*b*c*a*b*c*a*b*c"
+      },
+      "output": true
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "s": "aaaaabbbbbcccc",
+        "p": "a*b*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_114",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k*?*l"
+      },
+      "output": false
+    },
+    {
+      "name": "case_115",
+      "input": {
+        "s": "aabbccddeeff",
+        "p": "a*b*c*d*e*f*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_116",
+      "input": {
+        "s": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz",
+        "p": "a*b*c*d*e*f*g*h*i*j*k*l*m*n*o*p*q*r*s*t*u*v*w*x*y*z*z*z*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_117",
+      "input": {
+        "s": "abcde",
+        "p": "a*bcd*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_118",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j*k"
+      },
+      "output": false
+    },
+    {
+      "name": "case_119",
+      "input": {
+        "s": "abcde",
+        "p": "a*?c*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_120",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*ip*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_121",
+      "input": {
+        "s": "xyzxyzxyz",
+        "p": "*xyzxyzxyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_122",
+      "input": {
+        "s": "hello",
+        "p": "h?ll*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_123",
+      "input": {
+        "s": "abcdexyz",
+        "p": "*d*xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_124",
+      "input": {
+        "s": "aaaaabbbbb",
+        "p": "a*b*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_125",
+      "input": {
+        "s": "hello",
+        "p": "he*o"
+      },
+      "output": true
+    },
+    {
+      "name": "case_126",
+      "input": {
+        "s": "abcdabcd",
+        "p": "a*b*c*d*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_127",
+      "input": {
+        "s": "abcdefg",
+        "p": "a?c*e?g"
+      },
+      "output": true
+    },
+    {
+      "name": "case_128",
+      "input": {
+        "s": "abxyzz",
+        "p": "ab*zz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_129",
+      "input": {
+        "s": "xyzabc",
+        "p": "*abc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_130",
+      "input": {
+        "s": "abcabcabc",
+        "p": "a*?*?*b*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_131",
+      "input": {
+        "s": "xyzzxyzzxyzz",
+        "p": "*z*z*z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_132",
+      "input": {
+        "s": "abcxyz",
+        "p": "abc*xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_133",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a????b????c????d????e????f????g????h????i????j*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_134",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*k*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_135",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k"
+      },
+      "output": false
+    },
+    {
+      "name": "case_136",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j?*k?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_137",
+      "input": {
+        "s": "zazbzczdz",
+        "p": "z*a*z*b*z*c*z*d*z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_138",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_139",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_140",
+      "input": {
+        "s": "mississippi",
+        "p": "mi*is*ip*pi"
+      },
+      "output": true
+    },
+    {
+      "name": "case_141",
+      "input": {
+        "s": "aaaaaa",
+        "p": "a?a?a?a?a?a"
+      },
+      "output": false
+    },
+    {
+      "name": "case_142",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j*k*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_143",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*k"
+      },
+      "output": false
+    },
+    {
+      "name": "case_144",
+      "input": {
+        "s": "xyzzaz",
+        "p": "*x?z*a*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_145",
+      "input": {
+        "s": "abcde",
+        "p": "*abc?e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_146",
+      "input": {
+        "s": "abcdabcd",
+        "p": "a*a*a*a*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_147",
+      "input": {
+        "s": "abc",
+        "p": "a*c"
+      },
+      "output": true
+    },
+    {
+      "name": "case_148",
+      "input": {
+        "s": "xyz",
+        "p": "?yz*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_149",
+      "input": {
+        "s": "hello_world",
+        "p": "he*o?wo*rld"
+      },
+      "output": true
+    },
+    {
+      "name": "case_150",
+      "input": {
+        "s": "abcdefg",
+        "p": "a*c*e*g"
+      },
+      "output": true
+    },
+    {
+      "name": "case_151",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*d*g*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_152",
+      "input": {
+        "s": "abcdexyz",
+        "p": "a*?d*x*yz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_153",
+      "input": {
+        "s": "aabbccddeeffgg",
+        "p": "*b*c*d*e*f*g*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_154",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*e*i*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_155",
+      "input": {
+        "s": "xyxxyxyxyx",
+        "p": "x*y*x*y*x*y*x"
+      },
+      "output": true
+    },
+    {
+      "name": "case_156",
+      "input": {
+        "s": "abcd",
+        "p": "*d"
+      },
+      "output": true
+    },
+    {
+      "name": "case_157",
+      "input": {
+        "s": "abcdexyz",
+        "p": "abcd*xyz"
+      },
+      "output": true
+    },
+    {
+      "name": "case_158",
+      "input": {
+        "s": "mississippi",
+        "p": "m*iss*ss*ip*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_159",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*iss*ippi"
+      },
+      "output": true
+    },
+    {
+      "name": "case_160",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*b*d*f*h*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_161",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_162",
+      "input": {
+        "s": "abc",
+        "p": "***"
+      },
+      "output": true
+    },
+    {
+      "name": "case_163",
+      "input": {
+        "s": "aabbccdd",
+        "p": "a*bb*cc*dd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_164",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_165",
+      "input": {
+        "s": "abcde",
+        "p": "*abcde"
+      },
+      "output": true
+    },
+    {
+      "name": "case_166",
+      "input": {
+        "s": "aaabbbccc",
+        "p": "a*bbb*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_167",
+      "input": {
+        "s": "abcde",
+        "p": "abcde*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_168",
+      "input": {
+        "s": "xyzabc",
+        "p": "x*y?*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_169",
+      "input": {
+        "s": "aabbaabb",
+        "p": "a*bb*a*bb"
+      },
+      "output": true
+    },
+    {
+      "name": "case_170",
+      "input": {
+        "s": "abcdedef",
+        "p": "ab*?de*?"
+      },
+      "output": true
+    },
+    {
+      "name": "case_171",
+      "input": {
+        "s": "pattern_matching",
+        "p": "p*a*t*t*e*r_*m*a*t*c*h*i*n*g"
+      },
+      "output": false
+    },
+    {
+      "name": "case_172",
+      "input": {
+        "s": "worldwide",
+        "p": "wo*d*i*e"
+      },
+      "output": true
+    },
+    {
+      "name": "case_173",
+      "input": {
+        "s": "aabbcc",
+        "p": "a*bb*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_174",
+      "input": {
+        "s": "abcdefg",
+        "p": "*cde*fg"
+      },
+      "output": true
+    },
+    {
+      "name": "case_175",
+      "input": {
+        "s": "aabbcc",
+        "p": "a*b*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_176",
+      "input": {
+        "s": "xyyxxyyxxyy",
+        "p": "x*y*x*y*x*y*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_177",
+      "input": {
+        "s": "abcabcabc",
+        "p": "abc*abc*abc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_178",
+      "input": {
+        "s": "aabbababab",
+        "p": "a*b*a*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_179",
+      "input": {
+        "s": "abcdexyz",
+        "p": "a*b?c*?d*x?y*z*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_180",
+      "input": {
+        "s": "abcdefgh",
+        "p": "a*gh"
+      },
+      "output": true
+    },
+    {
+      "name": "case_181",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*?*k*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_182",
+      "input": {
+        "s": "zzzzzzzzzz",
+        "p": "z*z*z*z*z*z*z*z*z*z"
+      },
+      "output": true
+    },
+    {
+      "name": "case_183",
+      "input": {
+        "s": "abcabcabcabc",
+        "p": "a*b*c*a*b*c*a*b*c"
+      },
+      "output": true
+    },
+    {
+      "name": "case_184",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*d*f*h*j"
+      },
+      "output": true
+    },
+    {
+      "name": "case_185",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_186",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*b*c*d*e*f*g*h*i*j*?*?"
+      },
+      "output": false
+    },
+    {
+      "name": "case_187",
+      "input": {
+        "s": "abcdefghij",
+        "p": "????a*b*c*d*e*f*g*h*i*j"
+      },
+      "output": false
+    },
+    {
+      "name": "case_188",
+      "input": {
+        "s": "ababab",
+        "p": "a*b*a*b*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_189",
+      "input": {
+        "s": "abcabcabc",
+        "p": "abc*a*bc*a*bc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_190",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*a*b*c*d*e*f*g*h*i*j*j*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_191",
+      "input": {
+        "s": "abcabcabcabc",
+        "p": "abc*abc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_192",
+      "input": {
+        "s": "abcdefghij",
+        "p": "*ef*gh*ij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_193",
+      "input": {
+        "s": "aabbccddeeff",
+        "p": "a*bb*c*dd*ee*f*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_194",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*d*f*h*j*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_195",
+      "input": {
+        "s": "abcdef",
+        "p": "*?*?*?*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_196",
+      "input": {
+        "s": "abcabcabc",
+        "p": "abcabcabc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_197",
+      "input": {
+        "s": "abcd",
+        "p": "*?c*d*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_198",
+      "input": {
+        "s": "abcdefghij",
+        "p": "a*d?g*j"
+      },
+      "output": false
+    },
+    {
+      "name": "case_199",
+      "input": {
+        "s": "abcabcabc",
+        "p": "*b*a*b*c*a*b*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_200",
+      "input": {
+        "s": "mississippi",
+        "p": "m??*ss*?si*pp*i*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_201",
+      "input": {
+        "s": "aabb",
+        "p": "*b"
+      },
+      "output": true
+    },
+    {
+      "name": "case_202",
+      "input": {
+        "s": "abcabcabcabc",
+        "p": "*abcabc*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_203",
+      "input": {
+        "s": "examplepattern",
+        "p": "e*ample?attern"
+      },
+      "output": true
+    },
+    {
+      "name": "case_204",
+      "input": {
+        "s": "nested_matching",
+        "p": "n*es*t*e*d_*m*a*t*c*h*i*n*g"
+      },
+      "output": true
+    },
+    {
+      "name": "case_205",
+      "input": {
+        "s": "abcabcabc",
+        "p": "*a*b*c*a*b*c*a*b*c*"
+      },
+      "output": true
+    },
+    {
+      "name": "case_206",
+      "input": {
+        "s": "teststring",
+        "p": "t*st*ng"
+      },
+      "output": true
+    },
+    {
+      "name": "case_207",
+      "input": {
+        "s": "aabbcc",
+        "p": "a*a*a*c*c*"
+      },
+      "output": false
+    },
+    {
+      "name": "case_208",
+      "input": {
+        "s": "abcdef",
+        "p": "*abc?ef"
+      },
+      "output": true
+    },
+    {
+      "name": "case_209",
+      "input": {
+        "s": "aaaabaaaab",
+        "p": "a*a*ba*a*b"
+      },
+      "output": true
+    }
+  ]
+}

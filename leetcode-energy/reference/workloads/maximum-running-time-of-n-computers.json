@@ -1,0 +1,48 @@
+{
+  "cases": [
+    {
+      "input": {
+        "batteries": [
+          3,
+          3,
+          3
+        ],
+        "n": 2
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "batteries": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "n": 2
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int",
+      "List[int]"
+    ],
+    "args": [
+      "n",
+      "batteries"
+    ],
+    "class": "Solution",
+    "method": "maxRunTime"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-running-time-of-n-computers",
+  "schema_version": 1,
+  "seed": "21c7ed8a9223135bb486cdd367df2f162f4582b3ea7aa77c0a4b01786f28ff3c",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maxRunTime'"
+}

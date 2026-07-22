@@ -1,0 +1,1050 @@
+{
+  "workload_hash": "0e5882439f5f90f2223f8d7fb5d99fb79c582a0d10aa13d1c13b4df20a5ef8b1",
+  "problem": "the-earliest-and-latest-rounds-where-players-compete",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 10,
+        "firstPlayer": 4,
+        "secondPlayer": 9
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 28,
+        "firstPlayer": 5,
+        "secondPlayer": 24
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 16,
+        "firstPlayer": 5,
+        "secondPlayer": 12
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 5,
+        "firstPlayer": 1,
+        "secondPlayer": 5
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 28,
+        "firstPlayer": 10,
+        "secondPlayer": 20
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 8,
+        "firstPlayer": 2,
+        "secondPlayer": 7
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 28,
+        "firstPlayer": 3,
+        "secondPlayer": 26
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 10,
+        "firstPlayer": 3,
+        "secondPlayer": 8
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 7,
+        "firstPlayer": 2,
+        "secondPlayer": 6
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 8,
+        "firstPlayer": 3,
+        "secondPlayer": 6
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 11,
+        "firstPlayer": 2,
+        "secondPlayer": 4
+      },
+      "output": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 16,
+        "firstPlayer": 3,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 22,
+        "firstPlayer": 4,
+        "secondPlayer": 19
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 19,
+        "firstPlayer": 1,
+        "secondPlayer": 19
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 15,
+        "firstPlayer": 7,
+        "secondPlayer": 13
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 18,
+        "firstPlayer": 6,
+        "secondPlayer": 13
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 18,
+        "firstPlayer": 5,
+        "secondPlayer": 16
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 27,
+        "firstPlayer": 12,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 20,
+        "firstPlayer": 7,
+        "secondPlayer": 16
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 25,
+        "firstPlayer": 10,
+        "secondPlayer": 20
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 20,
+        "firstPlayer": 5,
+        "secondPlayer": 15
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 18,
+        "firstPlayer": 2,
+        "secondPlayer": 17
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 15,
+        "firstPlayer": 2,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 19,
+        "firstPlayer": 7,
+        "secondPlayer": 16
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 24,
+        "firstPlayer": 6,
+        "secondPlayer": 19
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 27,
+        "firstPlayer": 8,
+        "secondPlayer": 20
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "n": 19,
+        "firstPlayer": 8,
+        "secondPlayer": 17
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "n": 13,
+        "firstPlayer": 3,
+        "secondPlayer": 10
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "n": 23,
+        "firstPlayer": 10,
+        "secondPlayer": 19
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "n": 28,
+        "firstPlayer": 10,
+        "secondPlayer": 22
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "n": 25,
+        "firstPlayer": 7,
+        "secondPlayer": 19
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "n": 22,
+        "firstPlayer": 7,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "n": 20,
+        "firstPlayer": 5,
+        "secondPlayer": 16
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "n": 27,
+        "firstPlayer": 11,
+        "secondPlayer": 23
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "n": 13,
+        "firstPlayer": 4,
+        "secondPlayer": 10
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "n": 19,
+        "firstPlayer": 3,
+        "secondPlayer": 17
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "n": 21,
+        "firstPlayer": 9,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "n": 24,
+        "firstPlayer": 10,
+        "secondPlayer": 23
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "n": 22,
+        "firstPlayer": 7,
+        "secondPlayer": 17
+      },
+      "output": [
+        3,
+        5
+      ]
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "n": 15,
+        "firstPlayer": 7,
+        "secondPlayer": 9
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "n": 27,
+        "firstPlayer": 9,
+        "secondPlayer": 20
+      },
+      "output": [
+        3,
+        5
+      ]
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "n": 24,
+        "firstPlayer": 10,
+        "secondPlayer": 15
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "n": 24,
+        "firstPlayer": 8,
+        "secondPlayer": 17
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "n": 18,
+        "firstPlayer": 6,
+        "secondPlayer": 15
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "n": 24,
+        "firstPlayer": 9,
+        "secondPlayer": 15
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "n": 23,
+        "firstPlayer": 9,
+        "secondPlayer": 15
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "n": 12,
+        "firstPlayer": 5,
+        "secondPlayer": 8
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "n": 25,
+        "firstPlayer": 7,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "n": 25,
+        "firstPlayer": 2,
+        "secondPlayer": 24
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "n": 27,
+        "firstPlayer": 12,
+        "secondPlayer": 24
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "n": 15,
+        "firstPlayer": 3,
+        "secondPlayer": 13
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "n": 21,
+        "firstPlayer": 6,
+        "secondPlayer": 16
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "n": 19,
+        "firstPlayer": 4,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "n": 22,
+        "firstPlayer": 6,
+        "secondPlayer": 19
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "n": 28,
+        "firstPlayer": 2,
+        "secondPlayer": 27
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "n": 25,
+        "firstPlayer": 4,
+        "secondPlayer": 22
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "n": 13,
+        "firstPlayer": 3,
+        "secondPlayer": 11
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "n": 13,
+        "firstPlayer": 3,
+        "secondPlayer": 9
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "n": 28,
+        "firstPlayer": 1,
+        "secondPlayer": 28
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "n": 23,
+        "firstPlayer": 11,
+        "secondPlayer": 20
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "n": 17,
+        "firstPlayer": 3,
+        "secondPlayer": 15
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "n": 14,
+        "firstPlayer": 3,
+        "secondPlayer": 10
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "n": 12,
+        "firstPlayer": 3,
+        "secondPlayer": 9
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "n": 25,
+        "firstPlayer": 8,
+        "secondPlayer": 19
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "n": 28,
+        "firstPlayer": 12,
+        "secondPlayer": 18
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "n": 22,
+        "firstPlayer": 9,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "n": 24,
+        "firstPlayer": 9,
+        "secondPlayer": 21
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "n": 19,
+        "firstPlayer": 9,
+        "secondPlayer": 17
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "n": 17,
+        "firstPlayer": 4,
+        "secondPlayer": 15
+      },
+      "output": [
+        2,
+        4
+      ]
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "n": 19,
+        "firstPlayer": 6,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "n": 21,
+        "firstPlayer": 7,
+        "secondPlayer": 15
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "n": 27,
+        "firstPlayer": 2,
+        "secondPlayer": 25
+      },
+      "output": [
+        3,
+        3
+      ]
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "n": 17,
+        "firstPlayer": 6,
+        "secondPlayer": 12
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "n": 17,
+        "firstPlayer": 5,
+        "secondPlayer": 13
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "n": 18,
+        "firstPlayer": 4,
+        "secondPlayer": 15
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "n": 21,
+        "firstPlayer": 10,
+        "secondPlayer": 12
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "n": 15,
+        "firstPlayer": 4,
+        "secondPlayer": 11
+      },
+      "output": [
+        3,
+        4
+      ]
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "n": 21,
+        "firstPlayer": 6,
+        "secondPlayer": 19
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "n": 19,
+        "firstPlayer": 8,
+        "secondPlayer": 15
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "n": 20,
+        "firstPlayer": 7,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "n": 25,
+        "firstPlayer": 8,
+        "secondPlayer": 20
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "n": 27,
+        "firstPlayer": 4,
+        "secondPlayer": 23
+      },
+      "output": [
+        3,
+        5
+      ]
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "n": 20,
+        "firstPlayer": 3,
+        "secondPlayer": 18
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "n": 26,
+        "firstPlayer": 13,
+        "secondPlayer": 22
+      },
+      "output": [
+        2,
+        5
+      ]
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "n": 18,
+        "firstPlayer": 5,
+        "secondPlayer": 14
+      },
+      "output": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "n": 21,
+        "firstPlayer": 6,
+        "secondPlayer": 15
+      },
+      "output": [
+        3,
+        5
+      ]
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "n": 28,
+        "firstPlayer": 10,
+        "secondPlayer": 25
+      },
+      "output": [
+        2,
+        5
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "input": {
+        "p": "a ",
+        "s": "aa "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "p": "a\\* ",
+        "s": "aa "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "p": ".\\* ",
+        "s": "ab "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str"
+    ],
+    "args": [
+      "s",
+      "p"
+    ],
+    "class": "Solution",
+    "method": "isMatch"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "regular-expression-matching",
+  "schema_version": 1,
+  "seed": "9cb0ab5af38fd165d483110dfc30f8b462e54fc5ee210d6cc27fb34b03b4db32",
+  "skipped": true,
+  "skipped_reason": "visible example validation failed",
+  "validation_failures": [
+    {
+      "actual": false,
+      "expected": true,
+      "name": "example_2"
+    },
+    {
+      "actual": false,
+      "expected": true,
+      "name": "example_3"
+    }
+  ]
+}

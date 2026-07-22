@@ -1,0 +1,54 @@
+{
+  "cases": [
+    {
+      "input": {
+        "nums": [
+          3,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "nums": [
+          2,
+          2,
+          2
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "nums": [
+          3,
+          2,
+          1,
+          5
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "nums"
+    ],
+    "class": "Solution",
+    "method": "countMaxOrSubsets"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "count-number-of-maximum-bitwise-or-subsets",
+  "schema_version": 1,
+  "seed": "101ff7ca37a73ffb1a8b44f8c88cfde91050bc70e76d6360ee596ff856e00595",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'countMaxOrSubsets'"
+}

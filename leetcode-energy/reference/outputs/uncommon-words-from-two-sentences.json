@@ -1,0 +1,42 @@
+{
+  "expected": [
+    {
+      "name": "example_1",
+      "output": [
+        "sweet",
+        "sour"
+      ],
+      "source": "statement"
+    },
+    {
+      "name": "example_2",
+      "output": [
+        "banana"
+      ],
+      "source": "statement"
+    },
+    {
+      "name": "synthetic_1",
+      "output": [],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_2",
+      "output": [],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_3",
+      "output": [],
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_4",
+      "output": [],
+      "source": "accepted_python_solution"
+    }
+  ],
+  "problem": "uncommon-words-from-two-sentences",
+  "schema_version": 1,
+  "workload_hash": "399ca7454854e779134b0b553975b5e499a37df17a0b2586023013b54b09bb5e"
+}

@@ -1,0 +1,51 @@
+{
+  "cases": [
+    {
+      "input": {
+        "k": 4,
+        "s": "5F3Z-2e-9-w "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "k": 2,
+        "s": "2-5g-3-J "
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "int"
+    ],
+    "args": [
+      "s",
+      "k"
+    ],
+    "class": "Solution",
+    "method": "licenseKeyFormatting"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "license-key-formatting",
+  "schema_version": 1,
+  "seed": "40f8a0280cb04bd64ce43abce44f5eed0bac6c14060639ff062f48a6344c15cd",
+  "skipped": true,
+  "skipped_reason": "visible example validation failed",
+  "validation_failures": [
+    {
+      "actual": "5F3Z-2E9W",
+      "expected": "5F3Z-2E9W ",
+      "name": "example_1"
+    },
+    {
+      "actual": "2-5G-3J",
+      "expected": "2-5G-3J ",
+      "name": "example_2"
+    }
+  ]
+}

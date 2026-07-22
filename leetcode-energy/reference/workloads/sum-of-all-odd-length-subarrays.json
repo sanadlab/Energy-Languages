@@ -1,0 +1,55 @@
+{
+  "cases": [
+    {
+      "input": {
+        "arr": [
+          1,
+          4,
+          2,
+          5,
+          3
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "arr": [
+          1,
+          2
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "arr": [
+          10,
+          11,
+          12
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "arr"
+    ],
+    "class": "Solution",
+    "method": "sumOddLengthSubarrays"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "sum-of-all-odd-length-subarrays",
+  "schema_version": 1,
+  "seed": "f7fbf382a42a96819d2e861570617c276589bca8b438b09b877259d968099c26",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'sumOddLengthSubarrays'"
+}

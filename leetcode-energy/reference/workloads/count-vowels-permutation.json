@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "input": {
+        "n": 1
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "n": 2
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "n": 5
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int"
+    ],
+    "args": [
+      "n"
+    ],
+    "class": "Solution",
+    "method": "countVowelPermutation"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "count-vowels-permutation",
+  "schema_version": 1,
+  "seed": "b220afe46f1b7e1b8b6009b6c6090d465d45106e15a1e0f9a30a45fe4aa17e17",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'countVowelPermutation'"
+}

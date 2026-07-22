@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "input": {
+        "s1": "great ",
+        "s2": "rgeat "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "s1": "abcde ",
+        "s2": "caebd "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "s1": "a ",
+        "s2": "a "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str"
+    ],
+    "args": [
+      "s1",
+      "s2"
+    ],
+    "class": "Solution",
+    "method": "isScramble"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "scramble-string",
+  "schema_version": 1,
+  "seed": "091b8a31bad3ee81b44a4fdf9da5276f43ded5ee7f91e006a4b0dbaf697d64e9",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'isScramble'"
+}

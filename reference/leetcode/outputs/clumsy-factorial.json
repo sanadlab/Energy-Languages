@@ -1,0 +1,272 @@
+{
+  "workload_hash": "6c526410e9fdd77010d55ff4c4160400d3d5a91efa5fc6864598bebee48b373a",
+  "problem": "clumsy-factorial",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 8
+      },
+      "output": 9
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 3
+      },
+      "output": 6
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 100
+      },
+      "output": 101
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 4
+      },
+      "output": 7
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 10000
+      },
+      "output": 10001
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 9
+      },
+      "output": 11
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 5000
+      },
+      "output": 5001
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 6
+      },
+      "output": 8
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 2
+      },
+      "output": 2
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 9999
+      },
+      "output": 9998
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 1
+      },
+      "output": 1
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 1000
+      },
+      "output": 1001
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 7
+      },
+      "output": 6
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 10
+      },
+      "output": 12
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 5
+      },
+      "output": 7
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 12
+      },
+      "output": 13
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 21
+      },
+      "output": 23
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 2000
+      },
+      "output": 2001
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 7500
+      },
+      "output": 7501
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 104
+      },
+      "output": 105
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 50
+      },
+      "output": 52
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 300
+      },
+      "output": 301
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 28
+      },
+      "output": 29
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 30
+      },
+      "output": 32
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 99
+      },
+      "output": 98
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 6666
+      },
+      "output": 6668
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "n": 17
+      },
+      "output": 19
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "n": 999
+      },
+      "output": 998
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "n": 18
+      },
+      "output": 20
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "n": 20
+      },
+      "output": 21
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "n": 24
+      },
+      "output": 25
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "n": 7777
+      },
+      "output": 7779
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "n": 11
+      },
+      "output": 10
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "n": 15
+      },
+      "output": 14
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "n": 14
+      },
+      "output": 16
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "n": 31
+      },
+      "output": 30
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "n": 500
+      },
+      "output": 501
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "n": 25
+      },
+      "output": 27
+    }
+  ]
+}

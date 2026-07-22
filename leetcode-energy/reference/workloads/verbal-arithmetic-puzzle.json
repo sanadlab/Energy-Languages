@@ -1,0 +1,57 @@
+{
+  "cases": [
+    {
+      "input": {
+        "result": "MONEY ",
+        "words": [
+          "SEND ",
+          "MORE "
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "result": "TWENTY ",
+        "words": [
+          "SIX ",
+          "SEVEN ",
+          "SEVEN "
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "result": "POINT ",
+        "words": [
+          "LEET ",
+          "CODE "
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[str]",
+      "str"
+    ],
+    "args": [
+      "words",
+      "result"
+    ],
+    "class": "Solution",
+    "method": "isSolvable"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "verbal-arithmetic-puzzle",
+  "schema_version": 1,
+  "seed": "59eb5235ee0722f0a182406165df2d6a9c376c3564c1e973ecd71acd09c7f544",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'isSolvable'"
+}

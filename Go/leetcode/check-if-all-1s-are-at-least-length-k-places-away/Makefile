@@ -1,4 +1,5 @@
 LANGUAGE = go
+LANGUAGE_FOLDER = Go
 LEETCODE_LANGUAGE = golang
 SLUG = check-if-all-1s-are-at-least-length-k-places-away
 SOURCE = solution.go
@@ -12,19 +13,16 @@ compile:
 	perfarena leetcode-compile --language $(LANGUAGE) --source $(SOURCE) --result compile.json
 
 validate:
-	@# LC validation stub: verifies the source file parses without syntax
-	@# errors. Full per-case correctness lives in
-	@# `perfarena leetcode-workload-run` which needs
-	@# `reference/leetcode/outputs/$(SLUG).json` — not populated upstream
-	@# yet. Skip cleanly so downstream targets (measure) don't error out.
-	@if [ "$(LANGUAGE)" = "python" ]; then \
-	    python3 -m py_compile $(SOURCE) && echo "validate: PASS (py_compile only)" ; \
-	else \
-	    echo "validate: SKIPPED (LANGUAGE=$(LANGUAGE) — no inline validator yet)" ; \
-	fi
+	perfarena leetcode-workload-run --language $(LANGUAGE) --problem $(SLUG) --source $(SOURCE) --workload $(WORKLOAD) --expected $(REFERENCE_OUTPUT)
 
 measure: validate
-	perfarena leetcode-measure --language $(LANGUAGE) --problems $(SLUG) --model-slug $(MODEL_SLUG) --accepted-only
+	@# LC-energy measure: run the workload N times under the active profiler.
+	@# leetcode-workload-measure captures per-case wall-time; the profiler
+	@# (codecarbon / powermetrics / RAPL, selected by PERFARENA_PROFILER)
+	@# wraps the whole invocation and integrates energy over that window.
+	@# Warmup+measure counts come from the same env vars CLBG uses so the
+	@# knobs are consistent across problem sets.
+	perfarena leetcode-workload-measure --language $(LANGUAGE) --problem $(SLUG) --source $(SOURCE) --workload $(WORKLOAD) --warmup $${PERFARENA_WARMUP:-1} --measure $${PERFARENA_MEASURE:-3} --language-folder $(LANGUAGE_FOLDER)
 
 clean:
 	rm -f compile.json result*.json energy_*.json

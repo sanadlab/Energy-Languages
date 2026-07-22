@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "input": {
+        "nums": [
+          4,
+          3,
+          10,
+          9,
+          8
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "nums": [
+          4,
+          4,
+          7,
+          6,
+          7
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "nums"
+    ],
+    "class": "Solution",
+    "method": "minSubsequence"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-subsequence-in-non-increasing-order",
+  "schema_version": 1,
+  "seed": "e1dce785f47e8253d341280a7903b8374e3515519f6d954a0f0199487778b9f0",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minSubsequence'"
+}

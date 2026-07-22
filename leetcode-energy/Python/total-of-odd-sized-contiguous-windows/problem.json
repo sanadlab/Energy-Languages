@@ -1,0 +1,34 @@
+{
+  "code_snippets": {
+    "c": "int totalOfOddSizedWindows(int* arr, int arrSize) {\n    \n}",
+    "cpp": "class Solution {\npublic:\n    int totalOfOddSizedWindows(vector<int>& arr) {\n        \n    }\n};",
+    "csharp": "public class Solution {\n    public int SumOddLengthSubarrays(int[] arr) {\n        \n    }\n}",
+    "dart": "class Solution {\n  int totalOfOddSizedWindows(List<int> arr) {\n    \n  }\n}",
+    "elixir": "defmodule Solution do\n  @spec sum_odd_length_subarrays(arr :: [integer]) :: integer\n  def sum_odd_length_subarrays(arr) do\n    \n  end\nend",
+    "erlang": "-spec sum_odd_length_subarrays(Arr :: [integer()]) -> integer().\nsum_odd_length_subarrays(Arr) ->\n  .",
+    "golang": "func totalOfOddSizedWindows(arr []int) int {\n    \n}",
+    "java": "class Solution {\n    public int totalOfOddSizedWindows(int[] arr) {\n        \n    }\n}",
+    "javascript": "/**\n * @param {number[]} arr\n * @return {number}\n */\nvar totalOfOddSizedWindows = function(arr) {\n    \n};",
+    "kotlin": "class Solution {\n    fun totalOfOddSizedWindows(arr: IntArray): Int {\n        \n    }\n}",
+    "php": "class Solution {\n\n    /**\n     * @param Integer[] $arr\n     * @return Integer\n     */\n    function totalOfOddSizedWindows($arr) {\n        \n    }\n}",
+    "python": "class Solution(object):\n    def totalOfOddSizedWindows(self, arr):\n        \"\"\"\n        :type arr: List[int]\n        :rtype: int\n        \"\"\"\n        ",
+    "python3": "class Solution:\n    def totalOfOddSizedWindows(self, arr: List[int]) -> int:\n        ",
+    "racket": "(define/contract (sum-odd-length-subarrays arr)\n  (-> (listof exact-integer?) exact-integer?)\n  )",
+    "ruby": "# @param {Integer[]} arr\n# @return {Integer}\ndef sum_odd_length_subarrays(arr)\n    \nend",
+    "rust": "impl Solution {\n    pub fn sum_odd_length_subarrays(arr: Vec<i32>) -> i32 {\n        \n    }\n}",
+    "scala": "object Solution {\n    def totalOfOddSizedWindows(arr: Array[Int]): Int = {\n        \n    }\n}",
+    "swift": "class Solution {\n    func totalOfOddSizedWindows(_ arr: [Int]) -> Int {\n        \n    }\n}",
+    "typescript": "function totalOfOddSizedWindows(arr: number[]): number {\n    \n};"
+  },
+  "content": "Given an array of positive integers `arr`, return _the sum of every possible **odd-length subarray** of_ `arr`.\n\nA **subarray** denotes a contiguous slice of the array.\n\n**Example 1:**\n\n**Input:** arr = \\[1,4,2,5,3\\]\n**Output:** 58\n**Explanation:** The odd-length subarrays of arr and their sums are:\n\\[1\\] = 1\n\\[4\\] = 4\n\\[2\\] = 2\n\\[5\\] = 5\n\\[3\\] = 3\n\\[1,4,2\\] = 7\n\\[4,2,5\\] = 11\n\\[2,5,3\\] = 10\n\\[1,4,2,5,3\\] = 15\nIf we add all these together we get 1 + 4 + 2 + 5 + 3 + 7 + 11 + 10 + 15 = 58\n\n**Example 2:**\n\n**Input:** arr = \\[1,2\\]\n**Output:** 3\n**Explanation:** There are only 2 subarrays of odd length, \\[1\\] and \\[2\\]. Their sum is 3.\n\n**Example 3:**\n\n**Input:** arr = \\[10,11,12\\]\n**Output:** 66\n\n**Constraints:**\n\n*   `1 <= arr.length <= 100`\n*   `1 <= arr[i] <= 1000`\n\n**Follow up:**\n\nCould you solve this problem in O(n) time complexity?",
+  "hints": null,
+  "id": 129,
+  "level": "Easy",
+  "tags": [
+    "Array",
+    "Math",
+    "Prefix Sum"
+  ],
+  "title": "Total Of Odd Sized Contiguous Windows",
+  "title_slug": "total-of-odd-sized-contiguous-windows"
+}

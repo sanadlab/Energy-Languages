@@ -1,0 +1,188 @@
+{
+  "workload_hash": "b8f231bc26bd2cbfba252956dcd80d4c6eeb74c29f9f91dfd8ef63cbcaf26d33",
+  "problem": "count-vowels-permutation",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 1000
+      },
+      "output": 89945857
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 100
+      },
+      "output": 173981881
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 20000
+      },
+      "output": 759959057
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 200
+      },
+      "output": 670333618
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 10000
+      },
+      "output": 76428576
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 5000
+      },
+      "output": 598627501
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 2000
+      },
+      "output": 793084836
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 2
+      },
+      "output": 10
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 20
+      },
+      "output": 1151090
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 1
+      },
+      "output": 5
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 500
+      },
+      "output": 518032023
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 50
+      },
+      "output": 227130014
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 10
+      },
+      "output": 1739
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 5
+      },
+      "output": 68
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 15000
+      },
+      "output": 381635004
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 3
+      },
+      "output": 19
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 12345
+      },
+      "output": 480007966
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 4
+      },
+      "output": 35
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 30000
+      },
+      "output": 770607143
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 75
+      },
+      "output": 467397509
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 150
+      },
+      "output": 965179800
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 6
+      },
+      "output": 129
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 19999
+      },
+      "output": 706457669
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 19000
+      },
+      "output": 70562691
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 18000
+      },
+      "output": 596349393
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 25
+      },
+      "output": 29599477
+    }
+  ]
+}

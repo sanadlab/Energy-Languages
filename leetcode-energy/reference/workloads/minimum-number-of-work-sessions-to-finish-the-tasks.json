@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "input": {
+        "sessionTime": 3,
+        "tasks": [
+          1,
+          2,
+          3
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "sessionTime": 8,
+        "tasks": [
+          3,
+          1,
+          3,
+          1,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "sessionTime": 15,
+        "tasks": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int"
+    ],
+    "args": [
+      "tasks",
+      "sessionTime"
+    ],
+    "class": "Solution",
+    "method": "minSessions"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-number-of-work-sessions-to-finish-the-tasks",
+  "schema_version": 1,
+  "seed": "c3b65e1511e26df561a42774c49a6446a687bbbd7af2433929f26972f20f4228",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minSessions'"
+}

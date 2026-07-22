@@ -1,0 +1,75 @@
+{
+  "case_counts": {
+    "examples": 2,
+    "synthetic": 4,
+    "total": 6
+  },
+  "cases": [
+    {
+      "input": {
+        "s1": "this apple is sweet",
+        "s2": "this apple is sour"
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "s1": "apple apple",
+        "s2": "banana"
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "s1": "bcd",
+        "s2": "bcd"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_1"
+    },
+    {
+      "input": {
+        "s1": "cdefghij",
+        "s2": "cdefghij"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_2"
+    },
+    {
+      "input": {
+        "s1": "defghijklmnopqrstuvw",
+        "s2": "defghijklmnopqrstuvw"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_3"
+    },
+    {
+      "input": {
+        "s1": "efghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzab",
+        "s2": "efghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzab"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_4"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str"
+    ],
+    "args": [
+      "s1",
+      "s2"
+    ],
+    "class": "Solution",
+    "method": "uncommonFromSentences"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "uncommon-words-from-two-sentences",
+  "schema_version": 1,
+  "seed": "d6876350ac271481e0b31fc342fd5920a3a59ae864169dd91ee9f36203748294",
+  "workload_hash": "399ca7454854e779134b0b553975b5e499a37df17a0b2586023013b54b09bb5e"
+}

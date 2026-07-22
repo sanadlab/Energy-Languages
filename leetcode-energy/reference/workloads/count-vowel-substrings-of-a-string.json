@@ -1,0 +1,74 @@
+{
+  "case_counts": {
+    "examples": 3,
+    "synthetic": 4,
+    "total": 7
+  },
+  "cases": [
+    {
+      "input": {
+        "word": "aeiouu "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "word": "unicornarihan "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "word": "cuaieuouac "
+      },
+      "kind": "example",
+      "name": "example_3"
+    },
+    {
+      "input": {
+        "word": "aei"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_1"
+    },
+    {
+      "input": {
+        "word": "aeioubca"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_2"
+    },
+    {
+      "input": {
+        "word": "aeioubcaeioubcaeioub"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_3"
+    },
+    {
+      "input": {
+        "word": "aeioubcaeioubcaeioubcaeioubcaeioubcaeioubcaeioubca"
+      },
+      "kind": "synthetic",
+      "name": "synthetic_4"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str"
+    ],
+    "args": [
+      "word"
+    ],
+    "class": "Solution",
+    "method": "countVowelSubstrings"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "count-vowel-substrings-of-a-string",
+  "schema_version": 1,
+  "seed": "b2db4df9bf5452403d7337488519f63eb0be39ead881c9ea5ff91a0abecb1bcc",
+  "workload_hash": "fceb003ac775e11a3975c03fc590c3659cff0e7bc308b2c86ffb64c2038a5a69"
+}

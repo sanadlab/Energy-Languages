@@ -1,0 +1,47 @@
+{
+  "cases": [
+    {
+      "input": {
+        "word1": "abc ",
+        "word2": "bca "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "word1": "a ",
+        "word2": "aa "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "word1": "cabbba ",
+        "word2": "abbccc "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "str"
+    ],
+    "args": [
+      "word1",
+      "word2"
+    ],
+    "class": "Solution",
+    "method": "closeStrings"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "determine-if-two-strings-are-close",
+  "schema_version": 1,
+  "seed": "36495c033ef672960cfb4dcecf0eb2d74ea4a0390e7896a95bb11fa754e84bd2",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'closeStrings'"
+}

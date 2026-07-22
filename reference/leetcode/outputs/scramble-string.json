@@ -1,0 +1,878 @@
+{
+  "workload_hash": "b9efd62d2f21aff65a35bc6d6e7da83e4ceec96d00840dc1ce546236c94fb68a",
+  "problem": "scramble-string",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ihgfedcbaj"
+      },
+      "output": true
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "s1": "noon",
+        "s2": "onon"
+      },
+      "output": true
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "s1": "abc",
+        "s2": "cab"
+      },
+      "output": true
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "s1": "abcdefghijklmnop",
+        "s2": "ponmlkjihgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "s1": "abcde",
+        "s2": "caebd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "s1": "abcdefghijk",
+        "s2": "abcdefghijk"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "s1": "abc",
+        "s2": "bca"
+      },
+      "output": true
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "s1": "abcdefgh",
+        "s2": "hgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ijabcdefgh"
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "s1": "eebaacbcbcadaaedceaaacadccd",
+        "s2": "eadcaacabaddaceacbceaabe"
+      },
+      "output": false
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "s1": "ab",
+        "s2": "ba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "jihgfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "s1": "aabbcc",
+        "s2": "abcabc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "s1": "aabbcc",
+        "s2": "ccbbaa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "s1": "great",
+        "s2": "rgeat"
+      },
+      "output": true
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "s1": "abcd",
+        "s2": "abcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "s1": "abcd",
+        "s2": "bdac"
+      },
+      "output": false
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "s1": "hello",
+        "s2": "lohel"
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "s1": "abcd",
+        "s2": "dcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "s1": "aabb",
+        "s2": "baba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "s1": "abcdefgh",
+        "s2": "efghabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "s1": "eebaacb",
+        "s2": "aceebbb"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "s1": "xstjzkfpqczbdy",
+        "s2": "bdyxzcqpzkjfst"
+      },
+      "output": true
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "s1": "hello",
+        "s2": "olelh"
+      },
+      "output": true
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "s1": "xyzz",
+        "s2": "zzyx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "s1": "xyz",
+        "s2": "zyx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "s1": "abcdefg",
+        "s2": "efgabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "s1": "abcdefghijk",
+        "s2": "kabcdefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "s1": "a",
+        "s2": "a"
+      },
+      "output": true
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "s1": "algorithm",
+        "s2": "logarithm"
+      },
+      "output": true
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "s1": "introduction",
+        "s2": "oitrnuduinc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "s1": "abcdabcd",
+        "s2": "ddddcccc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "s1": "abcdexyz",
+        "s2": "zyxdecba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "s1": "abcdxyz",
+        "s2": "yzabcdx"
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "efghijklabdc"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "s1": "recursion",
+        "s2": "rursiicno"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "jihgfecdba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "s1": "abcdefgh",
+        "s2": "abcdghfe"
+      },
+      "output": true
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abijhgfedc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "s1": "xylophone",
+        "s2": "eponhloxy"
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "s1": "abcdefg",
+        "s2": "gfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "s1": "scramble",
+        "s2": "elmacrbs"
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "s1": "interview",
+        "s2": "wetneivrt"
+      },
+      "output": false
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "s1": "abababab",
+        "s2": "babababa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "s1": "backtracking",
+        "s2": "tcgakknbirn"
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "s1": "abcdefgh",
+        "s2": "ghfedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "s1": "abcdexyz",
+        "s2": "xyzexbcd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "s1": "abcdefgh",
+        "s2": "cdabefgh"
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "s1": "qwertyuiop",
+        "s2": "yuiopqwert"
+      },
+      "output": true
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "s1": "intention",
+        "s2": "tennotiin"
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "jihgfedabc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "s1": "abcd",
+        "s2": "cdab"
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "s1": "scramble",
+        "s2": "melbrcsa"
+      },
+      "output": true
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "s1": "abcdexyz",
+        "s2": "xyzabcde"
+      },
+      "output": true
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "s1": "algorithm",
+        "s2": "rhtaglmoi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "s1": "optimization",
+        "s2": "tivioonpmzas"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "s1": "interview",
+        "s2": "ewrotnive"
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "s1": "programming",
+        "s2": "gnimmargorp"
+      },
+      "output": true
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "efghabcdij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "s1": "recursion",
+        "s2": "suoncire"
+      },
+      "output": false
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abcdjihgfe"
+      },
+      "output": true
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "fedcbaighj"
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "s1": "waterbottle",
+        "s2": "elbottlewat"
+      },
+      "output": false
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ghfedcbaab"
+      },
+      "output": false
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "s1": "scramble",
+        "s2": "leacrbms"
+      },
+      "output": true
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "s1": "scramble",
+        "s2": "rscmable"
+      },
+      "output": true
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "s1": "algorithm",
+        "s2": "rhtlgmaoi"
+      },
+      "output": false
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "s1": "scrambledstring",
+        "s2": "stgimrebldstring"
+      },
+      "output": false
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "mnopqrjkl"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "s1": "abcdefghijk",
+        "s2": "efghijkabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "s1": "abracadabra",
+        "s2": "carrabbadaba"
+      },
+      "output": false
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ihgfedcbaa"
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "hgfedcbaij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abcdghfjie"
+      },
+      "output": true
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abcdefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ihgfjedcba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ijklabefgh"
+      },
+      "output": false
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ghijefabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ihgfjklmno"
+      },
+      "output": false
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "s1": "interview",
+        "s2": "reterivne"
+      },
+      "output": false
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "s1": "python",
+        "s2": "nohtyp"
+      },
+      "output": true
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "bcdefghiaj"
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "cdabefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "s1": "abcdabcd",
+        "s2": "dcbacabd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "s1": "scramble",
+        "s2": "blecrmas"
+      },
+      "output": true
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "cbadefghij"
+      },
+      "output": true
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "s1": "optimization",
+        "s2": "nizationopti"
+      },
+      "output": false
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "s1": "intvw",
+        "s2": "nvtiw"
+      },
+      "output": true
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "cdefghijab"
+      },
+      "output": true
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "s1": "intervw",
+        "s2": "wvnreit"
+      },
+      "output": false
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "efghijabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "s1": "optimization",
+        "s2": "nizaitpmosio"
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "s1": "algorithm",
+        "s2": "rhtgmialo"
+      },
+      "output": false
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "s1": "interview",
+        "s2": "terviewin"
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "s1": "abcdabcd",
+        "s2": "abcdabcd"
+      },
+      "output": true
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "jabcdefghi"
+      },
+      "output": true
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "s1": "abcdefghijk",
+        "s2": "kjiabcdefgh"
+      },
+      "output": true
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "s1": "abab",
+        "s2": "baba"
+      },
+      "output": true
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "s1": "scramble",
+        "s2": "melcarbs"
+      },
+      "output": false
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "s1": "thisisatest",
+        "s2": "tsaistestihis"
+      },
+      "output": true
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "fghebacijd"
+      },
+      "output": false
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "ijklabcdefgh"
+      },
+      "output": false
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "s1": "scramble",
+        "s2": "ercmsbal"
+      },
+      "output": false
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "s1": "scramblestring",
+        "s2": "gterinmbscrl"
+      },
+      "output": false
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "cbadefghji"
+      },
+      "output": true
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "s1": "introduction",
+        "s2": "ntrioduicton"
+      },
+      "output": true
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abjihgfedc"
+      },
+      "output": true
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "s1": "abcdefghij",
+        "s2": "abcdefghijab"
+      },
+      "output": true
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "s1": "recursion",
+        "s2": "insrucero"
+      },
+      "output": false
+    }
+  ]
+}

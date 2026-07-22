@@ -1,0 +1,412 @@
+{
+  "workload_hash": "3d490937fd0b585658441af7c84251f1118ffc84fd0396ae6c5c6232388441e3",
+  "problem": "next-greater-numerically-balanced-number",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 0
+      },
+      "output": 1
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 122333
+      },
+      "output": 123233
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 3000
+      },
+      "output": 3133
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 1222
+      },
+      "output": 1333
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 55555
+      },
+      "output": 122333
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 1234
+      },
+      "output": 1333
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 112233
+      },
+      "output": 122333
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 122133
+      },
+      "output": 122333
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 1234567
+      },
+      "output": 1242444
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 999999
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 123456
+      },
+      "output": 132233
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 1
+      },
+      "output": 22
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 1000
+      },
+      "output": 1333
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 1224444
+      },
+      "output": 1242444
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 987654
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 122
+      },
+      "output": 212
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 122333444
+      },
+      "output": 122666666
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 2233445566
+      },
+      "output": 2233535555
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 122444
+      },
+      "output": 123233
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 3333333
+      },
+      "output": 3334444
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 666666
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 11222233
+      },
+      "output": 12255555
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 444444
+      },
+      "output": 515555
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 1223334444
+      },
+      "output": 1223343444
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 2222222
+      },
+      "output": 2241444
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 44445555
+      },
+      "output": 51225555
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "n": 6665554443332211
+      },
+      "output": 6665554444155666
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "n": 1233333
+      },
+      "output": 1242444
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "n": 122111333
+      },
+      "output": 122666666
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "n": 22333444
+      },
+      "output": 22515555
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "n": 123321
+      },
+      "output": 123323
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "n": 98765
+      },
+      "output": 122333
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "n": 665544332211
+      },
+      "output": 665551556666
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "n": 400000
+      },
+      "output": 422444
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "n": 123456789
+      },
+      "output": 126266666
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "n": 1223334
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "n": 5555555
+      },
+      "output": 6166666
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "n": 223334444555
+      },
+      "output": 223336166666
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "n": 111
+      },
+      "output": 122
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "n": 7777777
+      },
+      "output": 12255555
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "n": 1112233
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "n": 122333444555555
+      },
+      "output": 122333445445555
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "n": 2233444
+      },
+      "output": 2241444
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "n": 1222333
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "n": 2121212121
+      },
+      "output": 2123334444
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "n": 122444455555
+      },
+      "output": 122444545555
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "n": 12233344
+      },
+      "output": 12255555
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "n": 666666555444333222111
+      },
+      "output": 666666555444333224155
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "n": 1000000
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "n": 22222222
+      },
+      "output": 22515555
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "n": 122333444555666
+      },
+      "output": 122333445445555
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "n": 1221221
+      },
+      "output": 1224444
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "n": 5555544332211
+      },
+      "output": 5555544333144
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "n": 1233322
+      },
+      "output": 1242444
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "n": 4444
+      },
+      "output": 14444
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "n": 122334444
+      },
+      "output": 122666666
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "n": 1222233333
+      },
+      "output": 1223334444
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "n": 1333331
+      },
+      "output": 1422444
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "input": {
+        "s": "0100 "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "s": "10 "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "s": "1111 "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str"
+    ],
+    "args": [
+      "s"
+    ],
+    "class": "Solution",
+    "method": "minOperations"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "minimum-changes-to-make-alternating-binary-string",
+  "schema_version": 1,
+  "seed": "89e9b6d7acdb79dcb663f4acb2e83c17b7625b547a6991e05d9435a0f01c7e1f",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'minOperations'"
+}

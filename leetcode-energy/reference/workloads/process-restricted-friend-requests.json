@@ -1,0 +1,110 @@
+{
+  "cases": [
+    {
+      "input": {
+        "n": 3,
+        "requests": [
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "restrictions": [
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "n": 3,
+        "requests": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "restrictions": [
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "n": 5,
+        "requests": [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        "restrictions": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            3
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int",
+      "List[List[int]]",
+      "List[List[int]]"
+    ],
+    "args": [
+      "n",
+      "restrictions",
+      "requests"
+    ],
+    "class": "Solution",
+    "method": "friendRequests"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "process-restricted-friend-requests",
+  "schema_version": 1,
+  "seed": "fef7575eb4f4699be3f4aa25e1efcfdf08d85bc065de81060fced34098e61132",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'friendRequests'"
+}

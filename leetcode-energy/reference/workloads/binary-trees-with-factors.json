@@ -1,0 +1,43 @@
+{
+  "cases": [
+    {
+      "input": {
+        "arr": [
+          2,
+          4
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "arr": [
+          2,
+          4,
+          5,
+          10
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]"
+    ],
+    "args": [
+      "arr"
+    ],
+    "class": "Solution",
+    "method": "numFactoredBinaryTrees"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "binary-trees-with-factors",
+  "schema_version": 1,
+  "seed": "8a435a2c6c6510c577323f84fb5e74873d57fed6fb8c44c73450cbcf481154b8",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'numFactoredBinaryTrees'"
+}

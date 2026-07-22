@@ -1,0 +1,742 @@
+{
+  "workload_hash": "a11ab3e83d130b660c28ec3f0c9aa71df82104d9f244f56e52e6e12156398bda",
+  "problem": "xor-operation-in-an-array",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 4,
+        "start": 3
+      },
+      "output": 8
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 8,
+        "start": 12
+      },
+      "output": 0
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 7,
+        "start": 2
+      },
+      "output": 0
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 3,
+        "start": 2
+      },
+      "output": 0
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 10,
+        "start": 1
+      },
+      "output": 2
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 5,
+        "start": 0
+      },
+      "output": 8
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 1,
+        "start": 7
+      },
+      "output": 7
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 10,
+        "start": 5
+      },
+      "output": 2
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 8,
+        "start": 2
+      },
+      "output": 16
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 7,
+        "start": 5
+      },
+      "output": 19
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 1,
+        "start": 5
+      },
+      "output": 5
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 10,
+        "start": 999
+      },
+      "output": 30
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 50,
+        "start": 25
+      },
+      "output": 2
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 100,
+        "start": 200
+      },
+      "output": 0
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 15,
+        "start": 2
+      },
+      "output": 0
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 33,
+        "start": 17
+      },
+      "output": 81
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 12,
+        "start": 8
+      },
+      "output": 0
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 750,
+        "start": 10
+      },
+      "output": 1518
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 750,
+        "start": 50
+      },
+      "output": 1598
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 3,
+        "start": 333
+      },
+      "output": 339
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 666,
+        "start": 333
+      },
+      "output": 2
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 500,
+        "start": 250
+      },
+      "output": 1048
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 12,
+        "start": 3
+      },
+      "output": 24
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 9,
+        "start": 1
+      },
+      "output": 17
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 50,
+        "start": 10
+      },
+      "output": 102
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 6,
+        "start": 999
+      },
+      "output": 22
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "n": 8,
+        "start": 11
+      },
+      "output": 16
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "n": 64,
+        "start": 42
+      },
+      "output": 128
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "n": 15,
+        "start": 7
+      },
+      "output": 5
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "n": 80,
+        "start": 600
+      },
+      "output": 0
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "n": 250,
+        "start": 100
+      },
+      "output": 2
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "n": 20,
+        "start": 10
+      },
+      "output": 56
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "n": 30,
+        "start": 42
+      },
+      "output": 78
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "n": 7,
+        "start": 25
+      },
+      "output": 39
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "n": 256,
+        "start": 128
+      },
+      "output": 0
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "n": 400,
+        "start": 400
+      },
+      "output": 0
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "n": 11,
+        "start": 8
+      },
+      "output": 30
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "n": 100,
+        "start": 250
+      },
+      "output": 312
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "n": 20,
+        "start": 11
+      },
+      "output": 56
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "n": 500,
+        "start": 750
+      },
+      "output": 1080
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "n": 500,
+        "start": 500
+      },
+      "output": 0
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "n": 700,
+        "start": 600
+      },
+      "output": 0
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "n": 60,
+        "start": 8
+      },
+      "output": 0
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "n": 100,
+        "start": 999
+      },
+      "output": 1864
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "n": 250,
+        "start": 250
+      },
+      "output": 534
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "n": 8,
+        "start": 15
+      },
+      "output": 16
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "n": 18,
+        "start": 4
+      },
+      "output": 2
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "n": 1000,
+        "start": 0
+      },
+      "output": 0
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "n": 333,
+        "start": 256
+      },
+      "output": 920
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "n": 75,
+        "start": 300
+      },
+      "output": 450
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "n": 128,
+        "start": 99
+      },
+      "output": 256
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "n": 500,
+        "start": 999
+      },
+      "output": 1064
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "n": 100,
+        "start": 50
+      },
+      "output": 200
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "n": 50,
+        "start": 50
+      },
+      "output": 166
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "n": 250,
+        "start": 123
+      },
+      "output": 534
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "n": 999,
+        "start": 0
+      },
+      "output": 1998
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "n": 999,
+        "start": 500
+      },
+      "output": 2498
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "n": 25,
+        "start": 6
+      },
+      "output": 6
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "n": 64,
+        "start": 32
+      },
+      "output": 0
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "n": 20,
+        "start": 12
+      },
+      "output": 0
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "n": 50,
+        "start": 100
+      },
+      "output": 2
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "n": 8,
+        "start": 1
+      },
+      "output": 0
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "n": 30,
+        "start": 15
+      },
+      "output": 70
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "n": 9,
+        "start": 7
+      },
+      "output": 7
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "n": 13,
+        "start": 11
+      },
+      "output": 11
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "n": 20,
+        "start": 3
+      },
+      "output": 40
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "n": 100,
+        "start": 25
+      },
+      "output": 0
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "n": 500,
+        "start": 0
+      },
+      "output": 0
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "n": 120,
+        "start": 750
+      },
+      "output": 304
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "n": 7,
+        "start": 1
+      },
+      "output": 15
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "n": 15,
+        "start": 12
+      },
+      "output": 42
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "n": 50,
+        "start": 0
+      },
+      "output": 2
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "n": 1000,
+        "start": 1
+      },
+      "output": 0
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "n": 333,
+        "start": 222
+      },
+      "output": 222
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "n": 20,
+        "start": 15
+      },
+      "output": 56
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "n": 7,
+        "start": 14
+      },
+      "output": 12
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "n": 1000,
+        "start": 1000
+      },
+      "output": 0
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "n": 800,
+        "start": 150
+      },
+      "output": 1600
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "n": 300,
+        "start": 300
+      },
+      "output": 0
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "n": 8,
+        "start": 100
+      },
+      "output": 0
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "n": 7,
+        "start": 17
+      },
+      "output": 31
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "n": 7,
+        "start": 10
+      },
+      "output": 8
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "n": 666,
+        "start": 128
+      },
+      "output": 2
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "n": 20,
+        "start": 2
+      },
+      "output": 40
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "n": 300,
+        "start": 600
+      },
+      "output": 0
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "n": 12,
+        "start": 42
+      },
+      "output": 104
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "n": 40,
+        "start": 0
+      },
+      "output": 0
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "n": 20,
+        "start": 0
+      },
+      "output": 0
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "n": 80,
+        "start": 12
+      },
+      "output": 0
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "n": 300,
+        "start": 450
+      },
+      "output": 1496
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "n": 999,
+        "start": 1
+      },
+      "output": 1999
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "n": 600,
+        "start": 300
+      },
+      "output": 0
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "cases": [
+    {
+      "input": {
+        "nums1": [
+          7,
+          4
+        ],
+        "nums2": [
+          5,
+          2,
+          8,
+          9
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "nums1": [
+          1,
+          1
+        ],
+        "nums2": [
+          1,
+          1,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "nums1": [
+          7,
+          7,
+          8,
+          3
+        ],
+        "nums2": [
+          1,
+          2,
+          9,
+          7
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "List[int]"
+    ],
+    "args": [
+      "nums1",
+      "nums2"
+    ],
+    "class": "Solution",
+    "method": "numTriplets"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "number-of-ways-where-square-of-number-is-equal-to-product-of-two-numbers",
+  "schema_version": 1,
+  "seed": "a8a937cf0bbeee1c9ba01213e5ce22ed0d12b1425eef1924aeb58b0cd7870ee1",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'numTriplets'"
+}

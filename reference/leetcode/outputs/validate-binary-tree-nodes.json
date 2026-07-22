@@ -1,0 +1,3475 @@
+{
+  "workload_hash": "3cf392c06ea0ae45bcdfff6befd1711794a77341b803cc5b8115721d6934b7e9",
+  "problem": "validate-binary-tree-nodes",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "n": 2,
+        "leftChild": [
+          1,
+          0
+        ],
+        "rightChild": [
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "n": 3,
+        "leftChild": [
+          1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "n": 3,
+        "leftChild": [
+          1,
+          0,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "n": 1,
+        "leftChild": [
+          -1
+        ],
+        "rightChild": [
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "n": 4,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "n": 4,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          4,
+          5,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "n": 3,
+        "leftChild": [
+          1,
+          2,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "n": 13,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          12,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          3,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          0,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          2,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          3,
+          4
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          5,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          6,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          6,
+          7,
+          8,
+          -1,
+          9,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          0
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          5,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          6,
+          7,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          2
+        ],
+        "rightChild": [
+          -1,
+          3,
+          4,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          0,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          -1,
+          5,
+          6,
+          7
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          4,
+          5,
+          6,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          6,
+          7
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          6,
+          7,
+          -1,
+          -1,
+          8,
+          -1,
+          -1,
+          9,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          4,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1,
+          6,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "n": 12,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1,
+          7
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          6,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          -1,
+          5,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          2,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          2,
+          4,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          0
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          3,
+          4,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          6,
+          7,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "n": 11,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          5,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          5,
+          -1,
+          7,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          4,
+          6,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          4,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          2,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          5
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          -1,
+          3,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          5,
+          -1,
+          6,
+          7,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          6,
+          7
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          -1,
+          6,
+          -1,
+          7,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          -1,
+          3,
+          -1,
+          4,
+          -1,
+          5,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          5,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          6,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          -1,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          5,
+          6
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          -1,
+          4,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          6,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          -1,
+          5,
+          6,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          4,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          -1,
+          3,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          4
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          -1,
+          -1,
+          6,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          4,
+          5,
+          7,
+          8,
+          9,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          7,
+          -1,
+          9
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          5,
+          6,
+          8,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          -1,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          7,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          5,
+          6,
+          8,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          5,
+          6,
+          7,
+          -1,
+          8,
+          9,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "n": 12,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          11,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          5,
+          -1,
+          3,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          -1,
+          4,
+          5,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1,
+          8,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          -1,
+          -1,
+          9
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          4,
+          -1,
+          -1,
+          -1,
+          6,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          4
+        ],
+        "rightChild": [
+          2,
+          -1,
+          3,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          -1,
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          4
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          3,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          8,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          4,
+          5,
+          6,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          3,
+          -1
+        ],
+        "rightChild": [
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          3,
+          -1,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          5,
+          6,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          7,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "n": 12,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          -1,
+          6,
+          -1,
+          -1,
+          8,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          5,
+          -1,
+          7,
+          -1,
+          9,
+          -1,
+          10,
+          -1,
+          11,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          3,
+          -1,
+          4
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          -1,
+          9
+        ],
+        "rightChild": [
+          2,
+          -1,
+          -1,
+          -1,
+          5,
+          6,
+          -1,
+          -1,
+          9,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          5,
+          6,
+          7,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          6,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          -1,
+          -1,
+          7,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          -1,
+          -1,
+          5,
+          6,
+          -1,
+          -1,
+          8
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          4,
+          3,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          -1,
+          3,
+          4,
+          5,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_114",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          3,
+          4,
+          -1,
+          5,
+          6,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_115",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          3,
+          5,
+          -1
+        ],
+        "rightChild": [
+          4,
+          -1,
+          -1,
+          -1,
+          6,
+          -1,
+          7,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_116",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          4,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          5,
+          -1,
+          6,
+          7,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_117",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1,
+          8,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_118",
+      "input": {
+        "n": 11,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          5,
+          6,
+          -1,
+          8,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          3,
+          -1,
+          7,
+          -1,
+          -1,
+          9,
+          -1,
+          10,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_119",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          6,
+          7,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          4,
+          5,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_120",
+      "input": {
+        "n": 9,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          4,
+          5,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          3,
+          -1,
+          -1,
+          6,
+          -1,
+          -1,
+          7
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_121",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          3,
+          4,
+          5,
+          6,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          7,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_122",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          6,
+          7
+        ],
+        "rightChild": [
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_123",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_124",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          3,
+          -1,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "rightChild": [
+          -1,
+          2,
+          3,
+          -1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_125",
+      "input": {
+        "n": 5,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          2,
+          3,
+          4,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_126",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_127",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          5,
+          6
+        ],
+        "rightChild": [
+          2,
+          -1,
+          3,
+          4,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_128",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          6,
+          7,
+          8,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          9,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_129",
+      "input": {
+        "n": 8,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          6,
+          7,
+          -1
+        ],
+        "rightChild": [
+          5,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_130",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_131",
+      "input": {
+        "n": 7,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          6,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_132",
+      "input": {
+        "n": 4,
+        "leftChild": [
+          1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          2,
+          3,
+          0,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_133",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          3,
+          -1,
+          -1,
+          4
+        ],
+        "rightChild": [
+          2,
+          5,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_134",
+      "input": {
+        "n": 11,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1,
+          10,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "output": true
+    },
+    {
+      "name": "case_135",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          2,
+          -1,
+          -1,
+          -1,
+          4
+        ],
+        "rightChild": [
+          3,
+          -1,
+          -1,
+          -1,
+          5,
+          -1
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_136",
+      "input": {
+        "n": 6,
+        "leftChild": [
+          1,
+          -1,
+          2,
+          3,
+          -1,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          4,
+          -1,
+          5
+        ]
+      },
+      "output": false
+    },
+    {
+      "name": "case_137",
+      "input": {
+        "n": 10,
+        "leftChild": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          -1
+        ],
+        "rightChild": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          0
+        ]
+      },
+      "output": false
+    }
+  ]
+}

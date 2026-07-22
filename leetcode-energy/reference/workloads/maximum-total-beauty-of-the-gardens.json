@@ -1,0 +1,61 @@
+{
+  "cases": [
+    {
+      "input": {
+        "flowers": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "full": 12,
+        "newFlowers": 7,
+        "partial": 1,
+        "target": 6
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "flowers": [
+          2,
+          4,
+          5,
+          3
+        ],
+        "full": 2,
+        "newFlowers": 10,
+        "partial": 6,
+        "target": 5
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int",
+      "int",
+      "int",
+      "int"
+    ],
+    "args": [
+      "flowers",
+      "newFlowers",
+      "target",
+      "full",
+      "partial"
+    ],
+    "class": "Solution",
+    "method": "maximumBeauty"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "maximum-total-beauty-of-the-gardens",
+  "schema_version": 1,
+  "seed": "c5eefbd6814864b7ac1c1e86d54090f7b9159d52ed9c58e85cc467c859568f46",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'maximumBeauty'"
+}

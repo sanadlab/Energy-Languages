@@ -1,0 +1,68 @@
+{
+  "cases": [
+    {
+      "input": {
+        "n": 3,
+        "nums": [
+          2,
+          5,
+          1,
+          3,
+          4,
+          7
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "n": 4,
+        "nums": [
+          1,
+          2,
+          3,
+          4,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "n": 2,
+        "nums": [
+          1,
+          1,
+          2,
+          2
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[int]",
+      "int"
+    ],
+    "args": [
+      "nums",
+      "n"
+    ],
+    "class": "Solution",
+    "method": "shuffle"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "shuffle-the-array",
+  "schema_version": 1,
+  "seed": "57f8d18bcb3136568cb7f353728cd214df1e342943f843f97c28015096dadba2",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'shuffle'"
+}

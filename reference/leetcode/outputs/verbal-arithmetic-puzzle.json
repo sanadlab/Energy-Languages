@@ -1,0 +1,1702 @@
+{
+  "workload_hash": "3ac689ecaf3ad743f3b4e77a4808c13714dfaf28c082ca282dd5d4bf54b90fbf",
+  "problem": "verbal-arithmetic-puzzle",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "words": [
+          "SEND",
+          "MORE"
+        ],
+        "result": "MONEY"
+      },
+      "output": true
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "words": [
+          "A",
+          "A",
+          "A",
+          "A"
+        ],
+        "result": "AA"
+      },
+      "output": false
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "words": [
+          "LEET",
+          "CODE"
+        ],
+        "result": "POINT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "HIALL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "words": [
+          "AA",
+          "BB"
+        ],
+        "result": "CC"
+      },
+      "output": true
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "words": [
+          "SIX",
+          "SEVEN",
+          "SEVEN"
+        ],
+        "result": "TWENTY"
+      },
+      "output": true
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "words": [
+          "CAT",
+          "DOG"
+        ],
+        "result": "BIRD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "words": [
+          "ABA",
+          "B"
+        ],
+        "result": "ABC"
+      },
+      "output": true
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "words": [
+          "A",
+          "B"
+        ],
+        "result": "C"
+      },
+      "output": true
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "words": [
+          "ABC",
+          "BCD"
+        ],
+        "result": "DEE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "PEACE"
+      },
+      "output": true
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "words": [
+          "LONG",
+          "WORDS",
+          "HERE"
+        ],
+        "result": "ADDITION"
+      },
+      "output": false
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "words": [
+          "CASTLE",
+          "KNIGHT"
+        ],
+        "result": "BATTLE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "words": [
+          "MAX",
+          "MIN"
+        ],
+        "result": "SUM"
+      },
+      "output": true
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "words": [
+          "ALGEBRA",
+          "GEOMETRY"
+        ],
+        "result": "MATHEMATICS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "words": [
+          "BAT",
+          "BALL",
+          "BASE"
+        ],
+        "result": "TABLE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "words": [
+          "EULER",
+          "GAUSS"
+        ],
+        "result": "ARITHMETIC"
+      },
+      "output": false
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "words": [
+          "COMPUTER",
+          "SCIENCE"
+        ],
+        "result": "DISCOVERY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "words": [
+          "FAST",
+          "CAR"
+        ],
+        "result": "RACING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "words": [
+          "HEAL",
+          "HURT"
+        ],
+        "result": "BALANCE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "words": [
+          "MATH",
+          "ENGLISH",
+          "SCIENCE"
+        ],
+        "result": "CURRICULUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "PYTHON"
+      },
+      "output": false
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "words": [
+          "SAINT",
+          "SEER"
+        ],
+        "result": "VISION"
+      },
+      "output": false
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON",
+          "STAR"
+        ],
+        "result": "GALAXY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "words": [
+          "SNOW",
+          "ICE"
+        ],
+        "result": "COLD"
+      },
+      "output": true
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "HAPPY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "words": [
+          "A",
+          "BB",
+          "CCC",
+          "DDDD"
+        ],
+        "result": "E"
+      },
+      "output": false
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "DISPATCH"
+      },
+      "output": false
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "words": [
+          "KNIGHT",
+          "KNIGHT"
+        ],
+        "result": "WARLORD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "words": [
+          "ZERO",
+          "ONE",
+          "TWO",
+          "THREE"
+        ],
+        "result": "SIX"
+      },
+      "output": false
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "words": [
+          "FIVE",
+          "NINE",
+          "ELEVEN"
+        ],
+        "result": "TWENTYFIVE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "words": [
+          "True",
+          "False"
+        ],
+        "result": "PARADOX"
+      },
+      "output": false
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "words": [
+          "STAR",
+          "SHIP"
+        ],
+        "result": "GALAXY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "words": [
+          "TEN",
+          "TEN",
+          "TEN"
+        ],
+        "result": "THIRTY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "words": [
+          "HOUSE",
+          "DOG"
+        ],
+        "result": "FAMILY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "words": [
+          "MATH",
+          "ROCKS"
+        ],
+        "result": "LEARNING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "words": [
+          "SIX",
+          "EIGHT",
+          "TEN"
+        ],
+        "result": "TWENTYFOUR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA"
+        ],
+        "result": "GRAPE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "words": [
+          "ONE",
+          "TWO",
+          "THREE",
+          "FOUR",
+          "FIVE"
+        ],
+        "result": "SUMUP"
+      },
+      "output": false
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "words": [
+          "FOUR",
+          "FIVE",
+          "SIX"
+        ],
+        "result": "FIFTEEN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "words": [
+          "UP",
+          "DOWN"
+        ],
+        "result": "ZERO"
+      },
+      "output": true
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON"
+        ],
+        "result": "STAR"
+      },
+      "output": true
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "words": [
+          "BIG",
+          "DOG"
+        ],
+        "result": "ANIMAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "PLANETS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "words": [
+          "MOON",
+          "EARTH"
+        ],
+        "result": "UNIVERSE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA",
+          "CHERRY"
+        ],
+        "result": "FRUITBOWL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "words": [
+          "HAPPY",
+          "BIRTHDAY"
+        ],
+        "result": "CELEBRATE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "words": [
+          "ABACAXI",
+          "MANGO",
+          "KIWI"
+        ],
+        "result": "FRUITS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "words": [
+          "CAT",
+          "DOG",
+          "MOUSE"
+        ],
+        "result": "PIG"
+      },
+      "output": false
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "words": [
+          "UNIVERSAL",
+          "GALAXY",
+          "EARTH"
+        ],
+        "result": "COSMOS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "words": [
+          "BIRD",
+          "FLY",
+          "HIGH"
+        ],
+        "result": "FLIGHT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "words": [
+          "ALICE",
+          "BOB"
+        ],
+        "result": "GAME"
+      },
+      "output": false
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "words": [
+          "RIGHT",
+          "WRONG"
+        ],
+        "result": "False"
+      },
+      "output": false
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "words": [
+          "CAT",
+          "DOG",
+          "MOUSE"
+        ],
+        "result": "CLAW"
+      },
+      "output": false
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "words": [
+          "ALICE",
+          "BOB",
+          "CHARLIE"
+        ],
+        "result": "FRIENDSHIP"
+      },
+      "output": false
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "words": [
+          "PHOENIX",
+          "DRAGON"
+        ],
+        "result": "MYTHICAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "words": [
+          "PYTHON",
+          "ROCKS"
+        ],
+        "result": "PROGRAM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "words": [
+          "FLY",
+          "FLY",
+          "HIGH"
+        ],
+        "result": "SKYLINE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "words": [
+          "SEND",
+          "MORE",
+          "MONEY"
+        ],
+        "result": "TWICE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "words": [
+          "UNO",
+          "DOS",
+          "TRES"
+        ],
+        "result": "SEIS"
+      },
+      "output": true
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "words": [
+          "WIZARD",
+          "WAND"
+        ],
+        "result": "MAGIC"
+      },
+      "output": false
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "words": [
+          "LUCK",
+          "IN",
+          "THE",
+          "DRAW"
+        ],
+        "result": "SUCCESS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "words": [
+          "STAR",
+          "NIGHT"
+        ],
+        "result": "TWILIGHT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON",
+          "STARS"
+        ],
+        "result": "SKYLINE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "words": [
+          "BLACK",
+          "WHITE",
+          "GRAY"
+        ],
+        "result": "COLORS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "words": [
+          "JAVA",
+          "PYTHON",
+          "CPLUSPLUS"
+        ],
+        "result": "PROGRAMMING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "words": [
+          "AARDVARK",
+          "ANTELOPE"
+        ],
+        "result": "MAMMALS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "words": [
+          "NINE",
+          "NINE"
+        ],
+        "result": "EIGHTEEN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "words": [
+          "ALICE",
+          "BOB",
+          "CHARLIE"
+        ],
+        "result": "FICTION"
+      },
+      "output": false
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "words": [
+          "ZERO",
+          "ONE",
+          "TWO",
+          "THREE"
+        ],
+        "result": "SUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "words": [
+          "MAGIC",
+          "WAND"
+        ],
+        "result": "WIZARD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "words": [
+          "JAVA",
+          "PYTHON"
+        ],
+        "result": "SCRIPT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "words": [
+          "KNIGHT",
+          "BISHOP"
+        ],
+        "result": "CHECKMATE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "words": [
+          "COMPUTER",
+          "SCIENCE",
+          "PROGRAMMING"
+        ],
+        "result": "DEVELOPMENT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "words": [
+          "EARTH",
+          "MOON"
+        ],
+        "result": "UNIVERSE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "words": [
+          "SIXTY",
+          "SIXTY"
+        ],
+        "result": "ONETWENTY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "words": [
+          "SNOW",
+          "FALL"
+        ],
+        "result": "SNOWBALL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "words": [
+          "FALCON",
+          "HAWK"
+        ],
+        "result": "BIRD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA"
+        ],
+        "result": "GRAPES"
+      },
+      "output": false
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "words": [
+          "ZEBRA",
+          "ELEPHANT"
+        ],
+        "result": "WILDLIFE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "words": [
+          "ZERO",
+          "ONE"
+        ],
+        "result": "SUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "words": [
+          "EARTH",
+          "WATER"
+        ],
+        "result": "PLANET"
+      },
+      "output": false
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA",
+          "CHERRY"
+        ],
+        "result": "FRUIT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "words": [
+          "ONE",
+          "TWO",
+          "THREE",
+          "FOUR"
+        ],
+        "result": "TEN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "words": [
+          "ONE",
+          "TWO",
+          "THREE",
+          "FOUR"
+        ],
+        "result": "SUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "words": [
+          "MATH",
+          "IS",
+          "FUN"
+        ],
+        "result": "JOKES"
+      },
+      "output": false
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "words": [
+          "DOG",
+          "CAT"
+        ],
+        "result": "ANIMAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "words": [
+          "GREEN",
+          "BLUE",
+          "YELLOW"
+        ],
+        "result": "COLORS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "words": [
+          "ZERO",
+          "ONE",
+          "TWO",
+          "THREE"
+        ],
+        "result": "FIVE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "words": [
+          "MAT",
+          "ADD",
+          "SUB"
+        ],
+        "result": "SUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "words": [
+          "KANGAROO",
+          "KANGAROO",
+          "KANGAROO"
+        ],
+        "result": "JUMPOUTS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "words": [
+          "OCEAN",
+          "SEA",
+          "LAKE"
+        ],
+        "result": "WATERBODY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "words": [
+          "WITCH",
+          "WAND"
+        ],
+        "result": "MAGIC"
+      },
+      "output": true
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "words": [
+          "HAPPY",
+          "JOY"
+        ],
+        "result": "BLISS"
+      },
+      "output": true
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "words": [
+          "STAR",
+          "PLANET",
+          "GALAXY"
+        ],
+        "result": "COSMOS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "words": [
+          "FAST",
+          "SLOW"
+        ],
+        "result": "BALANCE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "words": [
+          "LEFT",
+          "RIGHT"
+        ],
+        "result": "EQUAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "words": [
+          "COOL",
+          "DRINK"
+        ],
+        "result": "REFRESH"
+      },
+      "output": false
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "words": [
+          "MAGICAL",
+          "REALM"
+        ],
+        "result": "MYSTERY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "words": [
+          "LEARN",
+          "PYTHON"
+        ],
+        "result": "CODEING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "words": [
+          "CAR",
+          "BIKE"
+        ],
+        "result": "VEHICLE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "words": [
+          "HEART",
+          "SOUL"
+        ],
+        "result": "LOVE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "words": [
+          "MATH",
+          "IS",
+          "FUN"
+        ],
+        "result": "GAMES"
+      },
+      "output": false
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "words": [
+          "PARIS",
+          "BERLIN"
+        ],
+        "result": "ROME"
+      },
+      "output": false
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "words": [
+          "ABCDEFGHIJK",
+          "LMNOPQRS"
+        ],
+        "result": "TUVWXYZ"
+      },
+      "output": false
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON"
+        ],
+        "result": "AURA"
+      },
+      "output": true
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "words": [
+          "MATH",
+          "SCI",
+          "ENG"
+        ],
+        "result": "STUDY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "words": [
+          "UNICORN",
+          "PEGASUS"
+        ],
+        "result": "MYTHOLOGY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON",
+          "STAR"
+        ],
+        "result": "SKY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "words": [
+          "ALPHA",
+          "BETA",
+          "GAMMA"
+        ],
+        "result": "DELTA"
+      },
+      "output": true
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "words": [
+          "PYTHON",
+          "JAVA"
+        ],
+        "result": "SCRIPT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "words": [
+          "CLOCK",
+          "BELL"
+        ],
+        "result": "TICKTOCK"
+      },
+      "output": false
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "words": [
+          "DAY",
+          "NIGHT"
+        ],
+        "result": "TIMELESS"
+      },
+      "output": false
+    },
+    {
+      "name": "case_114",
+      "input": {
+        "words": [
+          "TEN",
+          "TWO"
+        ],
+        "result": "TWELVE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_115",
+      "input": {
+        "words": [
+          "FAST",
+          "RUN",
+          "JUMP"
+        ],
+        "result": "ATHLETE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_116",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA"
+        ],
+        "result": "CHERRY"
+      },
+      "output": true
+    },
+    {
+      "name": "case_117",
+      "input": {
+        "words": [
+          "ALCHEMY",
+          "ENCHANT"
+        ],
+        "result": "MAGICAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_118",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "PEACEFUL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_119",
+      "input": {
+        "words": [
+          "PYTHON",
+          "JAVA",
+          "CPLUS"
+        ],
+        "result": "PROGRAMMING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_120",
+      "input": {
+        "words": [
+          "PYTHON",
+          "JAVA"
+        ],
+        "result": "SCRIPT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_121",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON",
+          "STAR"
+        ],
+        "result": "UNIVERSAL"
+      },
+      "output": false
+    },
+    {
+      "name": "case_122",
+      "input": {
+        "words": [
+          "MOUNTAIN",
+          "CLIMBER"
+        ],
+        "result": "ADVENTURE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_123",
+      "input": {
+        "words": [
+          "PYTHON",
+          "JAVA",
+          "CPLUSPLUS"
+        ],
+        "result": "PROGRAMMING"
+      },
+      "output": false
+    },
+    {
+      "name": "case_124",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "HALLO"
+      },
+      "output": false
+    },
+    {
+      "name": "case_125",
+      "input": {
+        "words": [
+          "ONE",
+          "TWO",
+          "THREE"
+        ],
+        "result": "SIX"
+      },
+      "output": false
+    },
+    {
+      "name": "case_126",
+      "input": {
+        "words": [
+          "ABCDE",
+          "FGHIJ"
+        ],
+        "result": "KLMNO"
+      },
+      "output": false
+    },
+    {
+      "name": "case_127",
+      "input": {
+        "words": [
+          "SKY",
+          "TREE"
+        ],
+        "result": "FOREST"
+      },
+      "output": false
+    },
+    {
+      "name": "case_128",
+      "input": {
+        "words": [
+          "PI",
+          "E"
+        ],
+        "result": "CIRCLE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_129",
+      "input": {
+        "words": [
+          "FOUR",
+          "FIVE",
+          "SIX"
+        ],
+        "result": "FIFTEEN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_130",
+      "input": {
+        "words": [
+          "RED",
+          "BLUE"
+        ],
+        "result": "COLOR"
+      },
+      "output": false
+    },
+    {
+      "name": "case_131",
+      "input": {
+        "words": [
+          "JUMP",
+          "HIGH",
+          "LONG"
+        ],
+        "result": "JUMPROPE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_132",
+      "input": {
+        "words": [
+          "SUN",
+          "MOON",
+          "STAR"
+        ],
+        "result": "PLANET"
+      },
+      "output": false
+    },
+    {
+      "name": "case_133",
+      "input": {
+        "words": [
+          "HIGH",
+          "LOW"
+        ],
+        "result": "AMPLITUDE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_134",
+      "input": {
+        "words": [
+          "ALPACA",
+          "ANIMAL",
+          "ZOO"
+        ],
+        "result": "WILDLIFE"
+      },
+      "output": false
+    },
+    {
+      "name": "case_135",
+      "input": {
+        "words": [
+          "HAPPY",
+          "JOY"
+        ],
+        "result": "HARMONY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_136",
+      "input": {
+        "words": [
+          "SPY",
+          "SPY"
+        ],
+        "result": "QUIZ"
+      },
+      "output": true
+    },
+    {
+      "name": "case_137",
+      "input": {
+        "words": [
+          "APPLE",
+          "BANANA"
+        ],
+        "result": "FRUIT"
+      },
+      "output": false
+    },
+    {
+      "name": "case_138",
+      "input": {
+        "words": [
+          "HAPPY",
+          "SAD"
+        ],
+        "result": "JOY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_139",
+      "input": {
+        "words": [
+          "CRYPT",
+          "GRAPH",
+          "DRY"
+        ],
+        "result": "DRYRUN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_140",
+      "input": {
+        "words": [
+          "GENIE",
+          "BOTTLE"
+        ],
+        "result": "WISHES"
+      },
+      "output": false
+    },
+    {
+      "name": "case_141",
+      "input": {
+        "words": [
+          "RED",
+          "BLUE"
+        ],
+        "result": "GREEN"
+      },
+      "output": false
+    },
+    {
+      "name": "case_142",
+      "input": {
+        "words": [
+          "HELLO",
+          "WORLD"
+        ],
+        "result": "HELLOWORLD"
+      },
+      "output": false
+    },
+    {
+      "name": "case_143",
+      "input": {
+        "words": [
+          "BIRD",
+          "FLY"
+        ],
+        "result": "SKY"
+      },
+      "output": false
+    },
+    {
+      "name": "case_144",
+      "input": {
+        "words": [
+          "MYTH",
+          "HERO"
+        ],
+        "result": "LEGEND"
+      },
+      "output": false
+    },
+    {
+      "name": "case_145",
+      "input": {
+        "words": [
+          "Babbage",
+          "Difference",
+          "Engine"
+        ],
+        "result": "Calculator"
+      },
+      "output": false
+    },
+    {
+      "name": "case_146",
+      "input": {
+        "words": [
+          "ZERO",
+          "ONE",
+          "TWO",
+          "THREE"
+        ],
+        "result": "SUM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_147",
+      "input": {
+        "words": [
+          "PYTHON",
+          "JAVA",
+          "CPP"
+        ],
+        "result": "PROGRAM"
+      },
+      "output": false
+    },
+    {
+      "name": "case_148",
+      "input": {
+        "words": [
+          "TREE",
+          "FOREST"
+        ],
+        "result": "GREEN"
+      },
+      "output": false
+    }
+  ]
+}

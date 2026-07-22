@@ -637,6 +637,115 @@ def leetcode_workload_run_cmd(
     console.print(json.dumps(result, sort_keys=True))
 
 
+@app.command("leetcode-workload-measure")
+def leetcode_workload_measure_cmd(
+    language: str = typer.Option("python", help="Energy-Languages key."),
+    problem: str = typer.Option(..., help="LeetCode title slug."),
+    source: Path = typer.Option(..., help="Path to solution source file."),
+    workload: Path = typer.Option(..., help="Shared workload JSON path."),
+    warmup: int = typer.Option(1, help="Unmeasured warm-up passes over the case set."),
+    measure: int = typer.Option(3, help="Measured passes; per-case median reported."),
+    language_folder: str = typer.Option(
+        "Python",
+        help="Energy-Languages folder name — controls where JSONL is written "
+             "(<..>/<language_folder>.jsonl). Should match the parent-dir "
+             "name of the cell so the arena runner's JSONL parser picks it up.",
+    ),
+) -> None:
+    """Run one local LeetCode workload for wall-time + energy MEASUREMENT.
+
+    Complements leetcode-workload-run (correctness). Runs the solution
+    over every case in the workload, `warmup + measure` times, and emits
+    one JSONL row per iteration to `../<language_folder>.jsonl` — the
+    same shape the CLBG codecarbon_runner writes so the arena's
+    clbg_handler picks it up without a branch.
+
+    Energy: when codecarbon is importable, each measure iteration is
+    wrapped in an EmissionsTracker; the resulting kWh is converted to
+    microjoules and stored in `rapl_pkg_delta_raw` with
+    `energy_source: "codecarbon"`. When it isn't, rows still have
+    valid wall_ms but energy stays 0 / `energy_source: "none"`.
+    """
+    if language != "python":
+        console.print(
+            "[red]leetcode-workload-measure currently supports python only[/red]"
+        )
+        raise typer.Exit(code=2)
+    workload_data = leetcode._read_json(workload)
+    if workload_data.get("skipped"):
+        console.print(json.dumps({
+            "ok": False, "problem": problem,
+            "skipped": True, "reason": workload_data.get("skipped_reason"),
+        }))
+        raise typer.Exit(code=1)
+
+    # Emit a JSONL trace in the same shape codecarbon_runner writes so
+    # the arena runner's JSONL parser (clbg_handler._parse_metrics)
+    # honours it verbatim.
+    from perfarena.runners.codecarbon_runner import _write_row, _kwh_to_uj
+    try:
+        from codecarbon import EmissionsTracker
+    except ImportError:                                              # noqa: E501
+        EmissionsTracker = None                                      # type: ignore[assignment]
+
+    out_path = Path(f"../{language_folder}.jsonl")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out = out_path.open("a")
+    try:
+        # Warmup iterations — write phase=warmup rows without energy.
+        for i in range(warmup):
+            r = leetcode.measure_python_workload(
+                source, workload_data, warmup=0, measure=1,
+            )
+            _write_row(
+                out, test=problem, language=language_folder,
+                iteration=i + 1, phase="warmup",
+                wall_ms=r["total_wall_ms"], energy_uj=0,
+                energy_source="none", samples=len(r["per_case"]),
+                exit_code=0,
+            )
+
+        # Measure iterations — each wrapped in codecarbon when available.
+        for i in range(measure):
+            tracker = None
+            if EmissionsTracker is not None:
+                try:
+                    tracker = EmissionsTracker(
+                        project_name="perfarena-leetcode-measure",
+                        log_level="error",
+                        save_to_file=False, save_to_api=False,
+                        save_to_logger=False,
+                    )
+                    tracker.start()
+                except Exception:                                    # noqa: BLE001
+                    tracker = None
+            r = leetcode.measure_python_workload(
+                source, workload_data, warmup=0, measure=1,
+            )
+            energy_uj = 0
+            energy_source = "none"
+            if tracker is not None:
+                try:
+                    tracker.stop()
+                    data = tracker.final_emissions_data
+                    if data is not None and data.energy_consumed is not None:
+                        energy_uj = _kwh_to_uj(data.energy_consumed)
+                        energy_source = "codecarbon"
+                except Exception:                                    # noqa: BLE001
+                    pass
+            _write_row(
+                out, test=problem, language=language_folder,
+                iteration=warmup + i + 1, phase="measure",
+                wall_ms=r["total_wall_ms"], energy_uj=energy_uj,
+                energy_source=energy_source,
+                samples=len(r["per_case"]), exit_code=0,
+            )
+    finally:
+        out.close()
+    console.print(f"leetcode-workload-measure: {problem} → {out_path} "
+                  f"(warmup={warmup} measure={measure})")
+
+
 @app.command("leetcode-curated-sync")
 def leetcode_curated_sync_cmd(
     dataset: Optional[Path] = typer.Option(

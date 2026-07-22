@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "input": {
+        "words": [
+          "a ",
+          "b ",
+          "ba ",
+          "bca ",
+          "bda ",
+          "bdca "
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "words": [
+          "xbc ",
+          "pcxbcf ",
+          "xb ",
+          "cxbc ",
+          "pcxbc "
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "words": [
+          "abcd ",
+          "dbqca "
+        ]
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[str]"
+    ],
+    "args": [
+      "words"
+    ],
+    "class": "Solution",
+    "method": "longestStrChain"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "longest-string-chain",
+  "schema_version": 1,
+  "seed": "953e581ce089b5dd0c12ff4448540a0d25afb7fbfc15f9a0b94874f502e2425d",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'longestStrChain'"
+}

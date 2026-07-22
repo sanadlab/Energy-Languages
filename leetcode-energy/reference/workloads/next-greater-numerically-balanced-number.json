@@ -1,0 +1,42 @@
+{
+  "cases": [
+    {
+      "input": {
+        "n": 1
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "n": 1000
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "n": 3000
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "int"
+    ],
+    "args": [
+      "n"
+    ],
+    "class": "Solution",
+    "method": "nextBeautifulNumber"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "next-greater-numerically-balanced-number",
+  "schema_version": 1,
+  "seed": "57a023a6d7ee0a7dfb5d9d92a035ec40e59dd3974c78c4cd4bf288bf9baf2350",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'nextBeautifulNumber'"
+}

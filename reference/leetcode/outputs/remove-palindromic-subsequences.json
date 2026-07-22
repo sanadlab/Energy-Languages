@@ -1,0 +1,1203 @@
+{
+  "workload_hash": "149b02ba61fcf3a609243cecd806707a63c7e9dd5dc683f9999bd03c2e2e049a",
+  "problem": "remove-palindromic-subsequences",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "s": "b"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "s": "aabbab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "s": "baba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "s": "aababb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "s": "abbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "s": "ab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "s": "a"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "s": "ababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "s": "bbaabaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "s": "aabbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "s": "abb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "s": "baabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "s": "aaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "s": "bbbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "s": "abab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "s": "baaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "s": "aaaaaaaaaabbbbbbbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "s": "babbabbbaba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "s": "baabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabbaabba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "s": "bababababababababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "s": "bbaabbababb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "s": "baaabaaaaaabbaaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "s": "aabbaabbaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "s": "baabbaab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "s": "baaababbabaababbabaababbabaababbabaababbabaababbabaababbabaababbabaababbabaababbabaababbabaababb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "s": "abaababaababaababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "s": "aaabbaabbaabbaabba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "s": "aabaaaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "s": "bbaaabbaaabbaaabbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "s": "aabbabbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "s": "bababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "s": "aaaaaaaabbaaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "s": "aaabbbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbbabbaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "s": "aabbbbbaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "s": "abbbabbbabbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "s": "abbaababbababbab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "s": "aabbaabbabbaabbaabbabbaabbabbaabbaabbabbaabbabbaabbaabbabbaabbaabbabbaabbaabbabbaabbaabbabbaabbaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "s": "baabbaabbbaaba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "s": "bbbbbaaaaaaaaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "s": "abbaabbbaabbaabbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "s": "aaabbbabaabbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "s": "aaabbbbaaaaabbbbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "s": "bbbbbaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "s": "aabbbaaabbbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "s": "bbbbbaaabbbbbaaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "s": "baababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "s": "bbbaabbaabbaabbaabbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "s": "bbbbbbbbbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "s": "bbaabbaabbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "s": "abbbabbbabbbbaba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "s": "babbabbabbabbabbab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "s": "abaaabbaaabbbaaaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "s": "aabbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "s": "aabbaabbbaabbaabbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "s": "bbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "s": "bbaabbbaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "s": "bbbbbbbbbbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "s": "abbaaabaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "s": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "s": "ababbbababbbabaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "s": "abbaabbaabbaabba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "s": "aabbbbaaabaaaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "s": "abbbabbbabbbabbbabbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "s": "babababababababab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "s": "abbaabbbaabbaabbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "s": "bbaabaaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "s": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "s": "bababababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "s": "aaabbbaaabbbbaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "s": "aaaaaaaaaabbbbbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "s": "aabbaaabbbaaabbaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "s": "ababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "s": "aaaaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "s": "abababababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "s": "abababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "s": "aaaaaaaaaabbbbbbbbbbaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaabbbbbbbbbbaaaaaaaaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "s": "baaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaabbbbbbbbbbaaaaaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "s": "abababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "s": "ababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "s": "aabaaabbaaaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "s": "abababbabababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "s": "baaaabbbaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "s": "bbbbbbbbaaaaaabbbbbbbbaaaaaabbbbbbbbaaaaaabbbbbbbbaaaaaabbbbbbbbaaaaaabbbbbbbbaaaaaabbbbbbbbaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "s": "aaaaaaaaaaaaaaaaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "s": "bbbababaabbabababb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "s": "bbbbabbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "s": "aaaaaaabbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "s": "bbaabbbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "s": "baabbaaabbbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "s": "abbbbbba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "s": "bbbbbbbbbbbbbbbbbbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "s": "babbbbabbbbabbbbab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "s": "abababababababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "s": "aabbbaaaabbbbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "s": "abaabaabaabaabaaba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "s": "aabbaabbbaaabbbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "s": "aabababababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "s": "aaaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "s": "abbaabbbaabbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "s": "ababababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "s": "baabbaabbaabbaab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "s": "ababbababbab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "s": "abababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "s": "abaabaabaabaabaabaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "s": "abababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "s": "bbbbbaaabbbbabab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "s": "bababababababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "s": "babababab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "s": "aabbabbbabaabbabbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "s": "abababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "s": "aabbbbbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "s": "bbbaaaabbbbbaaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "s": "aabbaabbaabbaabbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_114",
+      "input": {
+        "s": "ababbbabaabab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_115",
+      "input": {
+        "s": "aaaaaaaaaabbbaaaaaaaaaaabbbaaaaaaaaaaabbbaaaaaaaaaaabbbaaaaaaaaaaabbbaaaaaaaaaaabbbaaaaaaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_116",
+      "input": {
+        "s": "babab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_117",
+      "input": {
+        "s": "abababababababababababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_118",
+      "input": {
+        "s": "aabbaabbbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_119",
+      "input": {
+        "s": "babababababababababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_120",
+      "input": {
+        "s": "abbabbabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_121",
+      "input": {
+        "s": "bbbbbaaaabaaaabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_122",
+      "input": {
+        "s": "bbbbbbbbbaaaaaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_123",
+      "input": {
+        "s": "ababababbababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_124",
+      "input": {
+        "s": "ababbbaba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_125",
+      "input": {
+        "s": "abababaabbabababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_126",
+      "input": {
+        "s": "bbbbbbbbbbbbbbbbbb"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_127",
+      "input": {
+        "s": "aabbaabbaabbaabbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_128",
+      "input": {
+        "s": "aaaaabbbbbaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_129",
+      "input": {
+        "s": "aaaaaaaaaabbbbbbbbbbbaaaaaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_130",
+      "input": {
+        "s": "aabbaabbabbaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_131",
+      "input": {
+        "s": "bbaabbaabbaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_132",
+      "input": {
+        "s": "aabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_133",
+      "input": {
+        "s": "bababbbabababbbaba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_134",
+      "input": {
+        "s": "baabbaabbaabba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_135",
+      "input": {
+        "s": "ababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_136",
+      "input": {
+        "s": "aabbabba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_137",
+      "input": {
+        "s": "ababbbbaababbbbaabab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_138",
+      "input": {
+        "s": "bbaaabaaabaaaaabbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_139",
+      "input": {
+        "s": "bababababab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_140",
+      "input": {
+        "s": "bababababababab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_141",
+      "input": {
+        "s": "bbaaaabbbbaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_142",
+      "input": {
+        "s": "bbbaabbbbabbbabbbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_143",
+      "input": {
+        "s": "abbaabbaabba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_144",
+      "input": {
+        "s": "bbaabbaabbaabbaabbaabbaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_145",
+      "input": {
+        "s": "abaababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_146",
+      "input": {
+        "s": "ababbbababbbababbbab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_147",
+      "input": {
+        "s": "ababbababbabab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_148",
+      "input": {
+        "s": "baaaaab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_149",
+      "input": {
+        "s": "aababbabaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_150",
+      "input": {
+        "s": "aabbaaabbaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_151",
+      "input": {
+        "s": "abababababababababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_152",
+      "input": {
+        "s": "aaaaaaaaabbbbbbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_153",
+      "input": {
+        "s": "bbbaaabbbbaaaabbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_154",
+      "input": {
+        "s": "bbaaaaabbbbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_155",
+      "input": {
+        "s": "abbbbaaaaabbba"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_156",
+      "input": {
+        "s": "abbaabba"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_157",
+      "input": {
+        "s": "aaaaaaaaaaaaaaaaaaa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_158",
+      "input": {
+        "s": "aabbaaaabbbbaaabbbbaaaabbbaaabbbbaaaabbbaaabbbbaaaabbbaaabbbbaaaabbbaaabbbbaaaabbbaaabbbbaaaabbbbaaaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_159",
+      "input": {
+        "s": "abbbbabbbbabbbbabbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_160",
+      "input": {
+        "s": "ababababa"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_161",
+      "input": {
+        "s": "abababbabaabbababbab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_162",
+      "input": {
+        "s": "babbbbbbbabbbbbbb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_163",
+      "input": {
+        "s": "bbaaaaaabbbaaaaaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_164",
+      "input": {
+        "s": "abababababababababababababababababababababababababababababababababababababababababababababababababab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_165",
+      "input": {
+        "s": "bbbbbaaaaabbbbbaaaaa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_166",
+      "input": {
+        "s": "ababbababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_167",
+      "input": {
+        "s": "babababa"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_168",
+      "input": {
+        "s": "aababbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabbabbaabb"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_169",
+      "input": {
+        "s": "baabbaabbaab"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_170",
+      "input": {
+        "s": "ababbbababbbabaab"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_171",
+      "input": {
+        "s": "ababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+      },
+      "output": 2
+    }
+  ]
+}

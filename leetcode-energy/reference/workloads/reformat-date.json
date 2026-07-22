@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "input": {
+        "date": "20th Oct 2052 "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "date": "6th Jun 1933 "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "date": "26th May 1960 "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str"
+    ],
+    "args": [
+      "date"
+    ],
+    "class": "Solution",
+    "method": "reformatDate"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "reformat-date",
+  "schema_version": 1,
+  "seed": "19953454c12ba747f82395c366dec870ad2117529578551746850b63abb19801",
+  "skipped": true,
+  "skipped_reason": "visible example validation failed",
+  "validation_failures": [
+    {
+      "actual": "2052-10-20",
+      "expected": "2052-10-20 ",
+      "name": "example_1"
+    },
+    {
+      "actual": "1933-06-06",
+      "expected": "1933-06-06 ",
+      "name": "example_2"
+    },
+    {
+      "actual": "1960-05-26",
+      "expected": "1960-05-26 ",
+      "name": "example_3"
+    }
+  ]
+}

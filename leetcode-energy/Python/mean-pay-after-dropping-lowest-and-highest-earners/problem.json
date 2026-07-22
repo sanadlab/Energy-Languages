@@ -1,0 +1,33 @@
+{
+  "code_snippets": {
+    "c": "double computeMeanWithoutExtremes(int* salary, int salarySize) {\n    \n}",
+    "cpp": "class Solution {\npublic:\n    double computeMeanWithoutExtremes(vector<int>& salary) {\n        \n    }\n};",
+    "csharp": "public class Solution {\n    public double Average(int[] salary) {\n        \n    }\n}",
+    "dart": "class Solution {\n  double computeMeanWithoutExtremes(List<int> salary) {\n    \n  }\n}",
+    "elixir": "defmodule Solution do\n  @spec computeMeanWithoutExtremes(salary :: [integer]) :: float\n  def computeMeanWithoutExtremes(salary) do\n    \n  end\nend",
+    "erlang": "-spec computeMeanWithoutExtremes(Salary :: [integer()]) -> float().\ncomputeMeanWithoutExtremes(Salary) ->\n  .",
+    "golang": "func computeMeanWithoutExtremes(salary []int) float64 {\n    \n}",
+    "java": "class Solution {\n    public double computeMeanWithoutExtremes(int[] salary) {\n        \n    }\n}",
+    "javascript": "/**\n * @param {number[]} salary\n * @return {number}\n */\nvar computeMeanWithoutExtremes = function(salary) {\n    \n};",
+    "kotlin": "class Solution {\n    fun computeMeanWithoutExtremes(salary: IntArray): Double {\n        \n    }\n}",
+    "php": "class Solution {\n\n    /**\n     * @param Integer[] $salary\n     * @return Float\n     */\n    function computeMeanWithoutExtremes($salary) {\n        \n    }\n}",
+    "python": "class Solution(object):\n    def computeMeanWithoutExtremes(self, salary):\n        \"\"\"\n        :type salary: List[int]\n        :rtype: float\n        \"\"\"\n        ",
+    "python3": "class Solution:\n    def computeMeanWithoutExtremes(self, salary: List[int]) -> float:\n        ",
+    "racket": "(define/contract (computeMeanWithoutExtremes salary)\n  (-> (listof exact-integer?) flonum?)\n  )",
+    "ruby": "# @param {Integer[]} salary\n# @return {Float}\ndef computeMeanWithoutExtremes(salary)\n    \nend",
+    "rust": "impl Solution {\n    pub fn computeMeanWithoutExtremes(salary: Vec<i32>) -> f64 {\n        \n    }\n}",
+    "scala": "object Solution {\n    def computeMeanWithoutExtremes(salary: Array[Int]): Double = {\n        \n    }\n}",
+    "swift": "class Solution {\n    func computeMeanWithoutExtremes(_ salary: [Int]) -> Double {\n        \n    }\n}",
+    "typescript": "function computeMeanWithoutExtremes(salary: number[]): number {\n    \n};"
+  },
+  "content": "You are provided with an array of **unique** integers `salary`, in which `salary[i]` denotes the pay of the `ith` worker.\n\nReturn _the mean pay of workers after removing the smallest and largest pay values_. Results within `10-5` of the true value will be considered correct.\n\n**Example 1:**\n\n**Input:** salary = \\[4000,3000,1000,2000\\]\n**Output:** 2500.00000\n**Explanation:** Minimum salary and maximum salary are 1000 and 4000 respectively.\nAverage salary excluding minimum and maximum salary is (2000+3000) / 2 = 2500\n\n**Example 2:**\n\n**Input:** salary = \\[1000,2000,3000\\]\n**Output:** 2000.00000\n**Explanation:** Minimum salary and maximum salary are 1000 and 3000 respectively.\nAverage salary excluding minimum and maximum salary is (2000) / 1 = 2000\n\n**Constraints:**\n\n*   `3 <= salary.length <= 100`\n*   `1000 <= salary[i] <= 106`\n*   All the integers of `salary` are **unique**.",
+  "hints": null,
+  "id": 100,
+  "level": "Easy",
+  "tags": [
+    "Array",
+    "Sorting"
+  ],
+  "title": "Mean Pay After Dropping Lowest And Highest Earners",
+  "title_slug": "mean-pay-after-dropping-lowest-and-highest-earners"
+}

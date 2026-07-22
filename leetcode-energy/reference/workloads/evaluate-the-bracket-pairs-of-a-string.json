@@ -1,0 +1,66 @@
+{
+  "cases": [
+    {
+      "input": {
+        "knowledge": [
+          [
+            "name ",
+            "bob "
+          ],
+          [
+            "age ",
+            "two "
+          ]
+        ],
+        "s": "(name)is(age)yearsold "
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "knowledge": [
+          [
+            "a ",
+            "b "
+          ]
+        ],
+        "s": "hi(name) "
+      },
+      "kind": "example",
+      "name": "example_2"
+    },
+    {
+      "input": {
+        "knowledge": [
+          [
+            "a ",
+            "yes "
+          ]
+        ],
+        "s": "(a)(a)(a)aaa "
+      },
+      "kind": "example",
+      "name": "example_3"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "str",
+      "List[List[str]]"
+    ],
+    "args": [
+      "s",
+      "knowledge"
+    ],
+    "class": "Solution",
+    "method": "evaluate"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "evaluate-the-bracket-pairs-of-a-string",
+  "schema_version": 1,
+  "seed": "61d56c8115882e8e8d09b5381456cfa86f191853bfe944891a5378e8d394a6f8",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'evaluate'"
+}

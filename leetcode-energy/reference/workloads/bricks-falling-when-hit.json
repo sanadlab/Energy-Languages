@@ -1,0 +1,79 @@
+{
+  "cases": [
+    {
+      "input": {
+        "grid": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1,
+            0
+          ]
+        ],
+        "hits": [
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_1"
+    },
+    {
+      "input": {
+        "grid": [
+          [
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0
+          ]
+        ],
+        "hits": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "kind": "example",
+      "name": "example_2"
+    }
+  ],
+  "entrypoint": {
+    "arg_annotations": [
+      "List[List[int]]",
+      "List[List[int]]"
+    ],
+    "args": [
+      "grid",
+      "hits"
+    ],
+    "class": "Solution",
+    "method": "hitBricks"
+  },
+  "generator_version": "leetcode-energy-v1",
+  "language_independent": true,
+  "problem": "bricks-falling-when-hit",
+  "schema_version": 1,
+  "seed": "3a5cd3e51acb436badee7c4a63ebb392baad5eb4992dd58fb54bf07c546bd481",
+  "skipped": true,
+  "skipped_reason": "visible example validation crashed: 'Solution' object has no attribute 'hitBricks'"
+}

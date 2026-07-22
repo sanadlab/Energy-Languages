@@ -1,0 +1,37 @@
+{
+  "expected": [
+    {
+      "name": "example_1",
+      "output": 3,
+      "source": "statement"
+    },
+    {
+      "name": "example_2",
+      "output": 2,
+      "source": "statement"
+    },
+    {
+      "name": "synthetic_1",
+      "output": 1,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_2",
+      "output": 1,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_3",
+      "output": 1,
+      "source": "accepted_python_solution"
+    },
+    {
+      "name": "synthetic_4",
+      "output": 1,
+      "source": "accepted_python_solution"
+    }
+  ],
+  "problem": "largest-magic-square",
+  "schema_version": 1,
+  "workload_hash": "9e0dbcbf490356121b0720a8e4f841983893afe4e0f0777986eada6eb1b890a7"
+}

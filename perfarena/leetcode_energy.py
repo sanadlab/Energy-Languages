@@ -1985,24 +1985,78 @@ def _load_python_solution(source: Path) -> Any:
     return solution_cls
 
 
+def _workload_method_name(workload: dict[str, Any]) -> str:
+    """Pull the Python method name from a workload's `entry_point` field
+    (shape: `"Solution().minSteps"`). Falls back to a `starter_code`
+    scrape if entry_point is missing/malformed. Raises ValueError when
+    neither works — the caller surfaces that as a validation crash.
+
+    This exists because the on-disk workload files use `entry_point`
+    (str) while the older perfarena code expected `entrypoint.method`
+    (dict). We normalise here so callers don't have to care."""
+    ep = workload.get("entry_point")
+    if isinstance(ep, str) and "." in ep:
+        # "Solution().minSteps" → "minSteps"
+        return ep.rsplit(".", 1)[-1].strip()
+    # Historical shape: entrypoint = {"method": "...", "args": [...]}
+    ent = workload.get("entrypoint")
+    if isinstance(ent, dict) and ent.get("method"):
+        return ent["method"]
+    # Last-ditch: parse starter_code for `def <name>(...)` on Solution
+    starter = workload.get("starter_code") or ""
+    m = re.search(r"def\s+(\w+)\s*\(self", starter)
+    if m:
+        return m.group(1)
+    raise ValueError(
+        "workload has no usable entry_point / entrypoint.method / "
+        "starter_code method to invoke")
+
+
+def _case_input_dict(case: dict[str, Any]) -> dict[str, Any]:
+    """A case's `input` may be a dict (canonical form the historical
+    perfarena code wanted) OR a string in `n = 3, target = [1,2]`
+    shape (what the shipped workloads actually use). Normalise to a
+    dict either way. Positional args aren't supported by workloads
+    today; every arg is keyword."""
+    inp = case.get("input")
+    if isinstance(inp, dict):
+        return inp
+    if isinstance(inp, str):
+        return _parse_input_assignments(inp)
+    raise ValueError(f"case has no usable `input` field: {case!r}")
+
+
+def _case_name(case: dict[str, Any], idx: int) -> str:
+    """Every case gets a name. Workloads that predate the naming
+    convention just use `case_{i}` (matching what
+    scripts/derive_leetcode_outputs.py generates for the outputs
+    file, so the two align by index)."""
+    return case.get("name") or f"case_{idx}"
+
+
 def run_python_cases(
     source: Path,
     method_name: str,
-    arg_names: list[str],
+    arg_names: list[str],           # kept for BC; ignored — we use kwargs
     cases: list[dict[str, Any]],
     *,
     repeat: int = 1,
 ) -> list[dict[str, Any]]:
+    """Invoke Solution().method_name(**input) on each case and collect
+    outputs. `arg_names` is kept in the signature for callers that
+    still pass it, but we now feed inputs as `**kwargs` — the workload
+    keyword names ARE the method's parameter names."""
+    del arg_names  # unused — inputs are already keyword-mapped
     solution_cls = _load_python_solution(source)
     outputs: list[dict[str, Any]] = []
     for _ in range(repeat):
         outputs = []
-        for case in cases:
-            args = [case["input"][name] for name in arg_names]
-            actual = getattr(solution_cls(), method_name)(*args)
+        for idx, case in enumerate(cases, start=1):
+            kwargs = _case_input_dict(case)
+            actual = getattr(solution_cls(), method_name)(**kwargs)
             outputs.append(
                 {
-                    "name": case["name"],
+                    "name":   _case_name(case, idx),
                     "output": _normalize_output(actual),
                 }
             )
@@ -2014,13 +2068,29 @@ def validate_python_workload(
     workload: dict[str, Any],
     expected: dict[str, Any],
 ) -> dict[str, Any]:
-    method = workload["entrypoint"]["method"]
-    args = workload["entrypoint"]["args"]
+    """Run every case through the model's Solution and compare against
+    the expected outputs. Returns {ok, cases, failures}.
+
+    Tolerant of the two on-disk shapes: the historical "entrypoint dict
+    + input dict + explicit name" format, AND the current shipped
+    format (entry_point string + string inputs + implicit case_N
+    naming). See _workload_method_name / _case_input_dict / _case_name."""
+    method = _workload_method_name(workload)
     cases = workload["cases"]
     expected_by_name = {row["name"]: row["output"] for row in expected["expected"]}
-    actual_rows = run_python_cases(source, method, args, cases)
+    actual_rows = run_python_cases(source, method, [], cases)
     failures: list[dict[str, Any]] = []
     for row in actual_rows:
+        # Missing name in the expected file means our derivation script
+        # didn't produce this case; treat it as a validation crash
+        # rather than silently passing.
+        if row["name"] not in expected_by_name:
+            failures.append(
+                {"name": row["name"], "actual": row["output"],
+                 "expected": None,
+                 "note": "no expected value for this case"}
+            )
+            continue
         exp = expected_by_name[row["name"]]
         if not outputs_equal(row["output"], exp):
             failures.append(
@@ -2034,6 +2104,65 @@ def validate_python_workload(
         "ok": not failures,
         "cases": len(cases),
         "failures": failures,
+    }
+
+
+def measure_python_workload(
+    source: Path,
+    workload: dict[str, Any],
+    *,
+    warmup: int = 1,
+    measure: int = 3,
+) -> dict[str, Any]:
+    """Run the workload's cases through the model's Solution `measure`
+    times (after `warmup` unmeasured warm-ups) and return per-case wall
+    time in ms, aggregated as median across measure iterations. Used
+    by the arena's per-submission /measure endpoint.
+
+    Kept intentionally light: pure wall-clock via `time.perf_counter_ns`,
+    no external profiler. Callers that want CPU energy wrap the
+    invocation of THIS function (or the make target that fires it) in
+    codecarbon / powermetrics / RAPL themselves; the aggregate energy
+    they measure covers the whole test-suite loop.
+    """
+    method = _workload_method_name(workload)
+    cases = workload["cases"]
+    solution_cls = _load_python_solution(source)
+    prepared: list[tuple[str, dict[str, Any]]] = [
+        (_case_name(c, i), _case_input_dict(c))
+        for i, c in enumerate(cases, start=1)
+    ]
+    for _ in range(max(warmup, 0)):
+        inst = solution_cls()
+        for _name, kwargs in prepared:
+            getattr(inst, method)(**kwargs)
+    per_case_walls: dict[str, list[float]] = {n: [] for n, _ in prepared}
+    total_walls_ns: list[int] = []
+    for _ in range(max(measure, 1)):
+        inst = solution_cls()
+        t0 = time.perf_counter_ns()
+        for name, kwargs in prepared:
+            c0 = time.perf_counter_ns()
+            getattr(inst, method)(**kwargs)
+            per_case_walls[name].append((time.perf_counter_ns() - c0) / 1e6)
+        total_walls_ns.append(time.perf_counter_ns() - t0)
+    per_case: list[dict[str, Any]] = []
+    for name, samples in per_case_walls.items():
+        samples_sorted = sorted(samples)
+        med = samples_sorted[len(samples_sorted) // 2]
+        per_case.append({"name": name, "wall_ms_median": med,
+                         "wall_ms_samples": samples})
+    total_ms_samples = [n / 1e6 for n in total_walls_ns]
+    total_ms_samples.sort()
+    total_ms_median = total_ms_samples[len(total_ms_samples) // 2]
+    return {
+        "ok":                True,
+        "cases":             len(cases),
+        "warmup":            warmup,
+        "measure":           measure,
+        "per_case":          per_case,
+        "total_wall_ms":     total_ms_median,
+        "total_wall_ms_samples": total_ms_samples,
     }
 
 
@@ -2248,10 +2377,13 @@ def run_workload_once(
             "problem": problem_slug,
             "validation": validation,
         }
+    # Post-validation warm-repeat pass — same schema-normalising helper
+    # as validate_python_workload uses. `arg_names` is now ignored by
+    # run_python_cases (kwargs come from case.input), so [] is fine.
     run_python_cases(
         source,
-        workload["entrypoint"]["method"],
-        workload["entrypoint"]["args"],
+        _workload_method_name(workload),
+        [],
         workload["cases"],
         repeat=max(1, repeat),
     )

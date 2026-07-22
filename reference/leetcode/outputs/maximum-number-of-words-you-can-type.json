@@ -1,0 +1,1086 @@
+{
+  "workload_hash": "a0fef0d9e541eb52869e2e0107100c76e210667d7025e67d3624c32e7f2f7404",
+  "problem": "maximum-number-of-words-you-can-type",
+  "expected": [
+    {
+      "name": "case_1",
+      "input": {
+        "text": "jumped over the lazy dog",
+        "brokenLetters": "zg"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_2",
+      "input": {
+        "text": "nopqrstuvwxyz",
+        "brokenLetters": "xyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_3",
+      "input": {
+        "text": "xyzzzz",
+        "brokenLetters": "x"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_4",
+      "input": {
+        "text": "leet code",
+        "brokenLetters": "lt"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_5",
+      "input": {
+        "text": "programming is fun",
+        "brokenLetters": "fn"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_6",
+      "input": {
+        "text": "this is a test",
+        "brokenLetters": "xyz"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_7",
+      "input": {
+        "text": "mississippi",
+        "brokenLetters": "sip"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_8",
+      "input": {
+        "text": "python java cplusplus",
+        "brokenLetters": "ypx"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_9",
+      "input": {
+        "text": "same same same",
+        "brokenLetters": "aem"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_10",
+      "input": {
+        "text": "a b c d e",
+        "brokenLetters": ""
+      },
+      "output": 5
+    },
+    {
+      "name": "case_11",
+      "input": {
+        "text": "aa bb cc dd ee ff gg hh ii jj kk ll mm nn oo pp qq rr ss tt uu vv ww xx yy zz",
+        "brokenLetters": "xyz"
+      },
+      "output": 23
+    },
+    {
+      "name": "case_12",
+      "input": {
+        "text": "abcdefghijk",
+        "brokenLetters": "abcde"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_13",
+      "input": {
+        "text": "leet code",
+        "brokenLetters": "e"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_14",
+      "input": {
+        "text": "single",
+        "brokenLetters": "s"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_15",
+      "input": {
+        "text": "unique words",
+        "brokenLetters": ""
+      },
+      "output": 2
+    },
+    {
+      "name": "case_16",
+      "input": {
+        "text": "single",
+        "brokenLetters": ""
+      },
+      "output": 1
+    },
+    {
+      "name": "case_17",
+      "input": {
+        "text": "abc def ghi",
+        "brokenLetters": "xyz"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_18",
+      "input": {
+        "text": "python programming",
+        "brokenLetters": "p"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_19",
+      "input": {
+        "text": "a b c d e f g h i j k l m n o p q r s t u v w x y z",
+        "brokenLetters": ""
+      },
+      "output": 26
+    },
+    {
+      "name": "case_20",
+      "input": {
+        "text": "a quick brown fox",
+        "brokenLetters": ""
+      },
+      "output": 4
+    },
+    {
+      "name": "case_21",
+      "input": {
+        "text": "abcd efgh ijkl mnop qrst uvwx yz",
+        "brokenLetters": "aeiou"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_22",
+      "input": {
+        "text": "python programming",
+        "brokenLetters": "th"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_23",
+      "input": {
+        "text": "abcdefghij",
+        "brokenLetters": ""
+      },
+      "output": 1
+    },
+    {
+      "name": "case_24",
+      "input": {
+        "text": "hello hello hello",
+        "brokenLetters": "lo"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_25",
+      "input": {
+        "text": "hello world",
+        "brokenLetters": "ad"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_26",
+      "input": {
+        "text": "every good boy does fine",
+        "brokenLetters": "f"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_27",
+      "input": {
+        "text": "hello world abcdefghijklmnopqrstuvwxyz",
+        "brokenLetters": ""
+      },
+      "output": 3
+    },
+    {
+      "name": "case_28",
+      "input": {
+        "text": "a b c d e f g",
+        "brokenLetters": "xyz"
+      },
+      "output": 7
+    },
+    {
+      "name": "case_29",
+      "input": {
+        "text": "extreme example with all letters",
+        "brokenLetters": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_30",
+      "input": {
+        "text": "this is a simple test",
+        "brokenLetters": "sti"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_31",
+      "input": {
+        "text": "singleword",
+        "brokenLetters": "w"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_32",
+      "input": {
+        "text": "abcdefghij klmnopqrstuvwxyz",
+        "brokenLetters": "xyz"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_33",
+      "input": {
+        "text": "university of california berkeley",
+        "brokenLetters": "bcdfg"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_34",
+      "input": {
+        "text": "congratulations on your success",
+        "brokenLetters": "cns"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_35",
+      "input": {
+        "text": "every good boy does fine",
+        "brokenLetters": "bd"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_36",
+      "input": {
+        "text": "hello world from the other side",
+        "brokenLetters": "dfr"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_37",
+      "input": {
+        "text": "complexity arises from multiple factors",
+        "brokenLetters": "ae"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_38",
+      "input": {
+        "text": "all the letters of the alphabet",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_39",
+      "input": {
+        "text": "keyboard malfunctioning example",
+        "brokenLetters": "kmb"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_40",
+      "input": {
+        "text": "short long longer longestword",
+        "brokenLetters": "nlg"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_41",
+      "input": {
+        "text": "repeated letters letters letters",
+        "brokenLetters": "r"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_42",
+      "input": {
+        "text": "quick brown fox jumps over the lazy dog",
+        "brokenLetters": "xyz"
+      },
+      "output": 6
+    },
+    {
+      "name": "case_43",
+      "input": {
+        "text": "data structures and algorithms",
+        "brokenLetters": "dts"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_44",
+      "input": {
+        "text": "abcdef ghijklm nopqrst uvwxyz",
+        "brokenLetters": "mnop"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_45",
+      "input": {
+        "text": "multiple broken letters test",
+        "brokenLetters": "mlpt"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_46",
+      "input": {
+        "text": "abcdefghij klmnopqrstuvwxyz",
+        "brokenLetters": "jkl"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_47",
+      "input": {
+        "text": "mississippi river",
+        "brokenLetters": "is"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_48",
+      "input": {
+        "text": "no broken letters here",
+        "brokenLetters": "qwxz"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_49",
+      "input": {
+        "text": "programming is fun",
+        "brokenLetters": "funs"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_50",
+      "input": {
+        "text": "all unique characters",
+        "brokenLetters": ""
+      },
+      "output": 3
+    },
+    {
+      "name": "case_51",
+      "input": {
+        "text": "quick brown fox jumps over the lazy dog",
+        "brokenLetters": ""
+      },
+      "output": 8
+    },
+    {
+      "name": "case_52",
+      "input": {
+        "text": "hello world hello universe",
+        "brokenLetters": "d"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_53",
+      "input": {
+        "text": "supercalifragilisticexpialidocious",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_54",
+      "input": {
+        "text": "special symbols are not included !@#$%^&*()",
+        "brokenLetters": ""
+      },
+      "output": 6
+    },
+    {
+      "name": "case_55",
+      "input": {
+        "text": "brokenkeyboard faultydevice",
+        "brokenLetters": "bdf"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_56",
+      "input": {
+        "text": "sequential typing test",
+        "brokenLetters": "qseq"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_57",
+      "input": {
+        "text": "unique letters in words",
+        "brokenLetters": "aeiouy"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_58",
+      "input": {
+        "text": "python code implementation",
+        "brokenLetters": "py"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_59",
+      "input": {
+        "text": "a b c d e f g h i j k l m n o p q r s t u v w x y z",
+        "brokenLetters": "qz"
+      },
+      "output": 24
+    },
+    {
+      "name": "case_60",
+      "input": {
+        "text": "a b c d e f g h i j k l m n o p q r s t u v w x y z",
+        "brokenLetters": "abcdefghijkl"
+      },
+      "output": 14
+    },
+    {
+      "name": "case_61",
+      "input": {
+        "text": "complex words like supercalifragilisticexpialidocious",
+        "brokenLetters": "xyz"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_62",
+      "input": {
+        "text": "this is a simple test case",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_63",
+      "input": {
+        "text": "one two three four five six seven eight nine ten",
+        "brokenLetters": "on"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_64",
+      "input": {
+        "text": "lets write some code",
+        "brokenLetters": "wrs"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_65",
+      "input": {
+        "text": "multiple broken letters scenario",
+        "brokenLetters": "aeiouy"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_66",
+      "input": {
+        "text": "complex problem solving required",
+        "brokenLetters": "abc"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_67",
+      "input": {
+        "text": "this is a simple test",
+        "brokenLetters": "s"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_68",
+      "input": {
+        "text": "all characters must be checked",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_69",
+      "input": {
+        "text": "quick brown fox jumps over lazy dog",
+        "brokenLetters": "qz"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_70",
+      "input": {
+        "text": "various broken keys test",
+        "brokenLetters": "var"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_71",
+      "input": {
+        "text": "quick brown fox jumps over the lazy dog",
+        "brokenLetters": "qz"
+      },
+      "output": 6
+    },
+    {
+      "name": "case_72",
+      "input": {
+        "text": "a quick brown fox jumps over the lazy dog",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_73",
+      "input": {
+        "text": "beautiful scenery on the mountain top",
+        "brokenLetters": "mnt"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_74",
+      "input": {
+        "text": "vowels are often omitted",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_75",
+      "input": {
+        "text": "mississippi river flows smoothly",
+        "brokenLetters": "m"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_76",
+      "input": {
+        "text": "hello world from another dimension",
+        "brokenLetters": "ad"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_77",
+      "input": {
+        "text": "singlewordwithoutspaces",
+        "brokenLetters": "s"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_78",
+      "input": {
+        "text": "abcdefghijklmnopqrstuvwxyz",
+        "brokenLetters": "xyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_79",
+      "input": {
+        "text": "fuzzy wuzzy was a bear",
+        "brokenLetters": "f"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_80",
+      "input": {
+        "text": "algorithms and data structures",
+        "brokenLetters": "da"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_81",
+      "input": {
+        "text": "make america great again",
+        "brokenLetters": "mag"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_82",
+      "input": {
+        "text": "hello hello hello world",
+        "brokenLetters": "d"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_83",
+      "input": {
+        "text": "a aa aaa aaaa aaaaa",
+        "brokenLetters": "a"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_84",
+      "input": {
+        "text": "mississippi river",
+        "brokenLetters": "m"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_85",
+      "input": {
+        "text": "many many words with many repeated letters",
+        "brokenLetters": "mny"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_86",
+      "input": {
+        "text": "abcdefghijklmnopqrstuvwxyz abcdefghijklmnopqrstuvwxyz",
+        "brokenLetters": ""
+      },
+      "output": 2
+    },
+    {
+      "name": "case_87",
+      "input": {
+        "text": "special characters are not considered",
+        "brokenLetters": "!@#$%^&*()"
+      },
+      "output": 5
+    },
+    {
+      "name": "case_88",
+      "input": {
+        "text": "alibaba cloud is amazing",
+        "brokenLetters": "aim"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_89",
+      "input": {
+        "text": "boundary conditions and edge cases",
+        "brokenLetters": "bace"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_90",
+      "input": {
+        "text": "the quick brown fox jumps over the lazy dog",
+        "brokenLetters": ""
+      },
+      "output": 9
+    },
+    {
+      "name": "case_91",
+      "input": {
+        "text": "algorithm data structures",
+        "brokenLetters": "abcde"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_92",
+      "input": {
+        "text": "xylophone xylophone xylophone",
+        "brokenLetters": "xy"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_93",
+      "input": {
+        "text": "complex problem solving",
+        "brokenLetters": "cps"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_94",
+      "input": {
+        "text": "longer words with various letters",
+        "brokenLetters": "wv"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_95",
+      "input": {
+        "text": "every good boy does fine",
+        "brokenLetters": "boyd"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_96",
+      "input": {
+        "text": "the quick brown fox jumps over the lazy dog",
+        "brokenLetters": "qxyz"
+      },
+      "output": 6
+    },
+    {
+      "name": "case_97",
+      "input": {
+        "text": "programming in python is fun",
+        "brokenLetters": "pqf"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_98",
+      "input": {
+        "text": "this is a test case with many words",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_99",
+      "input": {
+        "text": "repeated letters in words",
+        "brokenLetters": "r"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_100",
+      "input": {
+        "text": "mississippi river",
+        "brokenLetters": "r"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_101",
+      "input": {
+        "text": "edge cases require attention",
+        "brokenLetters": "ecr"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_102",
+      "input": {
+        "text": "short words",
+        "brokenLetters": "aef"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_103",
+      "input": {
+        "text": "all characters are broken here",
+        "brokenLetters": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_104",
+      "input": {
+        "text": "this is a simple test",
+        "brokenLetters": "st"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_105",
+      "input": {
+        "text": "multiple words with repeated letters",
+        "brokenLetters": "w"
+      },
+      "output": 3
+    },
+    {
+      "name": "case_106",
+      "input": {
+        "text": "python is a versatile programming language",
+        "brokenLetters": "p"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_107",
+      "input": {
+        "text": "this is a simple test case",
+        "brokenLetters": ""
+      },
+      "output": 6
+    },
+    {
+      "name": "case_108",
+      "input": {
+        "text": "short words",
+        "brokenLetters": "ow"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_109",
+      "input": {
+        "text": "distinct distinct letters letters",
+        "brokenLetters": "distnl"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_110",
+      "input": {
+        "text": "the quick brown fox jumps over the lazy dog",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_111",
+      "input": {
+        "text": "let us escape from this\u56f0\u5883",
+        "brokenLetters": "et"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_112",
+      "input": {
+        "text": "broken keyboards are annoying sometimes",
+        "brokenLetters": "bks"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_113",
+      "input": {
+        "text": "various combinations",
+        "brokenLetters": "vbc"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_114",
+      "input": {
+        "text": "every good boy does fine and gets chocolate",
+        "brokenLetters": "xyz"
+      },
+      "output": 6
+    },
+    {
+      "name": "case_115",
+      "input": {
+        "text": "hello world from mars",
+        "brokenLetters": "mr"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_116",
+      "input": {
+        "text": "various punctuations are missing",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_117",
+      "input": {
+        "text": "quick brown fox jumps over the lazy dog",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_118",
+      "input": {
+        "text": "unique words in this sentence",
+        "brokenLetters": "uie"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_119",
+      "input": {
+        "text": "multiple words with repeated letters",
+        "brokenLetters": "r"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_120",
+      "input": {
+        "text": "one two three four five",
+        "brokenLetters": "one"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_121",
+      "input": {
+        "text": "computer science",
+        "brokenLetters": "xyz"
+      },
+      "output": 2
+    },
+    {
+      "name": "case_122",
+      "input": {
+        "text": "this is a simple test case",
+        "brokenLetters": "s"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_123",
+      "input": {
+        "text": "multiple spaces between words   are not allowed",
+        "brokenLetters": ""
+      },
+      "output": 7
+    },
+    {
+      "name": "case_124",
+      "input": {
+        "text": "special characters !@#$%^&*()",
+        "brokenLetters": "s"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_125",
+      "input": {
+        "text": "banana apple orange",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_126",
+      "input": {
+        "text": "abcdefghijklmnopqrstuvwxyz",
+        "brokenLetters": "nopqrstuvwxyz"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_127",
+      "input": {
+        "text": "abcdef ghijklm nopqrstuvwxyz",
+        "brokenLetters": "aeiou"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_128",
+      "input": {
+        "text": "spaceship traveling fast",
+        "brokenLetters": "spfc"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_129",
+      "input": {
+        "text": "unique characters only",
+        "brokenLetters": "uqnc"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_130",
+      "input": {
+        "text": "every good boy does fine",
+        "brokenLetters": "egbf"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_131",
+      "input": {
+        "text": "repeated repeated words words",
+        "brokenLetters": "dpw"
+      },
+      "output": 0
+    },
+    {
+      "name": "case_132",
+      "input": {
+        "text": "abcdefghijklmnopqrstuvwxy z",
+        "brokenLetters": "z"
+      },
+      "output": 1
+    },
+    {
+      "name": "case_133",
+      "input": {
+        "text": "complex problems require careful thought",
+        "brokenLetters": "th"
+      },
+      "output": 4
+    },
+    {
+      "name": "case_134",
+      "input": {
+        "text": "all words can be typed",
+        "brokenLetters": ""
+      },
+      "output": 5
+    },
+    {
+      "name": "case_135",
+      "input": {
+        "text": "abcdefg hijklm nopqrstuvwxyz",
+        "brokenLetters": "xyz"
+      },
+      "output": 2
+    }
+  ]
+}
