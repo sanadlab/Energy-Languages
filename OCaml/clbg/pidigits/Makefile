@@ -11,7 +11,7 @@ run:
 	./pidigits.ocaml-3.ocaml_run 2000
 
 mem:
-	/usr/bin/time -v ../pidigits.ocaml-3.ocaml_run 2000
+	/usr/bin/time -v ./pidigits.ocaml-3.ocaml_run 2000
 
 valgrind:
 	valgrind --tool=massif --stacks=yes ./pidigits.ocaml-3.ocaml_run 2000
