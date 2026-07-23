@@ -1,0 +1,10 @@
+// LC-energy test suite (C++) — hardcoded single case.
+#include "solution.cpp"
+#include <vector>
+#include <string>
+int main() {
+    Solution sol;
+    auto result = sol.eventualSafeNodes(std::vector<std::vector<int>>{{1,2},{3,4}});
+    (void)result;
+    return 0;
+}

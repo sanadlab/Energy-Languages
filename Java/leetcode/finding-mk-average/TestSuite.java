@@ -1,0 +1,7 @@
+// LC-energy test suite (Java) — hardcoded single case.
+public class TestSuite {
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        sol.addElement(20);
+    }
+}
