@@ -1,0 +1,518 @@
+{
+ "workload_hash": "synthetic",
+ "problem": "string-without-aaa-or-bbb",
+ "expected": [
+  {
+   "name": "case_1",
+   "input": {
+    "a": 0,
+    "b": 0
+   },
+   "output": ""
+  },
+  {
+   "name": "case_2",
+   "input": {
+    "a": 0,
+    "b": 1
+   },
+   "output": "b"
+  },
+  {
+   "name": "case_3",
+   "input": {
+    "a": 1,
+    "b": 0
+   },
+   "output": "a"
+  },
+  {
+   "name": "case_4",
+   "input": {
+    "a": 1,
+    "b": 1
+   },
+   "output": "ab"
+  },
+  {
+   "name": "case_5",
+   "input": {
+    "a": 2,
+    "b": 0
+   },
+   "output": "aa"
+  },
+  {
+   "name": "case_6",
+   "input": {
+    "a": 0,
+    "b": 2
+   },
+   "output": "bb"
+  },
+  {
+   "name": "case_7",
+   "input": {
+    "a": 2,
+    "b": 1
+   },
+   "output": "aab"
+  },
+  {
+   "name": "case_8",
+   "input": {
+    "a": 1,
+    "b": 2
+   },
+   "output": "bab"
+  },
+  {
+   "name": "case_9",
+   "input": {
+    "a": 2,
+    "b": 2
+   },
+   "output": "abab"
+  },
+  {
+   "name": "case_10",
+   "input": {
+    "a": 3,
+    "b": 3
+   },
+   "output": "ababab"
+  },
+  {
+   "name": "case_11",
+   "input": {
+    "a": 3,
+    "b": 1
+   },
+   "output": "aaba"
+  },
+  {
+   "name": "case_12",
+   "input": {
+    "a": 1,
+    "b": 3
+   },
+   "output": "bbab"
+  },
+  {
+   "name": "case_13",
+   "input": {
+    "a": 4,
+    "b": 1
+   },
+   "output": "aabaa"
+  },
+  {
+   "name": "case_14",
+   "input": {
+    "a": 1,
+    "b": 4
+   },
+   "output": "bbabb"
+  },
+  {
+   "name": "case_15",
+   "input": {
+    "a": 6,
+    "b": 2
+   },
+   "output": "aabaabaa"
+  },
+  {
+   "name": "case_16",
+   "input": {
+    "a": 2,
+    "b": 6
+   },
+   "output": "bbabbabb"
+  },
+  {
+   "name": "case_17",
+   "input": {
+    "a": 5,
+    "b": 5
+   },
+   "output": "ababababab"
+  },
+  {
+   "name": "case_18",
+   "input": {
+    "a": 5,
+    "b": 2
+   },
+   "output": "aabaaba"
+  },
+  {
+   "name": "case_19",
+   "input": {
+    "a": 2,
+    "b": 5
+   },
+   "output": "bbabbab"
+  },
+  {
+   "name": "case_20",
+   "input": {
+    "a": 100,
+    "b": 49
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaa"
+  },
+  {
+   "name": "case_21",
+   "input": {
+    "a": 49,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabb"
+  },
+  {
+   "name": "case_22",
+   "input": {
+    "a": 100,
+    "b": 50
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaab"
+  },
+  {
+   "name": "case_23",
+   "input": {
+    "a": 50,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabab"
+  },
+  {
+   "name": "case_24",
+   "input": {
+    "a": 98,
+    "b": 48
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaa"
+  },
+  {
+   "name": "case_25",
+   "input": {
+    "a": 48,
+    "b": 98
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabb"
+  },
+  {
+   "name": "case_26",
+   "input": {
+    "a": 100,
+    "b": 60
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaababababababababababababababababababababab"
+  },
+  {
+   "name": "case_27",
+   "input": {
+    "a": 60,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabababababababababababababababababababababab"
+  },
+  {
+   "name": "case_28",
+   "input": {
+    "a": 99,
+    "b": 49
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaaba"
+  },
+  {
+   "name": "case_29",
+   "input": {
+    "a": 49,
+    "b": 99
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbab"
+  },
+  {
+   "name": "case_30",
+   "input": {
+    "a": 39,
+    "b": 35
+   },
+   "output": "aabaabaabaabababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_31",
+   "input": {
+    "a": 20,
+    "b": 9
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaa"
+  },
+  {
+   "name": "case_32",
+   "input": {
+    "a": 25,
+    "b": 19
+   },
+   "output": "aabaabaabaabaabaabababababababababababababab"
+  },
+  {
+   "name": "case_33",
+   "input": {
+    "a": 25,
+    "b": 24
+   },
+   "output": "aabababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_34",
+   "input": {
+    "a": 13,
+    "b": 23
+   },
+   "output": "bbabbabbabbabbabbabbabbabbababababab"
+  },
+  {
+   "name": "case_35",
+   "input": {
+    "a": 27,
+    "b": 28
+   },
+   "output": "bababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_36",
+   "input": {
+    "a": 24,
+    "b": 25
+   },
+   "output": "babababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_37",
+   "input": {
+    "a": 27,
+    "b": 26
+   },
+   "output": "aabababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_38",
+   "input": {
+    "a": 18,
+    "b": 30
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabababababababab"
+  },
+  {
+   "name": "case_39",
+   "input": {
+    "a": 20,
+    "b": 10
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaab"
+  },
+  {
+   "name": "case_40",
+   "input": {
+    "a": 22,
+    "b": 10
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaa"
+  },
+  {
+   "name": "case_41",
+   "input": {
+    "a": 7,
+    "b": 8
+   },
+   "output": "bababababababab"
+  },
+  {
+   "name": "case_42",
+   "input": {
+    "a": 17,
+    "b": 9
+   },
+   "output": "aabaabaabaabaabaabaabaabab"
+  },
+  {
+   "name": "case_43",
+   "input": {
+    "a": 22,
+    "b": 27
+   },
+   "output": "bbabbabbabbababababababababababababababababababab"
+  },
+  {
+   "name": "case_44",
+   "input": {
+    "a": 25,
+    "b": 23
+   },
+   "output": "aabaabababababababababababababababababababababab"
+  },
+  {
+   "name": "case_45",
+   "input": {
+    "a": 23,
+    "b": 16
+   },
+   "output": "aabaabaabaabaabaabaabababababababababab"
+  },
+  {
+   "name": "case_46",
+   "input": {
+    "a": 100,
+    "b": 100
+   },
+   "output": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_47",
+   "input": {
+    "a": 100,
+    "b": 99
+   },
+   "output": "aababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_48",
+   "input": {
+    "a": 99,
+    "b": 100
+   },
+   "output": "bababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_49",
+   "input": {
+    "a": 100,
+    "b": 90
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_50",
+   "input": {
+    "a": 90,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_51",
+   "input": {
+    "a": 100,
+    "b": 80
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_52",
+   "input": {
+    "a": 80,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_53",
+   "input": {
+    "a": 100,
+    "b": 70
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_54",
+   "input": {
+    "a": 70,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_55",
+   "input": {
+    "a": 100,
+    "b": 55
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaababababababababababab"
+  },
+  {
+   "name": "case_56",
+   "input": {
+    "a": 55,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabababababababababababab"
+  },
+  {
+   "name": "case_57",
+   "input": {
+    "a": 95,
+    "b": 95
+   },
+   "output": "ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_58",
+   "input": {
+    "a": 88,
+    "b": 97
+   },
+   "output": "bbabbabbabbabbabbabbabbababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_59",
+   "input": {
+    "a": 97,
+    "b": 88
+   },
+   "output": "aabaabaabaabaabaabaabaabaabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_60",
+   "input": {
+    "a": 85,
+    "b": 85
+   },
+   "output": "ababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_61",
+   "input": {
+    "a": 100,
+    "b": 65
+   },
+   "output": "aabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaabaababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_62",
+   "input": {
+    "a": 65,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabbabababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_63",
+   "input": {
+    "a": 92,
+    "b": 100
+   },
+   "output": "bbabbabbabbabbabbabbabababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  },
+  {
+   "name": "case_64",
+   "input": {
+    "a": 100,
+    "b": 92
+   },
+   "output": "aabaabaabaabaabaabaabaababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab"
+  }
+ ]
+}

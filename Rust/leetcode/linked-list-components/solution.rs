@@ -1,21 +1,18 @@
-// Definition for singly-linked list.
-// #[derive(PartialEq, Eq, Clone, Debug)]
-// pub struct ListNode {
-//   pub val: i32,
-//   pub next: Option<Box<ListNode>>
-// }
-// 
-// impl ListNode {
-//   #[inline]
-//   fn new(val: i32) -> Self {
-//     ListNode {
-//       next: None,
-//       val
-//     }
-//   }
-// }
 impl Solution {
     pub fn num_components(head: Option<Box<ListNode>>, nums: Vec<i32>) -> i32 {
-        
+        use std::collections::HashSet;
+        let set: HashSet<i32> = nums.into_iter().collect();
+        let mut count = 0;
+        let mut prev = false;
+        let mut cur = &head;
+        while let Some(node) = cur {
+            let inset = set.contains(&node.val);
+            if inset && !prev {
+                count += 1;
+            }
+            prev = inset;
+            cur = &node.next;
+        }
+        count
     }
 }

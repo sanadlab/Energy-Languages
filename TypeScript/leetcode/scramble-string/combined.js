@@ -1,0 +1,52 @@
+"use strict";
+function isScramble(s1, s2) {
+    if (s1.length !== s2.length)
+        return false;
+    const memo = new Map();
+    const sortedEqual = (a, b) => {
+        const c = new Array(26).fill(0);
+        for (let i = 0; i < a.length; i++) {
+            c[a.charCodeAt(i) - 97]++;
+            c[b.charCodeAt(i) - 97]--;
+        }
+        return c.every(x => x === 0);
+    };
+    const helper = (a, b) => {
+        if (a === b)
+            return true;
+        const key = a + "#" + b;
+        const cached = memo.get(key);
+        if (cached !== undefined)
+            return cached;
+        if (!sortedEqual(a, b)) {
+            memo.set(key, false);
+            return false;
+        }
+        const n = a.length;
+        let res = false;
+        for (let i = 1; i < n; i++) {
+            if ((helper(a.slice(0, i), b.slice(0, i)) && helper(a.slice(i), b.slice(i))) ||
+                (helper(a.slice(0, i), b.slice(n - i)) && helper(a.slice(i), b.slice(0, n - i)))) {
+                res = true;
+                break;
+            }
+        }
+        memo.set(key, res);
+        return res;
+    };
+    return helper(s1, s2);
+}
+// LC-energy test suite (TypeScript) — hardcoded single case.
+let _lc_test_result;
+// Shape-agnostic call: LC accepted solutions are sometimes a
+// `class Solution` and sometimes a bare top-level function. eval
+// keeps tsc from static-erroring on whichever name is absent.
+try {
+    _lc_test_result = eval('new Solution().isScramble("abcde", "abcde")');
+}
+catch (_e) {
+    _lc_test_result = eval('isScramble("abcde", "abcde")');
+}
+if (_lc_test_result === undefined || _lc_test_result === null) {
+    console.log('void return');
+}

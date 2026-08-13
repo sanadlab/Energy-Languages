@@ -1,3 +1,3 @@
 # LC-energy test suite (Ruby) — hardcoded single case.
 require_relative 'solution'
-_ = min_days([1,2,3,4,5])
+_lc = defined?(Solution) ? Solution.new.min_days([1,2,3,4,5]) : (respond_to?(:min_days) ? send(:min_days, [1,2,3,4,5]) : nil)

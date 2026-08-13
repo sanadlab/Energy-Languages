@@ -1,9 +1,10 @@
 function minSteps(n: number): number {
-    if (n === 1) return 0;
-    let ans = 0, d = 2;
-    while (n > 1) {
-        while (n % d === 0) { ans += d; n = Math.floor(n / d); }
-        d++;
+    let res = 0;
+    for (let d = 2; d <= n; d++) {
+        while (n % d === 0) {
+            res += d;
+            n = n / d;
+        }
     }
-    return ans;
+    return res;
 }

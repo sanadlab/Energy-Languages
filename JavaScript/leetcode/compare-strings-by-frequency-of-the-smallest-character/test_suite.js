@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = numSmallerByFrequency(["a","b","c"], ["a","b","c"]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().numSmallerByFrequency(["a","b","c"], ["a","b","c"])
+  : numSmallerByFrequency(["a","b","c"], ["a","b","c"]);

@@ -1,3 +1,3 @@
 # LC-energy test suite (Ruby) — hardcoded single case.
 require_relative 'solution'
-_ = is_scramble("abcde", "abcde")
+_lc = defined?(Solution) ? Solution.new.is_scramble("abcde", "abcde") : (respond_to?(:is_scramble) ? send(:is_scramble, "abcde", "abcde") : nil)

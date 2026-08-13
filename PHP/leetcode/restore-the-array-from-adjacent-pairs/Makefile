@@ -8,10 +8,10 @@
 LANG        = PHP
 TEST        = restore-the-array-from-adjacent-pairs
 SOURCE      = solution.php
-OUTPUT      = test_suite.php
+OUTPUT      = .built
 ARG         =
 RUN_CMD     = php test_suite.php
-COMPILE_CMD = # no separate compile (interpreted)
+COMPILE_CMD = touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

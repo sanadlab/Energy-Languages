@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = minNumberOperations([1,2,3,4,5]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().minNumberOperations([1,2,3,4,5])
+  : minNumberOperations([1,2,3,4,5]);

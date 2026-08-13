@@ -1,3 +1,3 @@
 # LC-energy test suite (Ruby) — hardcoded single case.
 require_relative 'solution'
-_ = min_stickers(["a","b","c"], "abcde")
+_lc = defined?(Solution) ? Solution.new.min_stickers(["a","b","c"], "abcde") : (respond_to?(:min_stickers) ? send(:min_stickers, ["a","b","c"], "abcde") : nil)

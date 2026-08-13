@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = isScramble("abcde", "abcde");
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().isScramble("abcde", "abcde")
+  : isScramble("abcde", "abcde");

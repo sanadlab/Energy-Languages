@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = medianSlidingWindow([1,2,3,4,5], 20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().medianSlidingWindow([1,2,3,4,5], 20)
+  : medianSlidingWindow([1,2,3,4,5], 20);

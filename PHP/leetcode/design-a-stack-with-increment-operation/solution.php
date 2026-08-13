@@ -1,40 +1,29 @@
 class CustomStack {
-    /**
-     * @param Integer $maxSize
-     */
+    private $maxSize;
+    private $stk;
+    private $inc;
     function __construct($maxSize) {
-        
+        $this->maxSize = $maxSize;
+        $this->stk = array();
+        $this->inc = array();
     }
-  
-    /**
-     * @param Integer $x
-     * @return NULL
-     */
     function push($x) {
-        
+        if (count($this->stk) < $this->maxSize) {
+            $this->stk[] = $x;
+            $this->inc[] = 0;
+        }
     }
-  
-    /**
-     * @return Integer
-     */
     function pop() {
-        
+        if (count($this->stk) == 0) return -1;
+        $i = count($this->stk) - 1;
+        $v = $this->stk[$i] + $this->inc[$i];
+        if ($i > 0) $this->inc[$i - 1] += $this->inc[$i];
+        array_pop($this->stk);
+        array_pop($this->inc);
+        return $v;
     }
-  
-    /**
-     * @param Integer $k
-     * @param Integer $val
-     * @return NULL
-     */
     function increment($k, $val) {
-        
+        $i = min($k, count($this->stk)) - 1;
+        if ($i >= 0) $this->inc[$i] += $val;
     }
 }
-
-/**
- * Your CustomStack object will be instantiated and called as such:
- * $obj = CustomStack($maxSize);
- * $obj->push($x);
- * $ret_2 = $obj->pop();
- * $obj->increment($k, $val);
- */

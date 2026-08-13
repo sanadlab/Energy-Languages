@@ -1,35 +1,26 @@
+// Reference Rust solution for design-a-stack-with-increment-operation.
 struct CustomStack {
-
+    max: usize,
+    stack: Vec<i32>,
+    inc: Vec<i32>,
 }
-
-
-/** 
- * `&self` means the method takes an immutable reference.
- * If you need a mutable reference, change it to `&mut self` instead.
- */
 impl CustomStack {
-
-    fn new(maxSize: i32) -> Self {
-        
+    fn new(max_size: i32) -> Self {
+        Self { max: max_size as usize, stack: Vec::new(), inc: Vec::new() }
     }
-    
-    fn push(&self, x: i32) {
-        
+    fn push(&mut self, x: i32) {
+        if self.stack.len() < self.max { self.stack.push(x); self.inc.push(0); }
     }
-    
-    fn pop(&self) -> i32 {
-        
+    fn pop(&mut self) -> i32 {
+        if self.stack.is_empty() { return -1; }
+        let i = self.stack.len() - 1;
+        let v = self.stack[i] + self.inc[i];
+        if i > 0 { self.inc[i - 1] += self.inc[i]; }
+        self.stack.pop(); self.inc.pop();
+        v
     }
-    
-    fn increment(&self, k: i32, val: i32) {
-        
+    fn increment(&mut self, k: i32, val: i32) {
+        let n = std::cmp::min(k as usize, self.stack.len());
+        if n > 0 { self.inc[n - 1] += val; }
     }
 }
-
-/**
- * Your CustomStack object will be instantiated and called as such:
- * let obj = CustomStack::new(maxSize);
- * obj.push(x);
- * let ret_2: i32 = obj.pop();
- * obj.increment(k, val);
- */

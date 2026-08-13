@@ -8,10 +8,10 @@
 LANG        = PHP
 TEST        = number-of-rectangles-that-can-form-the-largest-square
 SOURCE      = solution.php
-OUTPUT      = test_suite.php
+OUTPUT      = .built
 ARG         =
 RUN_CMD     = php test_suite.php
-COMPILE_CMD = # no separate compile (interpreted)
+COMPILE_CMD = touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

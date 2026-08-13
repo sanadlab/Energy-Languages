@@ -1,3 +1,3 @@
 # LC-energy test suite (Ruby) — hardcoded single case.
 require_relative 'solution'
-_ = reformat_date("abcde")
+_lc = defined?(Solution) ? Solution.new.reformat_date("abcde") : (respond_to?(:reformat_date) ? send(:reformat_date, "abcde") : nil)

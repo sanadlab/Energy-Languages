@@ -1,0 +1,5 @@
+{
+  "entry_point": "Solution().maxScore",
+  "problem": "maximize-score-after-n-operations",
+  "language_independent_cases": true
+}

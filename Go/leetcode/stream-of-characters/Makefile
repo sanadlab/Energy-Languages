@@ -11,7 +11,7 @@ SOURCE      = solution.go
 OUTPUT      = test_suite
 ARG         =
 RUN_CMD     = ./test_suite
-COMPILE_CMD = { printf 'package main\n\n' ; cat solution.go ; } > sol_combined.go && $(GO) build -o test_suite sol_combined.go test_suite.go
+COMPILE_CMD = { printf 'package main\n\n' ; grep -v '^package ' solution.go ; } > sol_combined.go && $(GO) build -o test_suite sol_combined.go test_suite.go
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

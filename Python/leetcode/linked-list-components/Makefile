@@ -8,10 +8,10 @@
 LANG        = Python
 TEST        = linked-list-components
 SOURCE      = solution.py
-OUTPUT      = test_suite.py
+OUTPUT      = .built
 ARG         =
 RUN_CMD     = python3 test_suite.py
-COMPILE_CMD = # no separate compile (interpreted)
+COMPILE_CMD = touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

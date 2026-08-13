@@ -8,10 +8,10 @@
 LANG        = Ruby
 TEST        = maximum-equal-frequency
 SOURCE      = solution.rb
-OUTPUT      = test_suite.rb
+OUTPUT      = .built
 ARG         =
 RUN_CMD     = ruby test_suite.rb
-COMPILE_CMD = # no separate compile (interpreted)
+COMPILE_CMD = touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

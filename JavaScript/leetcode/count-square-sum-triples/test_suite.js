@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = countTriples(20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().countTriples(20)
+  : countTriples(20);

@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = isSumEqual("abcde", "abcde", "abcde");
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().isSumEqual("abcde", "abcde", "abcde")
+  : isSumEqual("abcde", "abcde", "abcde");

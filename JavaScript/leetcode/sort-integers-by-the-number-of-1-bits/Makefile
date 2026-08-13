@@ -8,10 +8,10 @@
 LANG        = JavaScript
 TEST        = sort-integers-by-the-number-of-1-bits
 SOURCE      = solution.js
-OUTPUT      = test_suite.js
+OUTPUT      = .built
 ARG         =
 RUN_CMD     = node test_suite.js
-COMPILE_CMD = # no separate compile (interpreted)
+COMPILE_CMD = touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = getCoprimes([1,2,3,4,5], [[1,2],[3,4]]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().getCoprimes([1,2,3,4,5], [[1,2],[3,4]])
+  : getCoprimes([1,2,3,4,5], [[1,2],[3,4]]);

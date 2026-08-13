@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = clumsy(20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().clumsy(20)
+  : clumsy(20);

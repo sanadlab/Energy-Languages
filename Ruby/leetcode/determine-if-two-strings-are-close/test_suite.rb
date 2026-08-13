@@ -1,3 +1,3 @@
 # LC-energy test suite (Ruby) — hardcoded single case.
 require_relative 'solution'
-_ = close_strings("abcde", "abcde")
+_lc = defined?(Solution) ? Solution.new.close_strings("abcde", "abcde") : (respond_to?(:close_strings) ? send(:close_strings, "abcde", "abcde") : nil)

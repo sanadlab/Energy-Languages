@@ -1,38 +1,21 @@
-/**
- * @param {number} maxSize
- */
+// Reference JS solution for design-a-stack-with-increment-operation.
 var CustomStack = function(maxSize) {
-    
+    this.max = maxSize;
+    this.stack = [];
+    this.inc = [];
 };
-
-/** 
- * @param {number} x
- * @return {void}
- */
 CustomStack.prototype.push = function(x) {
-    
+    if (this.stack.length < this.max) { this.stack.push(x); this.inc.push(0); }
 };
-
-/**
- * @return {number}
- */
 CustomStack.prototype.pop = function() {
-    
+    if (this.stack.length === 0) return -1;
+    const i = this.stack.length - 1;
+    const v = this.stack[i] + this.inc[i];
+    if (i > 0) this.inc[i - 1] += this.inc[i];
+    this.stack.pop(); this.inc.pop();
+    return v;
 };
-
-/** 
- * @param {number} k 
- * @param {number} val
- * @return {void}
- */
 CustomStack.prototype.increment = function(k, val) {
-    
+    const i = Math.min(k, this.stack.length) - 1;
+    if (i >= 0) this.inc[i] += val;
 };
-
-/** 
- * Your CustomStack object will be instantiated and called as such:
- * var obj = new CustomStack(maxSize)
- * obj.push(x)
- * var param_2 = obj.pop()
- * obj.increment(k,val)
- */

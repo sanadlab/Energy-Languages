@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = strWithout3a3b(20, 20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().strWithout3a3b(20, 20)
+  : strWithout3a3b(20, 20);

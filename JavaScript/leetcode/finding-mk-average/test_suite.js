@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = MKAverage(20, 20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().MKAverage(20, 20)
+  : MKAverage(20, 20);

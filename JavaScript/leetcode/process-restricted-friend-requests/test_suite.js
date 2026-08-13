@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = friendRequests(20, [[1,2],[3,4]], [[1,2],[3,4]]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().friendRequests(20, [[1,2],[3,4]], [[1,2],[3,4]])
+  : friendRequests(20, [[1,2],[3,4]], [[1,2],[3,4]]);

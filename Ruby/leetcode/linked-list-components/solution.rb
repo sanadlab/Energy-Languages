@@ -1,14 +1,16 @@
-# Definition for singly-linked list.
-# class ListNode
-#     attr_accessor :val, :next
-#     def initialize(val = 0, _next = nil)
-#         @val = val
-#         @next = _next
-#     end
-# end
 # @param {ListNode} head
 # @param {Integer[]} nums
 # @return {Integer}
 def num_components(head, nums)
-    
+    s = {}
+    nums.each { |n| s[n] = true }
+    count = 0
+    prev = false
+    while head
+        cur = s.key?(head.val)
+        count += 1 if cur && !prev
+        prev = cur
+        head = head.next
+    end
+    count
 end

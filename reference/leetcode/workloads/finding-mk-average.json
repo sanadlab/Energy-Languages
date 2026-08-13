@@ -1,0 +1,8 @@
+{
+  "benchmark": "leetcode-energy",
+  "problem": "finding-mk-average",
+  "entry_point": "Solution().calculateMKAverage",
+  "design_class": true,
+  "language_independent_cases": true,
+  "note": "Design-class problem. Inputs are LC serialized op sequences ({\"ops\":[...],\"args\":[[...]]}); each case is replayed by the cell's bespoke test_suite.py. entry_point is nominal (design classes expose multiple methods)."
+}

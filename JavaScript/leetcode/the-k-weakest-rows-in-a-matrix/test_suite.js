@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = kWeakestRows([[1,2],[3,4]], 20);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().kWeakestRows([[1,2],[3,4]], 20)
+  : kWeakestRows([[1,2],[3,4]], 20);

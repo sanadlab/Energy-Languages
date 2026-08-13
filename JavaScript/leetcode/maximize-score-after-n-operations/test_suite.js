@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = maxScore([1,2,3,4,5]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().maxScore([1,2,3,4,5])
+  : maxScore([1,2,3,4,5]);

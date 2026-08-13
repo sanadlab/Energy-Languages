@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = regionsBySlashes(["a","b","c"]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().regionsBySlashes(["a","b","c"])
+  : regionsBySlashes(["a","b","c"]);

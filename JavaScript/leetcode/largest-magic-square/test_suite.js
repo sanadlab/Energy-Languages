@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = largestMagicSquare([[1,2],[3,4]]);
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().largestMagicSquare([[1,2],[3,4]])
+  : largestMagicSquare([[1,2],[3,4]]);

@@ -1,31 +1,30 @@
-class MKAverage {
-    /**
-     * @param Integer $m
-     * @param Integer $k
-     */
-    function __construct($m, $k) {
-        
+class Solution {
+    private $m;
+    private $k;
+    private $stream;
+
+    function __construct($m = 0, $k = 0) {
+        $this->m = $m;
+        $this->k = $k;
+        $this->stream = [];
     }
-  
-    /**
-     * @param Integer $num
-     * @return NULL
-     */
+
     function addElement($num) {
-        
+        $this->stream[] = $num;
     }
-  
-    /**
-     * @return Integer
-     */
+
     function calculateMKAverage() {
-        
+        $n = count($this->stream);
+        if ($n < $this->m) return -1;
+        $last = array_slice($this->stream, $n - $this->m);
+        sort($last);
+        $sum = 0;
+        $cnt = 0;
+        for ($i = $this->k; $i < $this->m - $this->k; $i++) {
+            $sum += $last[$i];
+            $cnt++;
+        }
+        if ($cnt == 0) return 0;
+        return intdiv($sum, $cnt);
     }
 }
-
-/**
- * Your MKAverage object will be instantiated and called as such:
- * $obj = MKAverage($m, $k);
- * $obj->addElement($num);
- * $ret_2 = $obj->calculateMKAverage();
- */

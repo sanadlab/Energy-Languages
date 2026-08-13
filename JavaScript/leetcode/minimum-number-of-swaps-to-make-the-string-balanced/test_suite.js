@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = minSwaps("abcde");
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().minSwaps("abcde")
+  : minSwaps("abcde");

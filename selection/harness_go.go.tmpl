@@ -1,0 +1,587 @@
+package main
+
+// Generic Go loop-harness for the cross-language transfer check.
+// Go has no way to look up a top-level function by name at runtime, so this
+// file is a TEMPLATE: harness_go.sh substitutes __METHOD__ with the cell's
+// entry-point (for design classes the Constructor factory) and compiles it
+// together with the (package-stripped) solution.go into one throwaway binary.
+//
+// It reads the SAME shared JSON inputs as the JS/Java harnesses, marshals each
+// value into the function's typed parameters via reflection, and loops the call
+// to a wall-time budget (checksum-consumed, iteration-counted). The reflect
+// call is opaque to the compiler, so the loop body cannot be eliminated.
+//
+//   <bin> <budget_seconds> <case_index>   (run from the Go cell dir)
+//   - slug derived from the cell directory name (Go/leetcode/<slug>/)
+//   - inputs from ../../../reference/leetcode/outputs/<slug>.json
+//   - prints CASE/ITERS/ACC/MEAS_S/BEACON to STDERR (stdout stays empty)
+//
+// Handles three shapes with ONE compiled driver, dispatched at runtime by the
+// parsed input:
+//   * plain data   -> reflect-call __METHOD__ (int/float/bool/string/byte and
+//                     their slices, arbitrarily nested).
+//   * tree / list  -> a *TreeNode / *ListNode parameter is built from the shared
+//                     level-order (nulls = missing child) / array serialization;
+//                     a *ListNode / *TreeNode result is canonicalized back to a
+//                     JSON int array / level-order array.
+//   * design class -> input {ops,args}: each iteration re-runs Constructor(args[0])
+//                     then replays ops[i]/args[i] (method name = ops[i] with an
+//                     upper-cased first letter, Go's exported form), folding every
+//                     return into the checksum. BEACON is the literal "design".
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"math"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strconv"
+	"time"
+)
+
+// TreeNode / ListNode mirror the definitions LeetCode injects for Go cells.
+// Defined here (not in solution.go) so the generic driver compiles for the
+// tree/list problems; unused for plain/design problems, which is legal in Go.
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+type hzOutput struct {
+	Expected []json.RawMessage `json:"expected"`
+}
+type hzCase struct {
+	Name  string          `json:"name"`
+	Input json.RawMessage `json:"input"`
+}
+type hzKV struct {
+	Key string
+	Val interface{}
+}
+
+// hzOrdered parses a JSON object preserving key order (arg order matters).
+func hzOrdered(raw json.RawMessage) []hzKV {
+	dec := json.NewDecoder(bytes.NewReader(raw))
+	dec.UseNumber()
+	dec.Token() // consume '{'
+	var kvs []hzKV
+	for dec.More() {
+		kt, _ := dec.Token()
+		key, _ := kt.(string)
+		var val interface{}
+		if err := dec.Decode(&val); err != nil {
+			fmt.Fprintln(os.Stderr, "ERR decode input value:", err)
+			os.Exit(3)
+		}
+		kvs = append(kvs, hzKV{key, val})
+	}
+	return kvs
+}
+
+func hzNumFloat(v interface{}) (float64, bool) {
+	switch n := v.(type) {
+	case float64:
+		return n, true
+	case json.Number:
+		f, err := n.Float64()
+		return f, err == nil
+	}
+	return 0, false
+}
+func hzNumInt(v interface{}) (int64, bool) {
+	switch n := v.(type) {
+	case float64:
+		return int64(n), true
+	case json.Number:
+		i, err := n.Int64()
+		if err == nil {
+			return i, true
+		}
+		f, e2 := n.Float64()
+		return int64(f), e2 == nil
+	}
+	return 0, false
+}
+func hzInt(v interface{}) int {
+	i, _ := hzNumInt(v)
+	return int(i)
+}
+
+var (
+	hzTreePtr = reflect.TypeOf((*TreeNode)(nil))
+	hzListPtr = reflect.TypeOf((*ListNode)(nil))
+)
+
+// hzBuildTree builds a binary tree from a level-order list (nulls = no child).
+func hzBuildTree(l []interface{}) *TreeNode {
+	if len(l) == 0 || l[0] == nil {
+		return nil
+	}
+	root := &TreeNode{Val: hzInt(l[0])}
+	q := []*TreeNode{root}
+	i := 1
+	for i < len(l) && len(q) > 0 {
+		n := q[0]
+		q = q[1:]
+		if i < len(l) {
+			if lv := l[i]; lv != nil {
+				n.Left = &TreeNode{Val: hzInt(lv)}
+				q = append(q, n.Left)
+			}
+			i++
+		}
+		if i < len(l) {
+			if rv := l[i]; rv != nil {
+				n.Right = &TreeNode{Val: hzInt(rv)}
+				q = append(q, n.Right)
+			}
+			i++
+		}
+	}
+	return root
+}
+
+// hzBuildList builds a singly-linked list from an array.
+func hzBuildList(l []interface{}) *ListNode {
+	if len(l) == 0 {
+		return nil
+	}
+	head := &ListNode{Val: hzInt(l[0])}
+	cur := head
+	for i := 1; i < len(l); i++ {
+		cur.Next = &ListNode{Val: hzInt(l[i])}
+		cur = cur.Next
+	}
+	return head
+}
+
+// hzMarshal converts a generic parsed JSON value into a reflect.Value of type t.
+func hzMarshal(t reflect.Type, v interface{}) (reflect.Value, error) {
+	switch t.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		if i, ok := hzNumInt(v); ok {
+			return reflect.ValueOf(i).Convert(t), nil
+		}
+		return reflect.Value{}, fmt.Errorf("int expects number, got %T", v)
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		// uint8 == byte: JSON single-char strings OR numeric code points.
+		switch n := v.(type) {
+		case string:
+			if len(n) > 0 {
+				return reflect.ValueOf(uint64(n[0])).Convert(t), nil
+			}
+			return reflect.Zero(t), nil
+		default:
+			if i, ok := hzNumInt(v); ok {
+				return reflect.ValueOf(uint64(i)).Convert(t), nil
+			}
+		}
+		return reflect.Value{}, fmt.Errorf("uint expects number/char, got %T", v)
+	case reflect.Float32, reflect.Float64:
+		if f, ok := hzNumFloat(v); ok {
+			return reflect.ValueOf(f).Convert(t), nil
+		}
+		return reflect.Value{}, fmt.Errorf("float expects number, got %T", v)
+	case reflect.Bool:
+		if b, ok := v.(bool); ok {
+			return reflect.ValueOf(b), nil
+		}
+		return reflect.Value{}, fmt.Errorf("bool expects bool, got %T", v)
+	case reflect.String:
+		if s, ok := v.(string); ok {
+			return reflect.ValueOf(s), nil
+		}
+		return reflect.Value{}, fmt.Errorf("string expects string, got %T", v)
+	case reflect.Ptr:
+		// TreeNode / ListNode: built from the shared level-order / array form.
+		// A JSON null (v == nil) or empty array yields a typed nil pointer.
+		if t == hzTreePtr {
+			arr, _ := v.([]interface{})
+			return reflect.ValueOf(hzBuildTree(arr)), nil
+		}
+		if t == hzListPtr {
+			arr, _ := v.([]interface{})
+			return reflect.ValueOf(hzBuildList(arr)), nil
+		}
+		return reflect.Value{}, fmt.Errorf("unhandled pointer type %v", t)
+	case reflect.Slice:
+		et := t.Elem()
+		// []byte given as a plain JSON string.
+		if et.Kind() == reflect.Uint8 {
+			if s, ok := v.(string); ok {
+				return reflect.ValueOf([]byte(s)).Convert(t), nil
+			}
+		}
+		arr, ok := v.([]interface{})
+		if !ok {
+			return reflect.Value{}, fmt.Errorf("slice expects array, got %T", v)
+		}
+		// Recurses on the element type, so this transparently handles []int,
+		// []string, []bool, []float64 as well as nested [][]int / [][]string.
+		out := reflect.MakeSlice(t, len(arr), len(arr))
+		for i, e := range arr {
+			ev, err := hzMarshal(et, e)
+			if err != nil {
+				return reflect.Value{}, err
+			}
+			out.Index(i).Set(ev)
+		}
+		return out, nil
+	}
+	return reflect.Value{}, fmt.Errorf("unhandled parameter type %v", t)
+}
+
+// hzListToArr canonicalizes a *ListNode result as a JSON array of its values.
+func hzListToArr(n *ListNode) string {
+	vals := []int{}
+	for n != nil {
+		vals = append(vals, n.Val)
+		n = n.Next
+	}
+	b, _ := json.Marshal(vals)
+	return string(b)
+}
+
+// hzTreeToArr canonicalizes a *TreeNode result as a level-order array
+// (trailing nulls trimmed), matching the shared serialization.
+func hzTreeToArr(root *TreeNode) string {
+	if root == nil {
+		return "[]"
+	}
+	var out []interface{}
+	q := []*TreeNode{root}
+	for len(q) > 0 {
+		n := q[0]
+		q = q[1:]
+		if n == nil {
+			out = append(out, nil)
+			continue
+		}
+		out = append(out, n.Val)
+		q = append(q, n.Left, n.Right)
+	}
+	for len(out) > 0 && out[len(out)-1] == nil {
+		out = out[:len(out)-1]
+	}
+	b, _ := json.Marshal(out)
+	return string(b)
+}
+
+// hzCanon renders a return value into a stable canonical string.
+func hzCanon(v reflect.Value) string {
+	if !v.IsValid() {
+		return "null"
+	}
+	t := v.Type()
+	if t == hzListPtr {
+		return hzListToArr(v.Interface().(*ListNode))
+	}
+	if t == hzTreePtr {
+		return hzTreeToArr(v.Interface().(*TreeNode))
+	}
+	if t.Kind() == reflect.Uint8 { // a byte return == a char
+		return string([]byte{byte(v.Uint())})
+	}
+	if t.Kind() == reflect.Slice && t.Elem().Kind() == reflect.Uint8 {
+		return string(v.Bytes())
+	}
+	b, err := json.Marshal(v.Interface())
+	if err != nil {
+		return fmt.Sprintf("%v", v.Interface())
+	}
+	return string(b)
+}
+
+func hzFold(acc int64, s string) int64 {
+	var h int64
+	for i := 0; i < len(s); i++ {
+		h = h*31 + int64(s[i])
+	}
+	return acc*1000003 + h
+}
+
+// hzFoldVal folds a return value into the checksum by walking the typed/reflected
+// result with a wrapping multiply-add, WITHOUT building a canonical string every
+// measured iteration (the dominant per-iteration overhead was json.Marshal in
+// hzCanon). ACC is never compared across the A/B check, so any deterministic fold
+// is valid here; hzCanon is retained only for the once-per-run BEACON.
+func hzFoldVal(acc int64, v reflect.Value) int64 {
+	if !v.IsValid() {
+		return acc * 1000003
+	}
+	switch v.Kind() {
+	case reflect.Bool:
+		if v.Bool() {
+			return acc*1000003 + 1
+		}
+		return acc * 1000003
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return acc*1000003 + v.Int()
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return acc*1000003 + int64(v.Uint())
+	case reflect.Float32, reflect.Float64:
+		return acc*1000003 + int64(math.Float64bits(v.Float()))
+	case reflect.String:
+		s := v.String()
+		var h int64
+		for i := 0; i < len(s); i++ {
+			h = h*31 + int64(s[i])
+		}
+		return acc*1000003 + h
+	case reflect.Slice, reflect.Array:
+		acc = acc*1000003 + int64(v.Len())
+		for i := 0; i < v.Len(); i++ {
+			acc = hzFoldVal(acc, v.Index(i))
+		}
+		return acc
+	case reflect.Ptr:
+		t := v.Type()
+		if t == hzListPtr {
+			n := v.Interface().(*ListNode)
+			for n != nil {
+				acc = acc*1000003 + int64(n.Val)
+				n = n.Next
+			}
+			return acc
+		}
+		if t == hzTreePtr {
+			root := v.Interface().(*TreeNode)
+			var q []*TreeNode
+			if root != nil {
+				q = append(q, root)
+			}
+			for len(q) > 0 {
+				n := q[0]
+				q = q[1:]
+				if n == nil {
+					acc = acc * 1000003
+					continue
+				}
+				acc = acc*1000003 + int64(n.Val)
+				q = append(q, n.Left, n.Right)
+			}
+			return acc
+		}
+		if v.IsNil() {
+			return acc * 1000003
+		}
+		return hzFoldVal(acc, v.Elem())
+	}
+	return acc * 1000003
+}
+
+// hzCap upper-cases the first letter (ASCII): a LeetCode op name -> Go's
+// exported method name (e.g. "addElement" -> "AddElement", "pop" -> "Pop").
+func hzCap(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	b := []byte(s)
+	if b[0] >= 'a' && b[0] <= 'z' {
+		b[0] -= 32
+	}
+	return string(b)
+}
+
+func main() {
+	if len(os.Args) < 3 {
+		fmt.Fprintln(os.Stderr, "usage: <bin> <budget_seconds> <case_index>")
+		os.Exit(2)
+	}
+	budget, _ := strconv.ParseFloat(os.Args[1], 64)
+	idx, _ := strconv.Atoi(os.Args[2])
+	cell, _ := os.Getwd()
+	slug := filepath.Base(cell)
+	ref := filepath.Join(cell, "..", "..", "..", "reference", "leetcode")
+
+	ob, err := os.ReadFile(filepath.Join(ref, "outputs", slug+".json"))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "ERR read outputs:", err)
+		os.Exit(2)
+	}
+	var out hzOutput
+	if err := json.Unmarshal(ob, &out); err != nil {
+		fmt.Fprintln(os.Stderr, "ERR parse outputs:", err)
+		os.Exit(2)
+	}
+	if idx < 0 || idx >= len(out.Expected) {
+		fmt.Fprintln(os.Stderr, "ERR case index out of range:", idx)
+		os.Exit(2)
+	}
+	var c hzCase
+	if err := json.Unmarshal(out.Expected[idx], &c); err != nil {
+		fmt.Fprintln(os.Stderr, "ERR parse case:", err)
+		os.Exit(2)
+	}
+	kvs := hzOrdered(c.Input)
+
+	warm := budget * 0.3
+
+	// ---- design-class path: input is {ops, args} ----
+	// For design cells harness_go.sh splices __METHOD__ = Constructor (the Go
+	// factory function). For plain/tree/list cells this branch is never taken
+	// at runtime (no ops/args) but still compiles, referencing the entry func.
+	var opsRaw, argsRaw interface{}
+	var hasOps, hasArgs bool
+	for _, kv := range kvs {
+		switch kv.Key {
+		case "ops":
+			opsRaw, hasOps = kv.Val, true
+		case "args":
+			argsRaw, hasArgs = kv.Val, true
+		}
+	}
+	if hasOps && hasArgs {
+		ops, _ := opsRaw.([]interface{})
+		dargs, _ := argsRaw.([]interface{})
+		ctorFn := reflect.ValueOf(__METHOD__)
+		cft := ctorFn.Type()
+
+		// One full construct-and-replay pass; returns the folded checksum.
+		replay := func() int64 {
+			ctorArgs, _ := dargs[0].([]interface{})
+			cargs := make([]reflect.Value, cft.NumIn())
+			for i := 0; i < cft.NumIn(); i++ {
+				av, err := hzMarshal(cft.In(i), ctorArgs[i])
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "ERR ctor arg %d: %v\n", i, err)
+					os.Exit(3)
+				}
+				cargs[i] = av
+			}
+			inst := ctorFn.Call(cargs)[0]
+			// Methods use a pointer receiver; make the instance addressable.
+			ptr := reflect.New(inst.Type())
+			ptr.Elem().Set(inst)
+			var acc int64
+			for i := 1; i < len(ops); i++ {
+				opName, _ := ops[i].(string)
+				m := ptr.MethodByName(hzCap(opName))
+				if !m.IsValid() {
+					fmt.Fprintf(os.Stderr, "ERR no method %s\n", hzCap(opName))
+					os.Exit(3)
+				}
+				oal, _ := dargs[i].([]interface{})
+				mt := m.Type()
+				margs := make([]reflect.Value, mt.NumIn())
+				for j := 0; j < mt.NumIn(); j++ {
+					av, err := hzMarshal(mt.In(j), oal[j])
+					if err != nil {
+						fmt.Fprintf(os.Stderr, "ERR method %s arg %d: %v\n", opName, j, err)
+						os.Exit(3)
+					}
+					margs[j] = av
+				}
+				res := m.Call(margs)
+				if len(res) > 0 {
+					acc = hzFoldVal(acc, res[0])
+				}
+			}
+			return acc
+		}
+
+		replay()
+		var warmIters int64
+		t0 := time.Now()
+		for time.Since(t0).Seconds() < warm {
+			replay()
+			warmIters++
+		}
+		// Estimate per-replay cost and read the wall clock only every ~2ms
+		// (batch replays) to amortize the time.Now() call.
+		wi := warmIters
+		if wi < 1 {
+			wi = 1
+		}
+		perIter := time.Since(t0).Seconds() / float64(wi)
+		batch := int64(0.002 / perIter)
+		if batch < 1 {
+			batch = 1
+		}
+		if batch > 4096 {
+			batch = 4096
+		}
+		var acc, iters int64
+		tm := time.Now()
+		for time.Since(tm).Seconds() < budget-warm {
+			for k := int64(0); k < batch; k++ {
+				acc = acc*1000003 + replay()
+			}
+			iters += batch
+		}
+		meas := time.Since(tm).Seconds()
+		fmt.Fprintf(os.Stderr, "CASE=%s ITERS=%d ACC=%d MEAS_S=%.6f BEACON=design\n", c.Name, iters, acc, meas)
+		return
+	}
+
+	// ---- plain / tree / list path: reflect-call the entry function ----
+	fn := reflect.ValueOf(__METHOD__)
+	ft := fn.Type()
+	if ft.NumIn() != len(kvs) {
+		fmt.Fprintf(os.Stderr, "ERR arity mismatch: fn wants %d, input has %d\n", ft.NumIn(), len(kvs))
+		os.Exit(3)
+	}
+
+	build := func() []reflect.Value {
+		args := make([]reflect.Value, ft.NumIn())
+		for i := 0; i < ft.NumIn(); i++ {
+			av, err := hzMarshal(ft.In(i), kvs[i].Val)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "ERR marshal arg %d (%s): %v\n", i, kvs[i].Key, err)
+				os.Exit(3)
+			}
+			args[i] = av
+		}
+		return args
+	}
+	call := func() reflect.Value {
+		res := fn.Call(build())
+		if len(res) == 0 {
+			return reflect.Value{}
+		}
+		return res[0]
+	}
+
+	beacon := hzCanon(call())
+	var acc, iters int64
+
+	var warmIters int64
+	t0 := time.Now()
+	for time.Since(t0).Seconds() < warm {
+		call()
+		warmIters++
+	}
+	// Estimate per-iteration cost and read the wall clock only every ~2ms
+	// (batch iterations) to amortize the time.Now() call.
+	wi := warmIters
+	if wi < 1 {
+		wi = 1
+	}
+	perIter := time.Since(t0).Seconds() / float64(wi)
+	batch := int64(0.002 / perIter)
+	if batch < 1 {
+		batch = 1
+	}
+	if batch > 4096 {
+		batch = 4096
+	}
+	tm := time.Now()
+	for time.Since(tm).Seconds() < budget-warm {
+		for k := int64(0); k < batch; k++ {
+			acc = hzFoldVal(acc, call())
+		}
+		iters += batch
+	}
+	meas := time.Since(tm).Seconds()
+	if len(beacon) > 80 {
+		beacon = beacon[:80]
+	}
+	fmt.Fprintf(os.Stderr, "CASE=%s ITERS=%d ACC=%d MEAS_S=%.6f BEACON=%s\n", c.Name, iters, acc, meas, beacon)
+}

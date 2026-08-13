@@ -1,6 +1,10 @@
-# @param {Integer} n
-# @param {Integer} start
-# @return {Integer}
-def xor_operation(n, start)
-    
+class Solution
+    def xor_operation(n, start)
+        result = 0
+        (0...n).each do |i|
+            num = start + 2 * i
+            result ^= num
+        end
+        result
+    end
 end

@@ -1,14 +1,3 @@
-/**
- * Definition for a singly-linked list.
- * class ListNode {
- *     public $val = 0;
- *     public $next = null;
- *     function __construct($val = 0, $next = null) {
- *         $this->val = $val;
- *         $this->next = $next;
- *     }
- * }
- */
 class Solution {
 
     /**
@@ -17,6 +6,16 @@ class Solution {
      * @return Integer
      */
     function numComponents($head, $nums) {
-        
+        $set = array();
+        foreach ($nums as $n) { $set[$n] = true; }
+        $count = 0;
+        $prev = false;
+        while ($head !== null) {
+            $cur = isset($set[$head->val]);
+            if ($cur && !$prev) $count++;
+            $prev = $cur;
+            $head = $head->next;
+        }
+        return $count;
     }
 }

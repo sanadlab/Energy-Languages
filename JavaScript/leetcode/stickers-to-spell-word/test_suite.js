@@ -2,4 +2,6 @@
 const path = require('path');
 const src = require('fs').readFileSync(path.join(__dirname,'solution.js'),'utf8');
 eval(src);
-const _ = minStickers(["a","b","c"], "abcde");
+const _lc = (typeof Solution !== 'undefined')
+  ? new Solution().minStickers(["a","b","c"], "abcde")
+  : minStickers(["a","b","c"], "abcde");
