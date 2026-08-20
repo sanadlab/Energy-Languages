@@ -658,7 +658,7 @@ def leetcode_workload_measure_cmd(
     over every case in the workload, `warmup + measure` times, and emits
     one JSONL row per iteration to `../<language_folder>.jsonl` — the
     same shape the CLBG codecarbon_runner writes so the arena's
-    clbg_handler picks it up without a branch.
+    perfarena_handler picks it up without a branch.
 
     Energy: when codecarbon is importable, each measure iteration is
     wrapped in an EmissionsTracker; the resulting kWh is converted to
@@ -703,7 +703,7 @@ def leetcode_workload_measure_cmd(
         raise typer.Exit(code=1)
 
     # Emit a JSONL trace in the same shape codecarbon_runner writes so
-    # the arena runner's JSONL parser (clbg_handler._parse_metrics)
+    # the arena runner's JSONL parser (perfarena_handler._parse_metrics)
     # honours it verbatim.
     from perfarena.runners.codecarbon_runner import _write_row, _kwh_to_uj
     try:

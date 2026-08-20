@@ -3,7 +3,7 @@ target so the arena's mem step can measure peak RSS in a fresh
 subprocess.
 
 Deliberately minimal: no timing, no energy tracking, no per-case
-reporting. The caller (clbg_handler._measure_mem, or `/usr/bin/time -l`
+reporting. The caller (perfarena_handler._measure_mem, or `/usr/bin/time -l`
 in a shell) wraps this invocation and reads RUSAGE_CHILDREN. Because
 this script runs in its OWN Python interpreter (fresh RUSAGE_CHILDREN
 starting at 0), the peak RSS attributable to it is exactly the
