@@ -44,6 +44,10 @@ import tempfile
 
 RUSTC = os.environ.get("RUSTC", "rustc")
 
+# Problems LeetCode judges order-insensitively (special judge): multiset compare.
+_UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
+              "restore-the-array-from-adjacent-pairs"}
+
 
 def norm(s):
     return "".join(c.lower() for c in s if c.isalnum())
@@ -808,6 +812,291 @@ def build_design(sol, name, inp, cases):
     return sol + "\n" + driver, name
 
 
+# ===========================================================================
+# Full-suite correctness validation. ONE compiled binary loops EVERY reference
+# case, runs it once, and compares to the expected output by marshalling the
+# expected JSON into the result type and comparing Rust values with `==` (exact,
+# no Debug-format matching). Design/trace cases skip null-expected positions
+# (void ops LeetCode discards). Exit: 0 Accepted, 1 Wrong Answer, 3 Runtime
+# Error (a solution panic); the driver prints one VALIDATE line to stderr.
+# ===========================================================================
+
+VALIDATE_CALL_TEMPLATE = """
+// ---- generated validate driver (call; produced by harness_rust.py) ----
+__DEFS____JSON_MOD____BUILDERS__
+#[allow(unused)]
+fn main() {
+    std::panic::set_hook(Box::new(|_| {}));
+    let slug = "__SLUG__";
+    let doc = __load();
+    let cases = doc.field("expected").as_arr();
+    for kase in cases {
+        let name = kase.field("name").as_str().to_string();
+        let __res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> i32 {
+            let input = kase.field("input");
+            let ev = input.as_obj();
+            let expected = kase.field("output");
+            let _ = (&ev, &expected);
+__ARG_LETS__
+            let __actual = Solution::__RNAME__(__CALL_ARGS__);
+__CMP__
+            0i32
+        }));
+        match __res {
+            Ok(0) => {}
+            Ok(code) => std::process::exit(code),
+            Err(_) => { eprintln!("VALIDATE slug={} RE case={} panic", slug, name); std::process::exit(3); }
+        }
+    }
+    eprintln!("VALIDATE slug={} PASS ncases={}", slug, cases.len());
+}
+"""
+
+VALIDATE_DESIGN_TEMPLATE = """
+// ---- generated validate driver (design; produced by harness_rust.py) ----
+__JSON_MOD__
+#[allow(unused)]
+fn main() {
+    std::panic::set_hook(Box::new(|_| {}));
+    let slug = "__SLUG__";
+    let randomized = __RANDOMIZED__;
+    let doc = __load();
+    let cases = doc.field("expected").as_arr();
+    for kase in cases {
+        let name = kase.field("name").as_str().to_string();
+        let __res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> i32 {
+            let input = kase.field("input");
+            let args = input.field("args").as_arr();
+            let ops = input.field("ops").as_arr();
+            let expected = kase.field("output").as_arr();
+            let __nums: Vec<i64> = if randomized {
+                args[0].as_arr()[0].as_arr().iter().map(|__e| __e.as_i64()).collect()
+            } else { Vec::new() };
+            let mut __inst = __CTOR__;
+            for __i in 1..ops.len() {
+                let op = ops[__i].as_str();
+                let aa = &args[__i];
+                let __exp = &expected[__i];
+                let _ = (&aa, &__exp, &__nums);
+__VALIDATE_DISPATCH__
+            }
+            std::hint::black_box(&__inst);
+            0i32
+        }));
+        match __res {
+            Ok(0) => {}
+            Ok(code) => std::process::exit(code),
+            Err(_) => { eprintln!("VALIDATE slug={} RE case={} panic", slug, name); std::process::exit(3); }
+        }
+    }
+    eprintln!("VALIDATE slug={} PASS ncases={}", slug, cases.len());
+}
+"""
+
+
+def build_validate_call(sol, slug, sig):
+    """Plain OR tree/list entry method -> validate driver (marshal expected into
+    the return type, compare with ==; ListNode results compared via __canon_list)."""
+    rname, params, ret = sig
+    need_tree = need_list = False
+    arg_lets, call_args = [], []
+    for k, (pname, ptype) in enumerate(params):
+        jref = f"&ev[{k}].1"
+        if "TreeNode" in ptype:
+            need_tree = True
+            arg_lets.append(
+                "            let a%d = { let __v: Vec<Option<i32>> = (%s).as_arr().iter()"
+                ".map(|__e| if __e.is_null() { None } else { Some(__e.as_i64() as i32) })"
+                ".collect(); __build_tree(&__v) };" % (k, jref))
+        elif "ListNode" in ptype:
+            need_list = True
+            arg_lets.append(
+                "            let a%d = { let __v: Vec<i32> = (%s).as_arr().iter()"
+                ".map(|__e| __e.as_i64() as i32).collect(); __build_list(&__v) };" % (k, jref))
+        else:
+            arg_lets.append(f"            let a{k} = {marshal_expr(ptype, jref)};")
+        call_args.append(f"a{k}")
+
+    if slug in _UNORDERED and ret.startswith("Vec<"):
+        exp_marsh = marshal_expr(ret, "expected")   # Vec<..> is marshalable, Clone + Ord
+        cmp = (
+            f"            let __exp: {ret} = {exp_marsh};\n"
+            "            let mut __a = __actual.clone(); __a.sort();\n"
+            "            let mut __e = __exp.clone(); __e.sort();\n"
+            "            if __a != __e {\n"
+            '                eprintln!("VALIDATE slug={} FAIL case={} (unordered) expected={:?} actual={:?}", slug, name, __exp, __actual);\n'
+            "                return 1i32;\n"
+            "            }")
+    elif "ListNode" in ret:
+        need_list = True
+        cmp = (
+            "            let __a = __canon_list(&__actual);\n"
+            "            let __e_ints: Vec<i32> = expected.as_arr().iter().map(|__e| __e.as_i64() as i32).collect();\n"
+            "            let __e = __canon_list(&__build_list(&__e_ints));\n"
+            "            if __a != __e {\n"
+            '                eprintln!("VALIDATE slug={} FAIL case={} expected={} actual={}", slug, name, __e, __a);\n'
+            "                return 1i32;\n"
+            "            }")
+    elif "TreeNode" in ret:
+        raise RuntimeError("validate: TreeNode result unsupported")
+    else:
+        exp_marsh = marshal_expr(ret, "expected")   # ValueError -> unsupported
+        cmp = (
+            f"            let __exp: {ret} = {exp_marsh};\n"
+            "            if __actual != __exp {\n"
+            '                eprintln!("VALIDATE slug={} FAIL case={} expected={:?} actual={:?}", slug, name, __exp, __actual);\n'
+            "                return 1i32;\n"
+            "            }")
+
+    defs = ""
+    if need_tree and not re.search(r"struct\s+TreeNode\b", sol): defs += TREE_DEF
+    if need_list and not re.search(r"struct\s+ListNode\b", sol): defs += LIST_DEF
+    builders = ""
+    if need_tree: builders += BUILD_TREE_FN
+    if need_list: builders += BUILD_LIST_FN + CANON_LIST_FN
+
+    driver = (VALIDATE_CALL_TEMPLATE
+              .replace("__DEFS__", defs)
+              .replace("__JSON_MOD__", JSON_MOD)
+              .replace("__BUILDERS__", builders)
+              .replace("__SLUG__", slug)
+              .replace("__ARG_LETS__", "\n".join(arg_lets))
+              .replace("__RNAME__", rname)
+              .replace("__CALL_ARGS__", ", ".join(call_args))
+              .replace("__CMP__", cmp))
+    return solution_header(sol) + sol + "\n" + driver
+
+
+def build_validate_design(sol, slug, inp, cases, randomized):
+    ops = inp["ops"]; args = inp["args"]
+    if not ops:
+        raise RuntimeError("empty ops")
+    struct = str(ops[0])
+    if not re.search(r"\b(struct|impl)\s+" + re.escape(struct) + r"\b", sol):
+        struct = "Solution"
+    ctor_args = args[0] if args else []
+    csig = find_method(sol, norm("new"), len(ctor_args))
+    if csig is None:
+        raise RuntimeError("no ::new constructor found")
+    _cn, cparams, _cr = csig
+    if len(cparams) != len(ctor_args):
+        raise RuntimeError(f"ctor arity mismatch: {len(cparams)} vs {len(ctor_args)}")
+    ctor_margs = ", ".join(
+        marshal_expr(pt, f"&args[0].as_arr()[{j}]") for j, (pn, pt) in enumerate(cparams))
+    ctor = f"{struct}::new({ctor_margs})"
+
+    seen, opnames = set(), []
+    for c in cases:
+        for o in c["input"]["ops"][1:]:
+            o = str(o)
+            if o not in seen: seen.add(o); opnames.append(o)
+
+    branches = []
+    for n_i, opn in enumerate(opnames):
+        argc, found = 0, False
+        for c in cases:
+            cin = c["input"]
+            for k, o in enumerate(cin["ops"]):
+                if str(o) == opn:
+                    argc = len(cin["args"][k]); found = True; break
+            if found: break
+        msig = find_method(sol, norm(opn), argc)
+        if msig is None:
+            raise RuntimeError(f"no method matching op {opn!r}")
+        mn, mparams, mret = msig
+        margs = ", ".join(
+            marshal_expr(pt, f"&aa.as_arr()[{j}]") for j, (pn, pt) in enumerate(mparams))
+        call = f"__inst.{mn}({margs})"
+        kw = "if" if n_i == 0 else "else if"
+        if mret in ("", "()"):                       # void op: run, do not compare
+            branches.append(f'        {kw} op == "{opn}" {{\n            {call};\n        }}')
+        elif randomized and opn == "pick":           # pick returns an index -> nums[index]
+            branches.append(
+                f'        {kw} op == "{opn}" {{\n'
+                f'            let __r = {call};\n'
+                f'            if !__exp.is_null() {{\n'
+                f'                let __p = __nums[__r as usize];\n'
+                f'                if __p != (__exp).as_i64() {{\n'
+                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} pos={{}} expected={{}} actual={{}}", slug, name, __i, (__exp).as_i64(), __p);\n'
+                f'                    return 1i32;\n'
+                f'                }}\n'
+                f'            }}\n'
+                f'        }}')
+        else:
+            em = marshal_expr(mret, "__exp")         # ValueError -> unsupported
+            branches.append(
+                f'        {kw} op == "{opn}" {{\n'
+                f'            let __r = {call};\n'
+                f'            if !__exp.is_null() {{\n'
+                f'                let __e: {mret} = {em};\n'
+                f'                if __r != __e {{\n'
+                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} pos={{}} expected={{:?}} actual={{:?}}", slug, name, __i, __e, __r);\n'
+                f'                    return 1i32;\n'
+                f'                }}\n'
+                f'            }}\n'
+                f'        }}')
+    dispatch = "\n".join(branches)
+    driver = (VALIDATE_DESIGN_TEMPLATE
+              .replace("__JSON_MOD__", JSON_MOD)
+              .replace("__SLUG__", slug)
+              .replace("__RANDOMIZED__", "true" if randomized else "false")
+              .replace("__CTOR__", ctor)
+              .replace("__VALIDATE_DISPATCH__", dispatch))
+    return sol + "\n" + driver
+
+
+def build_validate_combined(cell, slug, ref):
+    """Build a single validate driver covering every case, or raise
+    ValueError/RuntimeError when the problem uses an unsupported shape/type."""
+    with open(os.path.join(ref, "outputs", slug + ".json")) as f:
+        cases = json.load(f)["expected"]
+    inp = cases[0]["input"]
+    with open(os.path.join(cell, "solution.rs")) as f:
+        sol = f.read()
+    randomized = (slug == "random-pick-index")
+    if isinstance(inp, dict) and "ops" in inp and "args" in inp:
+        return build_validate_design(sol, slug, inp, cases, randomized)
+    with open(os.path.join(ref, "workloads", slug + ".json")) as f:
+        wl = json.load(f)
+    ep = str(wl.get("entry_point", ""))
+    method_tok = ep.split(".")[-1].replace("()", "").strip()
+    sig = find_signature(sol, norm(method_tok))
+    if sig is None:
+        raise RuntimeError(f"no method matching entry_point {ep!r}")
+    return build_validate_call(sol, slug, sig)
+
+
+def run_validate(cell, slug, ref):
+    """Compile ONE validate driver and run it over every case. Returns the
+    binary's exit code (0 Accepted, 1 Wrong Answer, 3 Runtime Error) or 2 on a
+    setup/compile/unsupported error so the caller can fall back."""
+    try:
+        combined = build_validate_combined(cell, slug, ref)
+    except (ValueError, RuntimeError) as e:
+        sys.stderr.write(f"VALIDATE slug={slug} ERROR unsupported: {e}\n")
+        return 2
+    tmp = tempfile.mkdtemp(prefix="hzv_rust_")
+    src_path = os.path.join(tmp, "combined.rs")
+    bin_path = os.path.join(tmp, "driver")
+    with open(src_path, "w") as f:
+        f.write(combined)
+    try:
+        cp = subprocess.run([RUSTC, "-O", src_path, "-o", bin_path],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if cp.returncode != 0:
+            last = cp.stderr.strip().splitlines()[-1] if cp.stderr else ""
+            sys.stderr.write(f"VALIDATE slug={slug} ERROR compile: {last}\n")
+            return 2
+        run = subprocess.run([bin_path], text=True, cwd=cell, timeout=300)
+        return run.returncode
+    finally:
+        for p in (src_path, bin_path):
+            try: os.remove(p)
+            except OSError: pass
+        try: os.rmdir(tmp)
+        except OSError: pass
+
+
 def build_combined(cell, slug, ref, idx):
     """Returns (combined_source, case_name) or raises RuntimeError/ValueError for
     unsupported problems."""
@@ -861,6 +1150,11 @@ def build_combined(cell, slug, ref, idx):
 
 
 def main():
+    if len(sys.argv) >= 2 and sys.argv[1] == "validate":
+        cell = os.getcwd()
+        slug = os.path.basename(cell)
+        ref = os.path.join(cell, "..", "..", "..", "reference", "leetcode")
+        return run_validate(cell, slug, ref)
     if len(sys.argv) < 3:
         sys.stderr.write("usage: harness_rust.py <budget_seconds> <case_index>\n")
         return 2

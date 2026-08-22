@@ -272,7 +272,112 @@ public static class Harness {
 
     static string Truncate(string x, int n) => x.Length <= n ? x : x.Substring(0, n);
 
+    // ---------- full-suite correctness validation (dotnet bench.dll validate) ----------
+    // Runs EVERY reference case once and compares to the expected output. For
+    // design/trace cases a null in the expected array marks a void op (LeetCode
+    // discards its return), so those positions are not compared.
+    static bool IsNum(object r) => r is int || r is long || r is short || r is byte;
+    static List<string> ReplayResults(Type dc, List<object> ops, List<object> args, bool randomized) {
+        var ctorArgs = (List<object>)args[0];
+        var ctor = dc.GetConstructors().First(ct => ct.GetParameters().Length == ctorArgs.Count);
+        var cpt = ctor.GetParameters();
+        var ca = new object[cpt.Length];
+        for (int i = 0; i < ca.Length; i++) ca[i] = Marshal(cpt[i].ParameterType, ctorArgs[i]);
+        var inst = ctor.Invoke(ca);
+        var methods = dc.GetMethods(ANY);
+        List<object> nums = (randomized && ctorArgs.Count > 0) ? ctorArgs[0] as List<object> : null;
+        var res = new List<string> { "null" };                    // constructor slot
+        for (int i = 1; i < ops.Count; i++) {
+            string opn = Convert.ToString(ops[i]);
+            var oal = (List<object>)args[i];
+            var m = methods.First(mm => string.Equals(mm.Name, opn, StringComparison.OrdinalIgnoreCase)
+                                        && mm.GetParameters().Length == oal.Count);
+            var mpt = m.GetParameters();
+            var oa = new object[mpt.Length];
+            for (int j = 0; j < oa.Length; j++) oa[j] = Marshal(mpt[j].ParameterType, oal[j]);
+            object r = m.Invoke(inst, oa);
+            // random-pick: pick returns a valid index; reference stores nums[index].
+            if (randomized && string.Equals(opn, "pick", StringComparison.OrdinalIgnoreCase) && nums != null && r != null && IsNum(r))
+                r = nums[(int)Convert.ToInt64(r)];
+            res.Add(Canon(r));
+        }
+        return res;
+    }
+    // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
+    static readonly HashSet<string> _UNORDERED = new HashSet<string> {
+        "uncommon-words-from-two-sentences", "remove-invalid-parentheses",
+        "restore-the-array-from-adjacent-pairs" };
+    static List<string> ElemCanons(object o) {
+        if (o is string) return null;                          // a string is not a flat list-result
+        if (o is System.Collections.IEnumerable en) {
+            var r = new List<string>();
+            foreach (var e in en) r.Add(Canon(e));
+            return r;
+        }
+        return null;
+    }
+    static bool UnorderedEq(object a, object e) {
+        var la = ElemCanons(a); var le = ElemCanons(e);
+        if (la == null || le == null) return Canon(a) == Canon(e);
+        la.Sort(StringComparer.Ordinal); le.Sort(StringComparer.Ordinal);
+        return la.SequenceEqual(le);
+    }
+    static int VFail(string slug, string name, object exp, object actual) {
+        Console.Error.WriteLine($"VALIDATE slug={slug} FAIL case={name} expected={Truncate(Convert.ToString(exp), 120)} actual={Truncate(Convert.ToString(actual), 120)}");
+        return 1;
+    }
+    static int Validate() {
+        string cwd = Directory.GetCurrentDirectory();
+        string slug = Path.GetFileName(cwd.TrimEnd('/', '\\'));
+        string refdir = Path.Combine(cwd, "..", "..", "..", "reference", "leetcode");
+        List<object> cases; string method;
+        try {
+            var outObj = (OMap)Parse(File.ReadAllText(Path.Combine(refdir, "outputs", slug + ".json")));
+            var wl = (OMap)Parse(File.ReadAllText(Path.Combine(refdir, "workloads", slug + ".json")));
+            string ep = Convert.ToString(wl.Get("entry_point")); method = ep.Substring(ep.LastIndexOf('.') + 1);
+            cases = (List<object>)outObj.Get("expected");
+        } catch (Exception e) { Console.Error.WriteLine($"VALIDATE slug={slug} ERROR load: {e.Message}"); return 2; }
+        bool randomized = slug == "random-pick-index";
+        foreach (var co in cases) {
+            var c = (OMap)co; string name = Convert.ToString(c.Get("name"));
+            var input = (OMap)c.Get("input");
+            object expected = c.Get("output");
+            try {
+                if (input.Has("ops") && input.Has("args")) {
+                    var ops = (List<object>)input.Get("ops");
+                    var dargs = (List<object>)input.Get("args");
+                    Type dc = FindType(Convert.ToString(ops[0])) ?? FindType("Solution");
+                    var actual = ReplayResults(dc, ops, dargs, randomized);
+                    var exp = (List<object>)expected;
+                    if (actual.Count != exp.Count) return VFail(slug, name, Canon(exp), Canon(actual));
+                    for (int i = 0; i < exp.Count; i++) {
+                        if (exp[i] == null) continue;                 // void op: not compared
+                        if (Canon(exp[i]) != actual[i]) return VFail(slug, name, Canon(exp), Canon(actual));
+                    }
+                } else {
+                    Type sol = FindType("Solution");
+                    MethodInfo mth = sol.GetMethods(PUB).FirstOrDefault(m => string.Equals(m.Name, method, StringComparison.OrdinalIgnoreCase))
+                                  ?? sol.GetMethods(ANY).FirstOrDefault(m => string.Equals(m.Name, method, StringComparison.OrdinalIgnoreCase));
+                    object inst = Activator.CreateInstance(sol);
+                    var pts = mth.GetParameters();
+                    var baseArgs = new object[pts.Length];
+                    int k = 0; foreach (var v in input.Vals) { baseArgs[k] = Marshal(pts[k].ParameterType, v); k++; }
+                    object rawResult = mth.Invoke(inst, baseArgs);
+                    bool okc = _UNORDERED.Contains(slug) ? UnorderedEq(rawResult, expected) : (Canon(rawResult) == Canon(expected));
+                    if (!okc) return VFail(slug, name, Canon(expected), Canon(rawResult));
+                }
+            } catch (Exception e) {
+                var cz = (e is TargetInvocationException tie && tie.InnerException != null) ? tie.InnerException : e;
+                Console.Error.WriteLine($"VALIDATE slug={slug} RE case={name} {cz.GetType().Name}: {cz.Message}");
+                return 3;
+            }
+        }
+        Console.Error.WriteLine($"VALIDATE slug={slug} PASS ncases={cases.Count}");
+        return 0;
+    }
+
     public static int Main(string[] argv) {
+        if (argv.Length >= 1 && argv[0] == "validate") return Validate();
         double budget = double.Parse(argv[0], CultureInfo.InvariantCulture);
         int idx = int.Parse(argv[1]);
         string cwd = Directory.GetCurrentDirectory();

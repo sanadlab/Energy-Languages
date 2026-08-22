@@ -37,7 +37,9 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -390,13 +392,272 @@ func hzCap(s string) string {
 	return string(b)
 }
 
+// ---- full-suite correctness validation (<bin> validate) --------------------
+// Runs EVERY reference case once and compares to the expected output. For
+// design/trace cases a null in the expected array marks a void op (LeetCode
+// discards its return), so those positions are not compared.
+
+func hzTrunc(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n]
+}
+
+// hzNormNums normalizes parsed json.Numbers so an EXPECTED value canonicalizes
+// the same way json.Marshal renders the corresponding typed result: a float
+// json.Number "2500.0" -> float64 (marshals "2500"), matching hzCanonV.
+func hzNormNums(v interface{}) interface{} {
+	switch x := v.(type) {
+	case json.Number:
+		if strings.ContainsAny(x.String(), ".eE") {
+			if f, err := x.Float64(); err == nil {
+				return f
+			}
+		}
+		if i, err := x.Int64(); err == nil {
+			return i
+		}
+		return x
+	case []interface{}:
+		out := make([]interface{}, len(x))
+		for i, e := range x {
+			out[i] = hzNormNums(e)
+		}
+		return out
+	case map[string]interface{}:
+		out := make(map[string]interface{}, len(x))
+		for k, e := range x {
+			out[k] = hzNormNums(e)
+		}
+		return out
+	default:
+		return v
+	}
+}
+
+// hzCanonJSON renders an already-parsed EXPECTED value (json.Number-aware).
+func hzCanonJSON(v interface{}) string {
+	b, err := json.Marshal(hzNormNums(v))
+	if err != nil {
+		return fmt.Sprintf("%v", v)
+	}
+	return string(b)
+}
+
+// hzCanonV canonicalizes an ACTUAL result to the SAME textual form json.Marshal
+// gives the equivalent expected JSON value (byte/[]byte -> quoted string).
+func hzCanonV(v reflect.Value) string {
+	if !v.IsValid() {
+		return "null"
+	}
+	t := v.Type()
+	if t == hzListPtr {
+		return hzListToArr(v.Interface().(*ListNode))
+	}
+	if t == hzTreePtr {
+		return hzTreeToArr(v.Interface().(*TreeNode))
+	}
+	if t.Kind() == reflect.Uint8 {
+		b, _ := json.Marshal(string([]byte{byte(v.Uint())}))
+		return string(b)
+	}
+	if t.Kind() == reflect.Slice && t.Elem().Kind() == reflect.Uint8 {
+		b, _ := json.Marshal(string(v.Bytes()))
+		return string(b)
+	}
+	b, err := json.Marshal(v.Interface())
+	if err != nil {
+		return fmt.Sprintf("%v", v.Interface())
+	}
+	return string(b)
+}
+
+// LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
+var hzUnordered = map[string]bool{
+	"uncommon-words-from-two-sentences":     true,
+	"remove-invalid-parentheses":            true,
+	"restore-the-array-from-adjacent-pairs": true,
+}
+
+// hzUnorderedEq multiset-compares a slice result to the expected slice;
+// applicable=false when either side is not a flat slice (caller falls back).
+func hzUnorderedEq(actual reflect.Value, expected interface{}) (matched bool, applicable bool) {
+	if !actual.IsValid() || actual.Kind() != reflect.Slice {
+		return false, false
+	}
+	exp, ok := expected.([]interface{})
+	if !ok {
+		return false, false
+	}
+	var av, ev []string
+	for i := 0; i < actual.Len(); i++ {
+		av = append(av, hzCanonV(actual.Index(i)))
+	}
+	for _, e := range exp {
+		ev = append(ev, hzCanonJSON(e))
+	}
+	if len(av) != len(ev) {
+		return false, true
+	}
+	sort.Strings(av)
+	sort.Strings(ev)
+	for i := range av {
+		if av[i] != ev[i] {
+			return false, true
+		}
+	}
+	return true, true
+}
+
+// hzCheckCase runs one case; returns (0 pass, 1 wrong, 3 runtime-error) + detail.
+func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool) (status int, detail string) {
+	defer func() {
+		if r := recover(); r != nil {
+			status, detail = 3, fmt.Sprintf("panic: %v", r)
+		}
+	}()
+	kvs := hzOrdered(c.Input)
+	var opsRaw, argsRaw interface{}
+	var hasOps, hasArgs bool
+	for _, kv := range kvs {
+		switch kv.Key {
+		case "ops":
+			opsRaw, hasOps = kv.Val, true
+		case "args":
+			argsRaw, hasArgs = kv.Val, true
+		}
+	}
+	if hasOps && hasArgs { // ---- design / trace replay ----
+		ops, _ := opsRaw.([]interface{})
+		dargs, _ := argsRaw.([]interface{})
+		ctorFn := reflect.ValueOf(__METHOD__)
+		cft := ctorFn.Type()
+		ctorArgs, _ := dargs[0].([]interface{})
+		var nums []interface{}
+		if randomized && len(ctorArgs) > 0 {
+			nums, _ = ctorArgs[0].([]interface{})
+		}
+		cargs := make([]reflect.Value, cft.NumIn())
+		for i := 0; i < cft.NumIn(); i++ {
+			av, err := hzMarshal(cft.In(i), ctorArgs[i])
+			if err != nil {
+				return 3, err.Error()
+			}
+			cargs[i] = av
+		}
+		inst := ctorFn.Call(cargs)[0]
+		ptr := reflect.New(inst.Type())
+		ptr.Elem().Set(inst)
+		actual := []string{"null"} // constructor slot
+		for i := 1; i < len(ops); i++ {
+			opName, _ := ops[i].(string)
+			m := ptr.MethodByName(hzCap(opName))
+			if !m.IsValid() {
+				return 3, "no method " + hzCap(opName)
+			}
+			oal, _ := dargs[i].([]interface{})
+			mt := m.Type()
+			margs := make([]reflect.Value, mt.NumIn())
+			for j := 0; j < mt.NumIn(); j++ {
+				av, err := hzMarshal(mt.In(j), oal[j])
+				if err != nil {
+					return 3, err.Error()
+				}
+				margs[j] = av
+			}
+			res := m.Call(margs)
+			if len(res) == 0 {
+				actual = append(actual, "null")
+				continue
+			}
+			rv := res[0]
+			// random-pick: pick returns a valid index; reference stores nums[index].
+			if randomized && opName == "pick" && rv.IsValid() && rv.Kind() >= reflect.Int && rv.Kind() <= reflect.Int64 {
+				actual = append(actual, hzCanonJSON(nums[int(rv.Int())]))
+			} else {
+				actual = append(actual, hzCanonV(rv))
+			}
+		}
+		exp, _ := expected.([]interface{})
+		if len(exp) != len(actual) {
+			return 1, fmt.Sprintf("len exp=%d act=%d", len(exp), len(actual))
+		}
+		for i := range exp {
+			if exp[i] == nil { // void op: not compared
+				continue
+			}
+			if hzCanonJSON(exp[i]) != actual[i] {
+				return 1, fmt.Sprintf("pos=%d exp=%s act=%s", i, hzCanonJSON(exp[i]), actual[i])
+			}
+		}
+		return 0, ""
+	}
+	// ---- generic single call ----
+	fn := reflect.ValueOf(__METHOD__)
+	ft := fn.Type()
+	args := make([]reflect.Value, ft.NumIn())
+	for i := 0; i < ft.NumIn(); i++ {
+		av, err := hzMarshal(ft.In(i), kvs[i].Val)
+		if err != nil {
+			return 3, err.Error()
+		}
+		args[i] = av
+	}
+	res := fn.Call(args)
+	if unordered && len(res) > 0 {
+		if matched, applicable := hzUnorderedEq(res[0], expected); applicable {
+			if matched {
+				return 0, ""
+			}
+			return 1, "unordered mismatch"
+		}
+	}
+	actual := "null"
+	if len(res) > 0 {
+		actual = hzCanonV(res[0])
+	}
+	if hzCanonJSON(expected) != actual {
+		return 1, fmt.Sprintf("exp=%s act=%s", hzCanonJSON(expected), actual)
+	}
+	return 0, ""
+}
+
+func hzValidate(slug string, cases []json.RawMessage) {
+	randomized := slug == "random-pick-index"
+	for _, raw := range cases {
+		var full struct {
+			Name   string          `json:"name"`
+			Input  json.RawMessage `json:"input"`
+			Output json.RawMessage `json:"output"`
+		}
+		if err := json.Unmarshal(raw, &full); err != nil {
+			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s ERROR load: %v\n", slug, err)
+			os.Exit(2)
+		}
+		var expected interface{}
+		dec := json.NewDecoder(bytes.NewReader(full.Output))
+		dec.UseNumber()
+		dec.Decode(&expected)
+		status, detail := hzCheckCase(hzCase{Name: full.Name, Input: full.Input}, expected, randomized, hzUnordered[slug])
+		if status == 3 {
+			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s RE case=%s %s\n", slug, full.Name, hzTrunc(detail, 200))
+			os.Exit(3)
+		}
+		if status == 1 {
+			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s FAIL case=%s %s\n", slug, full.Name, hzTrunc(detail, 200))
+			os.Exit(1)
+		}
+	}
+	fmt.Fprintf(os.Stderr, "VALIDATE slug=%s PASS ncases=%d\n", slug, len(cases))
+	os.Exit(0)
+}
+
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Fprintln(os.Stderr, "usage: <bin> <budget_seconds> <case_index>")
+	if len(os.Args) < 2 {
+		fmt.Fprintln(os.Stderr, "usage: <bin> <budget_seconds> <case_index> | <bin> validate")
 		os.Exit(2)
 	}
-	budget, _ := strconv.ParseFloat(os.Args[1], 64)
-	idx, _ := strconv.Atoi(os.Args[2])
 	cell, _ := os.Getwd()
 	slug := filepath.Base(cell)
 	ref := filepath.Join(cell, "..", "..", "..", "reference", "leetcode")
@@ -411,6 +672,16 @@ func main() {
 		fmt.Fprintln(os.Stderr, "ERR parse outputs:", err)
 		os.Exit(2)
 	}
+	if os.Args[1] == "validate" {
+		hzValidate(slug, out.Expected)
+		return
+	}
+	if len(os.Args) < 3 {
+		fmt.Fprintln(os.Stderr, "usage: <bin> <budget_seconds> <case_index>")
+		os.Exit(2)
+	}
+	budget, _ := strconv.ParseFloat(os.Args[1], 64)
+	idx, _ := strconv.Atoi(os.Args[2])
 	if idx < 0 || idx >= len(out.Expected) {
 		fmt.Fprintln(os.Stderr, "ERR case index out of range:", idx)
 		os.Exit(2)

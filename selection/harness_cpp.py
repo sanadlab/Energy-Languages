@@ -29,6 +29,10 @@ import json, os, re, subprocess, sys, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REF  = os.path.join(ROOT, "reference", "leetcode")
 
+# Problems LeetCode judges order-insensitively (special judge): multiset compare.
+_UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
+              "restore-the-array-from-adjacent-pairs"}
+
 # ---------------------------------------------------------------- signature parse
 def _method_sig(src, method):
     """Return (return_type, raw_param_string) for `method` defined in src, or (None,None)."""
@@ -303,7 +307,7 @@ static string canon(long long x) { return to_string(x); }
 static string canon(int x)       { return to_string(x); }
 static string canon(bool x)      { return x ? "true" : "false"; }
 static string canon(char x)      { return string("\"") + x + "\""; }
-static string canon(double x)    { char buf[64]; snprintf(buf, sizeof buf, "%.6g", x); return buf; }
+static string canon(double x)    { if (std::isfinite(x) && x == std::floor(x) && std::fabs(x) < 9.007199254740992e15) return to_string((long long)x); char buf[64]; snprintf(buf, sizeof buf, "%.6g", x); return buf; }
 static string canon(const string& s) {
     string o = "\"";
     for (char c : s) { if (c == '"' || c == '\\') o += '\\'; o += c; }
@@ -317,6 +321,49 @@ __HZ_EXTRA__
 static double secs_since(const std::chrono::steady_clock::time_point& t) {
     return std::chrono::duration<double>(std::chrono::steady_clock::now() - t).count();
 }
+
+// canonical string of a parsed EXPECTED json value, in the SAME textual form
+// hz::canon gives the corresponding result (integers via to_string, arrays with
+// no spaces, strings quoted). Used only by the `validate` driver.
+[[maybe_unused]] static std::string canonJVal(const hz::JVal& j) {
+    switch (j.t) {
+        case hz::JVal::NUL:  return "null";
+        case hz::JVal::BOOL: return j.b ? "true" : "false";
+        case hz::JVal::STR:  return hz::canon(j.str);
+        case hz::JVal::NUM: {
+            const std::string& r = j.raw;
+            if (r.find('.') != std::string::npos || r.find('e') != std::string::npos || r.find('E') != std::string::npos) {
+                double d = r.empty() ? 0.0 : std::stod(r);
+                if (std::isfinite(d) && d == std::floor(d) && std::fabs(d) < 9.007199254740992e15) return std::to_string((long long)d);
+                char buf[64]; snprintf(buf, sizeof buf, "%.6g", d); return buf;
+            }
+            return std::to_string(r.empty() ? 0LL : std::stoll(r));
+        }
+        case hz::JVal::ARR: {
+            std::string o = "[";
+            for (size_t i = 0; i < j.arr.size(); i++) { if (i) o += ','; o += canonJVal(j.arr[i]); }
+            return o + "]";
+        }
+        default: return "null";
+    }
+}
+// multiset (order-insensitive) canon: sort element canons. Only used by the
+// `validate` driver for special-judge problems.
+[[maybe_unused]] static std::string canonJVal_multiset(const hz::JVal& j) {
+    if (j.t != hz::JVal::ARR) return canonJVal(j);
+    std::vector<std::string> parts;
+    for (auto& e : j.arr) parts.push_back(canonJVal(e));
+    std::sort(parts.begin(), parts.end());
+    std::string o = "["; for (size_t i = 0; i < parts.size(); i++) { if (i) o += ','; o += parts[i]; } return o + "]";
+}
+namespace hz {
+template <class T> std::string canon_multiset(const std::vector<T>& v) {
+    std::vector<std::string> parts;
+    for (auto& e : v) parts.push_back(canon(e));
+    std::sort(parts.begin(), parts.end());
+    std::string o = "["; for (size_t i = 0; i < parts.size(); i++) { if (i) o += ','; o += parts[i]; } return o + "]";
+}
+} // namespace hz
 '''
 
 # ---------------------------------------------------------------- mains
@@ -407,6 +454,106 @@ __DISPATCH__
 
     fprintf(stderr, "CASE=%s ITERS=%lld ACC=%lld MEAS_S=%.6f BEACON=design\n",
             name.c_str(), iters, acc, meas);
+    return 0;
+}
+'''
+
+# ---------------------------------------------------------------- validate mains
+# Full-suite correctness validation: ONE compiled binary loops EVERY reference
+# case, runs it once, and compares to the expected output. Design/trace cases
+# skip null-expected positions (void ops LeetCode discards). Exit: 0 Accepted,
+# 1 Wrong Answer, 3 Runtime Error.
+MAIN_VALIDATE_PLAIN = r'''
+int main(int argc, char** argv) {
+    (void)argc; (void)argv;
+    std::ifstream f("__OUTPUTS__");
+    std::stringstream ss; ss << f.rdbuf();
+    std::string text = ss.str();
+    hz::JVal doc = hz::JP(text).val();
+    const std::string slug = "__SLUG__";
+    const hz::JVal* expected = hz::field(doc, "expected");
+    for (size_t ci = 0; ci < expected->arr.size(); ci++) {
+        const hz::JVal& kase = expected->arr[ci];
+        const hz::JVal* nameV = hz::field(kase, "name");
+        std::string name = nameV ? nameV->str : "case";
+        const hz::JVal* input = hz::field(kase, "input");
+        auto& E = input->obj; (void)E;
+        const hz::JVal* outV = hz::field(kase, "output");
+        std::string actual;
+        try {
+__BUILD_INLINE__
+        } catch (const std::exception& e) {
+            fprintf(stderr, "VALIDATE slug=%s RE case=%s %s\n", slug.c_str(), name.c_str(), e.what());
+            return 3;
+        }
+        std::string exp = outV ? __EXP_EXPR__ : std::string("null");
+        if (exp != actual) {
+            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s expected=%s actual=%s\n",
+                    slug.c_str(), name.c_str(), exp.substr(0, 120).c_str(), actual.substr(0, 120).c_str());
+            return 1;
+        }
+    }
+    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu\n", slug.c_str(), expected->arr.size());
+    return 0;
+}
+'''
+
+MAIN_VALIDATE_DESIGN = r'''
+int main(int argc, char** argv) {
+    (void)argc; (void)argv;
+    std::ifstream f("__OUTPUTS__");
+    std::stringstream ss; ss << f.rdbuf();
+    std::string text = ss.str();
+    hz::JVal doc = hz::JP(text).val();
+    const std::string slug = "__SLUG__";
+    const bool randomized = __RANDOMIZED__;
+    const hz::JVal* expected = hz::field(doc, "expected");
+    for (size_t ci = 0; ci < expected->arr.size(); ci++) {
+        const hz::JVal& kase = expected->arr[ci];
+        const hz::JVal* nameV = hz::field(kase, "name");
+        std::string name = nameV ? nameV->str : "case";
+        const hz::JVal* input = hz::field(kase, "input");
+        const std::vector<hz::JVal>& OPS = hz::field(*input, "ops")->arr;
+        const std::vector<hz::JVal>& ARG = hz::field(*input, "args")->arr;
+        std::vector<std::string> resVec;
+        std::vector<std::string>* results = &resVec;
+        try {
+            long long h = 0; (void)h;
+__CONSTRUCT__
+            for (size_t i = 1; i < OPS.size(); i++) {
+                const std::string& op = OPS[i].str;
+                const hz::JVal& aa = ARG[i]; (void)aa;
+__DISPATCH__
+            }
+        } catch (const std::exception& e) {
+            fprintf(stderr, "VALIDATE slug=%s RE case=%s %s\n", slug.c_str(), name.c_str(), e.what());
+            return 3;
+        }
+        // random-pick: pick returns a valid index; reference stores nums[index].
+        if (randomized) {
+            const hz::JVal& nums = ARG[0].arr[0];
+            for (size_t i = 1; i < OPS.size(); i++)
+                if (OPS[i].str == "pick" && i < resVec.size())
+                    resVec[i] = canonJVal(nums.arr[(size_t)std::stoll(resVec[i])]);
+        }
+        const hz::JVal* outV = hz::field(kase, "output");
+        const std::vector<hz::JVal>& exp = outV->arr;
+        if (exp.size() != resVec.size()) {
+            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s size exp=%zu act=%zu\n",
+                    slug.c_str(), name.c_str(), exp.size(), resVec.size());
+            return 1;
+        }
+        for (size_t i = 0; i < exp.size(); i++) {
+            if (exp[i].t == hz::JVal::NUL) continue;   // void op: not compared
+            std::string e2 = canonJVal(exp[i]);
+            if (e2 != resVec[i]) {
+                fprintf(stderr, "VALIDATE slug=%s FAIL case=%s pos=%zu expected=%s actual=%s\n",
+                        slug.c_str(), name.c_str(), i, e2.c_str(), resVec[i].c_str());
+                return 1;
+            }
+        }
+    }
+    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu\n", slug.c_str(), expected->arr.size());
     return 0;
 }
 '''
@@ -503,15 +650,14 @@ def gen_driver_treelist(slug, info):
     return (_prelude(sol, pre, hz_extra)
             + MAIN_PLAIN.replace("__OUTPUTS__", outs).replace("__BUILD_ARGS__", build))
 
-def gen_driver_design(slug):
+def _design_parts(slug):
+    """Shared construct+dispatch codegen for the design driver (measure + validate)."""
     sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
-    outs = os.path.join(REF, "outputs", slug + ".json")
     src_txt = open(sol).read()
+    outs = os.path.join(REF, "outputs", slug + ".json")
     cases = json.load(open(outs))["expected"]
     ops0 = cases[0]["input"]["ops"][0]
 
-    # ops[0] is the constructor slot. If the cell declares `class <ops0>` it is a real
-    # ctor; otherwise the cell names the class Solution and ops0 is an init-method.
     real_ctor = _defines_struct(src_txt, ops0)
     if real_ctor:
         className = ops0
@@ -536,7 +682,6 @@ def gen_driver_design(slug):
     con.append('        if (results) results->push_back("null");')  # ctor output slot is always null
     construct = "\n".join(con)
 
-    # dispatch over every distinct method used at op index >= 1
     names, seen = [], set()
     for c in cases:
         for o in c["input"]["ops"][1:]:
@@ -565,11 +710,124 @@ def gen_driver_design(slug):
         b.append("            }")
         branches.append("\n".join(b))
     dispatch = "\n".join(branches)
+    return construct, dispatch
 
+
+def gen_driver_design(slug):
+    sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
+    outs = os.path.join(REF, "outputs", slug + ".json")
+    construct, dispatch = _design_parts(slug)
     return (_prelude(sol)
             + MAIN_DESIGN.replace("__OUTPUTS__", outs)
                          .replace("__CONSTRUCT__", construct)
                          .replace("__DISPATCH__", dispatch))
+
+
+def gen_validate_plain(slug, info):
+    sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
+    outs = os.path.join(REF, "outputs", slug + ".json")
+    lines, callargs = [], []
+    for i, t in enumerate(info["ptypes"]):
+        fn = MARSHAL[t]
+        lines.append("            auto base%d = hz::%s(E[%d].second);" % (i, fn, i))
+        callargs.append("a%d" % i)
+    copies = " ".join("auto a%d = base%d;" % (i, i) for i in range(len(callargs)))
+    unordered = slug in _UNORDERED
+    canon_fn = "hz::canon_multiset" if unordered else "hz::canon"
+    exp_expr = "canonJVal_multiset(*outV)" if unordered else "canonJVal(*outV)"
+    body = "\n".join(lines) + "\n            Solution sol;\n            " + copies + "\n"
+    body += "            actual = %s(sol.%s(%s));" % (canon_fn, info["method"], ", ".join(callargs))
+    return (_prelude(sol)
+            + MAIN_VALIDATE_PLAIN.replace("__OUTPUTS__", outs)
+                                 .replace("__SLUG__", slug)
+                                 .replace("__EXP_EXPR__", exp_expr)
+                                 .replace("__BUILD_INLINE__", body))
+
+
+def gen_validate_treelist(slug, info):
+    sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
+    outs = os.path.join(REF, "outputs", slug + ".json")
+    src_txt = open(sol).read()
+    kind, praw, ret = info["kind"], info["praw"], info["ret"]
+    pre = ""
+    if kind == "tree" and not _defines_struct(src_txt, "TreeNode"): pre = STD_TREENODE
+    if kind == "list" and not _defines_struct(src_txt, "ListNode"): pre = STD_LISTNODE
+    hz_extra = HZ_TREE if kind == "tree" else HZ_LIST
+    lines, callargs, frees = [], [], []
+    for i, raw in enumerate(praw):
+        lines.append("            auto a%d = hz::%s(E[%d].second);" % (i, _marshal_for(raw), i))
+        callargs.append("a%d" % i)
+        if 'TreeNode' in raw: frees.append("            hz::freeTree(a%d);" % i)
+        elif 'ListNode' in raw: frees.append("            hz::freeList(a%d);" % i)
+    call = "sol.%s(%s)" % (info["method"], ", ".join(callargs))
+    body = ["            Solution sol;"] + lines
+    if 'ListNode' in ret:
+        body.append("            ListNode* _r = %s;" % call)
+        body.append("            std::vector<int> _res = hz::listVals(_r);")
+        body += frees
+        body.append("            actual = hz::canon(_res);")
+    else:
+        body.append("            auto _r = %s;" % call)
+        body += frees
+        body.append("            actual = hz::canon(_r);")
+    return (_prelude(sol, pre, hz_extra)
+            + MAIN_VALIDATE_PLAIN.replace("__OUTPUTS__", outs)
+                                 .replace("__SLUG__", slug)
+                                 .replace("__EXP_EXPR__", "canonJVal(*outV)")
+                                 .replace("__BUILD_INLINE__", "\n".join(body)))
+
+
+def gen_validate_design(slug):
+    sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
+    outs = os.path.join(REF, "outputs", slug + ".json")
+    construct, dispatch = _design_parts(slug)
+    randomized = "true" if slug == "random-pick-index" else "false"
+    return (_prelude(sol)
+            + MAIN_VALIDATE_DESIGN.replace("__OUTPUTS__", outs)
+                                  .replace("__SLUG__", slug)
+                                  .replace("__RANDOMIZED__", randomized)
+                                  .replace("__CONSTRUCT__", construct)
+                                  .replace("__DISPATCH__", dispatch))
+
+
+def build_and_validate(slug, keep=False):
+    """Compile ONE validate driver and run it over every case. Returns the
+    binary's exit code (0 Accepted, 1 Wrong Answer, 3 Runtime Error) or 2 on a
+    setup/compile error so the caller can fall back to the legacy path."""
+    info = analyze(slug)
+    kind = info["kind"]
+    if kind == "plain":
+        src = gen_validate_plain(slug, info)
+    elif kind in ("tree", "list"):
+        src = gen_validate_treelist(slug, info)
+    elif kind == "design":
+        src = gen_validate_design(slug)
+    else:
+        sys.stderr.write("VALIDATE slug=%s ERROR unsupported kind=%s\n" % (slug, kind))
+        return 2
+    tmp = tempfile.mkdtemp(prefix="hz_cppv_")
+    cpp = os.path.join(tmp, "driver.cpp"); binp = os.path.join(tmp, "driver")
+    open(cpp, "w").write(src)
+    cc = subprocess.run(["g++", "-O2", "-std=c++17", cpp, "-o", binp],
+                        capture_output=True, text=True)
+    if cc.returncode != 0:
+        sys.stderr.write("VALIDATE slug=%s ERROR compile: %s\n" %
+                         (slug, cc.stderr.strip().splitlines()[-1] if cc.stderr else ""))
+        if keep:
+            sys.stderr.write(src)
+        else:
+            try: os.remove(cpp); os.rmdir(tmp)
+            except OSError: pass
+        return 2
+    celldir = os.path.join(ROOT, "C++", "leetcode", slug)
+    rr = subprocess.run([binp], capture_output=True, text=True, cwd=celldir, timeout=300)
+    if rr.stderr:
+        sys.stderr.write(rr.stderr)
+    if not keep:
+        try: os.remove(cpp); os.remove(binp); os.rmdir(tmp)
+        except OSError: pass
+    return rr.returncode
+
 
 def build_and_run(slug, budget, idx, keep=False):
     info = analyze(slug)
@@ -605,6 +863,9 @@ def build_and_run(slug, budget, idx, keep=False):
 
 # ---------------------------------------------------------------- contract CLI
 def main():
+    if len(sys.argv) > 1 and sys.argv[1] == "validate":
+        slug = os.path.basename(os.getcwd())
+        sys.exit(build_and_validate(slug))
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx    = int(sys.argv[2]) if len(sys.argv) > 2 else 0
     slug   = os.path.basename(os.getcwd())

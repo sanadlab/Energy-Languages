@@ -145,10 +145,20 @@ public class Harness {
     static TreeNode cloneTree(TreeNode n){ if(n==null) return null; TreeNode c=new TreeNode(n.val); c.left=cloneTree(n.left); c.right=cloneTree(n.right); return c; }
     static ListNode cloneList(ListNode n){ if(n==null) return null; ListNode h=new ListNode(n.val),c=h; n=n.next; while(n!=null){ c.next=new ListNode(n.val); c=c.next; n=n.next; } return h; }
 
+    // Whole-number doubles canonicalise to their integer form so a double[] result
+    // (e.g. [2.0, 3.0]) matches an integer-valued reference ([2, 3]).
+    static String fmtD(double d){
+        if(!Double.isInfinite(d) && !Double.isNaN(d) && d==Math.rint(d) && Math.abs(d)<9.007199254740992E15)
+            return String.valueOf((long)d);
+        return String.valueOf(d);
+    }
     static String canon(Object r){
         if(r==null) return "null";
         if(r instanceof ListNode){ StringBuilder b=new StringBuilder("["); for(ListNode n=(ListNode)r; n!=null; n=n.next){ if(b.length()>1) b.append(", "); b.append(n.val); } return b.append("]").toString(); }
         if(r instanceof TreeNode){ java.util.List<String> out=new java.util.ArrayList<>(); java.util.LinkedList<TreeNode> q=new java.util.LinkedList<>(); q.add((TreeNode)r); while(!q.isEmpty()){ TreeNode n=q.poll(); if(n==null){ out.add("null"); continue; } out.add(String.valueOf(n.val)); q.add(n.left); q.add(n.right); } int e=out.size(); while(e>0 && out.get(e-1).equals("null")) e--; return "["+String.join(", ", out.subList(0,e))+"]"; }
+        if(r instanceof Double) return fmtD((Double)r);
+        if(r instanceof double[]){ double[] a=(double[])r; StringBuilder b=new StringBuilder("["); for(int i=0;i<a.length;i++){ if(i>0) b.append(", "); b.append(fmtD(a[i])); } return b.append("]").toString(); }
+        if(r instanceof List){ StringBuilder b=new StringBuilder("["); List<?> l=(List<?>)r; for(int i=0;i<l.size();i++){ if(i>0) b.append(", "); b.append(canon(l.get(i))); } return b.append("]").toString(); }
         if(r instanceof int[]) return Arrays.toString((int[])r);
         if(r instanceof long[]) return Arrays.toString((long[])r);
         if(r instanceof double[]) return Arrays.toString((double[])r);
@@ -180,8 +190,112 @@ public class Harness {
         return acc;
     }
 
+    // ---------- full-suite correctness validation (java Harness validate) ----------
+    // Runs EVERY reference case once and compares to the expected output. For
+    // design/trace cases a null in the expected array marks a void op (LeetCode
+    // discards its return), so those positions are not compared.
+    @SuppressWarnings("unchecked")
+    static List<String> replayResults(Class<?> dc, List<Object> ops, List<Object> args, boolean randomized) throws Exception {
+        List<Object> ctorArgs=(List<Object>)args.get(0);
+        Constructor<?> ctor=null;
+        for(Constructor<?> ct: dc.getDeclaredConstructors()) if(ct.getParameterCount()==ctorArgs.size()){ ctor=ct; break; }
+        ctor.setAccessible(true);
+        Type[] cpt=ctor.getGenericParameterTypes(); Object[] ca=new Object[cpt.length];
+        for(int i=0;i<ca.length;i++) ca[i]=marshal(cpt[i], ctorArgs.get(i));
+        Object inst=ctor.newInstance(ca);
+        List<Object> nums = (randomized && !ctorArgs.isEmpty()) ? (List<Object>)ctorArgs.get(0) : null;
+        List<String> res=new ArrayList<>(); res.add("null");            // constructor slot
+        for(int i=1;i<ops.size();i++){
+            String opn=(String)ops.get(i); List<Object> oal=(List<Object>)args.get(i);
+            Method m=null;
+            for(Method mm: dc.getDeclaredMethods()) if(mm.getName().equals(opn) && mm.getParameterCount()==oal.size()){ m=mm; break; }
+            m.setAccessible(true);
+            Type[] mpt=m.getGenericParameterTypes(); Object[] oa=new Object[mpt.length];
+            for(int j=0;j<oa.length;j++) oa[j]=marshal(mpt[j], oal.get(j));
+            Object r=m.invoke(inst, oa);
+            // random-pick: pick returns a valid index; reference stores nums[index].
+            if(randomized && opn.equals("pick") && r instanceof Number && nums!=null) r=nums.get(((Number)r).intValue());
+            res.add(canon(r));
+        }
+        return res;
+    }
+    // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
+    static final java.util.Set<String> _UNORDERED = new java.util.HashSet<>(Arrays.asList(
+        "uncommon-words-from-two-sentences", "remove-invalid-parentheses",
+        "restore-the-array-from-adjacent-pairs"));
+    static List<String> elemCanons(Object o){
+        List<String> r=new ArrayList<>();
+        if(o instanceof List){ for(Object e:(List<?>)o) r.add(canon(e)); return r; }
+        if(o instanceof Object[]){ for(Object e:(Object[])o) r.add(canon(e)); return r; }
+        if(o instanceof int[]){ for(int e:(int[])o) r.add(canon(e)); return r; }
+        if(o instanceof long[]){ for(long e:(long[])o) r.add(canon(e)); return r; }
+        return null;                                   // not a flat list -> caller falls back
+    }
+    static boolean unorderedEq(Object actual, Object expected){
+        List<String> a=elemCanons(actual), e=elemCanons(expected);
+        if(a==null || e==null) return canon(actual).equals(canon(expected));
+        Collections.sort(a); Collections.sort(e);
+        return a.equals(e);
+    }
+    static void vfail(String slug,String name,Object exp,Object actual){
+        System.err.println("VALIDATE slug="+slug+" FAIL case="+name+" expected="+truncate(String.valueOf(exp),120)+" actual="+truncate(String.valueOf(actual),120));
+        System.exit(1);
+    }
+    @SuppressWarnings("unchecked")
+    static void validate() throws Exception {
+        String cell = System.getProperty("user.dir");
+        String slug = new File(cell).getName();
+        String ref = cell + "/../../../reference/leetcode";
+        Map<String,Object> out, wl; String method; List<Object> cases;
+        try {
+            out = (Map<String,Object>) parse(new String(Files.readAllBytes(Paths.get(ref,"outputs",slug+".json"))));
+            wl  = (Map<String,Object>) parse(new String(Files.readAllBytes(Paths.get(ref,"workloads",slug+".json"))));
+            String ep=String.valueOf(wl.get("entry_point")); method=ep.substring(ep.lastIndexOf('.')+1);
+            cases=(List<Object>) out.get("expected");
+        } catch(Throwable e){ System.err.println("VALIDATE slug="+slug+" ERROR load: "+e); System.exit(2); return; }
+        boolean randomized = slug.equals("random-pick-index");
+        for(Object co: cases){
+            Map<String,Object> c=(Map<String,Object>)co; String name=String.valueOf(c.get("name"));
+            Map<String,Object> input=(Map<String,Object>)c.get("input");
+            Object expected=c.get("output");
+            try {
+                if(input.containsKey("ops") && input.containsKey("args")){    // design/trace replay
+                    List<Object> ops=(List<Object>)input.get("ops"); List<Object> dargs=(List<Object>)input.get("args");
+                    Class<?> dc; try { dc=Class.forName(String.valueOf(ops.get(0))); } catch(ClassNotFoundException e){ dc=Class.forName("Solution"); }
+                    List<String> actual=replayResults(dc, ops, dargs, randomized);
+                    List<Object> exp=(List<Object>)expected;
+                    if(actual.size()!=exp.size()) vfail(slug,name,exp,actual);
+                    for(int i=0;i<exp.size();i++){
+                        if(exp.get(i)==null) continue;                        // void op: not compared
+                        if(!canon(exp.get(i)).equals(actual.get(i))) vfail(slug,name,exp,actual);
+                    }
+                } else {                                                      // generic single call
+                    Class<?> sol=Class.forName("Solution");
+                    Method mth=null;
+                    for(Method m: sol.getMethods()) if(m.getName().equals(method)){ mth=m; break; }
+                    if(mth==null) for(Method m: sol.getDeclaredMethods()) if(m.getName().equals(method)){ mth=m; break; }
+                    Object inst=sol.getDeclaredConstructor().newInstance();
+                    Type[] pts=mth.getGenericParameterTypes(); Object[] base=new Object[pts.length];
+                    int i=0; for(Object v: input.values()){ base[i]=marshal(pts[i], v); i++; }
+                    Object rawResult=mth.invoke(inst, base);
+                    boolean okc = _UNORDERED.contains(slug)
+                            ? unorderedEq(rawResult, expected)
+                            : canon(rawResult).equals(canon(expected));
+                    if(!okc) vfail(slug,name,canon(expected),canon(rawResult));
+                }
+            } catch(Throwable e){
+                Throwable cz = (e instanceof InvocationTargetException && e.getCause()!=null) ? e.getCause() : e;
+                System.err.println("VALIDATE slug="+slug+" RE case="+name+" "+cz.getClass().getSimpleName()+": "+cz.getMessage());
+                System.exit(3);
+            }
+        }
+        System.err.println("VALIDATE slug="+slug+" PASS ncases="+cases.size());
+        System.exit(0);
+    }
+
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
+        if(args.length>=1 && args[0].equals("validate")){ validate(); return; }
         double budget = Double.parseDouble(args[0]);
         int idx = Integer.parseInt(args[1]);
         String cell = System.getProperty("user.dir");

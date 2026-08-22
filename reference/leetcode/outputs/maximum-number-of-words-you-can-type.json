@@ -981,7 +981,7 @@
     {
       "name": "case_123",
       "input": {
-        "text": "multiple spaces between words   are not allowed",
+        "text": "multiple spaces between words are not allowed",
         "brokenLetters": ""
       },
       "output": 7

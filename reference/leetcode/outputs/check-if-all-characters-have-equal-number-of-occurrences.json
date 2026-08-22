@@ -68,9 +68,9 @@
     {
       "name": "case_10",
       "input": {
-        "s": ""
+        "s": "a"
       },
-      "output": false
+      "output": true
     },
     {
       "name": "case_11",

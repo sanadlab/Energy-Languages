@@ -12,8 +12,13 @@
 # CASE/ITERS/ACC/BEACON to STDERR and keeps STDOUT empty.
 set -eu
 
-BUDGET="${1:?usage: harness_go.sh <budget_seconds> <case_index>}"
-IDX="${2:?usage: harness_go.sh <budget_seconds> <case_index>}"
+BUDGET="${1:?usage: harness_go.sh <budget_seconds> <case_index> | harness_go.sh validate}"
+if [ "$BUDGET" = "validate" ]; then
+  MODE=validate
+else
+  IDX="${2:?usage: harness_go.sh <budget_seconds> <case_index>}"
+  MODE=measure
+fi
 
 CELL="$(pwd)"
 SLUG="$(basename "$CELL")"
@@ -61,4 +66,8 @@ if ! "$GO" build -o "$BUILD/hbin" "$BUILD/sol_combined.go" "$BUILD/zz_harness.go
 fi
 
 # Run from the cell dir so the binary derives the slug and finds the inputs.
-"$BUILD/hbin" "$BUDGET" "$IDX"
+if [ "$MODE" = "validate" ]; then
+  "$BUILD/hbin" validate
+else
+  "$BUILD/hbin" "$BUDGET" "$IDX"
+fi

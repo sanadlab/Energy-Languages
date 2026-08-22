@@ -222,7 +222,7 @@
           "ghijkl",
           "mnopqr"
         ],
-        "target": "abcdefghijklmnopqr"
+        "target": "abcdefghijklmno"
       },
       "output": 3
     },
@@ -230,12 +230,12 @@
       "name": "case_21",
       "input": {
         "stickers": [
-          "mississippi",
+          "mississipp",
           "helloworld"
         ],
-        "target": "mississippiworldhello"
+        "target": "mississippiworl"
       },
-      "output": 2
+      "output": 3
     },
     {
       "name": "case_22",
@@ -271,20 +271,20 @@
           "four",
           "five"
         ],
-        "target": "onetwothreefourfive"
+        "target": "onetwothreefour"
       },
-      "output": 5
+      "output": 4
     },
     {
       "name": "case_25",
       "input": {
         "stickers": [
-          "mississippi",
-          "pennsylvania"
+          "mississipp",
+          "pennsylvan"
         ],
-        "target": "mississippipennsylvania"
+        "target": "mississippipenn"
       },
-      "output": 2
+      "output": 3
     },
     {
       "name": "case_26",
@@ -310,7 +310,7 @@
           "moon",
           "star"
         ],
-        "target": "flowergardenstar"
+        "target": "flowergardensta"
       },
       "output": 3
     },
@@ -337,9 +337,9 @@
           "sticker",
           "pack"
         ],
-        "target": "alphabetwordsoupstickersoup"
+        "target": "alphabetwordsou"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_30",
@@ -430,11 +430,11 @@
       "name": "case_37",
       "input": {
         "stickers": [
-          "programming",
+          "programmin",
           "is",
           "fun"
         ],
-        "target": "funisprogramming"
+        "target": "funisprogrammin"
       },
       "output": 3
     },
@@ -446,7 +446,7 @@
           "love",
           "coding"
         ],
-        "target": "lovecodingleetcode"
+        "target": "lovecodingleetc"
       },
       "output": 3
     },
@@ -496,9 +496,9 @@
           "world",
           "again"
         ],
-        "target": "againhelloagainworld"
+        "target": "againhelloagain"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_43",
@@ -520,7 +520,7 @@
           "birthday",
           "friend"
         ],
-        "target": "happybirthdayfriend"
+        "target": "happybirthdayfr"
       },
       "output": 3
     },
@@ -547,9 +547,9 @@
           "ghi",
           "jkl"
         ],
-        "target": "helloworldabcdefghijk"
+        "target": "helloworldabcde"
       },
-      "output": 6
+      "output": 4
     },
     {
       "name": "case_47",
@@ -572,7 +572,7 @@
           "def",
           "ghi"
         ],
-        "target": "zyxwvutsrqponmlkjihgfedcba"
+        "target": "zyxwvutsrqponml"
       },
       "output": -1
     },
@@ -632,7 +632,7 @@
           "juice",
           "smoothie"
         ],
-        "target": "smoothieorangejuice"
+        "target": "smoothieorangej"
       },
       "output": 3
     },
@@ -659,9 +659,9 @@
           "over",
           "lazy"
         ],
-        "target": "quickbrownfoxjumpsoveralazydog"
+        "target": "quickbrownfoxju"
       },
-      "output": -1
+      "output": 4
     },
     {
       "name": "case_56",
@@ -708,7 +708,7 @@
           "banana",
           "cherry"
         ],
-        "target": "bananaapplecherry"
+        "target": "bananaapplecher"
       },
       "output": 3
     },
@@ -720,7 +720,7 @@
           "data",
           "structure"
         ],
-        "target": "algorithmdatastructure"
+        "target": "algorithmdatast"
       },
       "output": 3
     },
@@ -772,9 +772,9 @@
           "nopqrstu",
           "vwxyz"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_65",
@@ -792,13 +792,13 @@
       "name": "case_66",
       "input": {
         "stickers": [
-          "aabbccddeeff",
-          "bbccddeeffgghh",
-          "ccddeeffgghhiijj"
+          "aabbccddee",
+          "bbccddeeff",
+          "ccddeeffgg"
         ],
-        "target": "aabbccddeeffgghhiijj"
+        "target": "aabbccddeeffggh"
       },
-      "output": 2
+      "output": -1
     },
     {
       "name": "case_67",
@@ -856,7 +856,7 @@
           "world",
           "python"
         ],
-        "target": "pythonworldhello"
+        "target": "pythonworldhell"
       },
       "output": 3
     },
@@ -870,9 +870,9 @@
           "jjkkll",
           "mmnnoo"
         ],
-        "target": "aabbccddeeffgghhiijjkkllmmnnoo"
+        "target": "aabbccddeeffggh"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_73",
@@ -896,9 +896,9 @@
           "stuvwx",
           "yzabcd"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_75",
@@ -910,9 +910,9 @@
           "mnopqrstuv",
           "wxyzabcde"
         ],
-        "target": "zyxwvutsrqponmlkjihgfedcba"
+        "target": "zyxwvutsrqponml"
       },
-      "output": 3
+      "output": 2
     },
     {
       "name": "case_76",
@@ -922,9 +922,9 @@
           "world",
           "again"
         ],
-        "target": "helloworldhelloagainworld"
+        "target": "helloworldhello"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_77",
@@ -933,9 +933,9 @@
           "unique",
           "letters"
         ],
-        "target": "uniquelettersuniqueletters"
+        "target": "uniquelettersun"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_78",
@@ -971,9 +971,9 @@
           "stuvwx",
           "yz"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_81",
@@ -1019,7 +1019,7 @@
           "partial",
           "coverage"
         ],
-        "target": "overlappartialcoverage"
+        "target": "overlappartialc"
       },
       "output": 3
     },
@@ -1070,7 +1070,7 @@
           "birthday",
           "party"
         ],
-        "target": "birthdaypartyparty"
+        "target": "birthdaypartypa"
       },
       "output": 3
     },
@@ -1082,7 +1082,7 @@
           "yyyy",
           "xxxx"
         ],
-        "target": "zyxwvutsrqponmlkjihgfedcba"
+        "target": "zyxwvutsrqponml"
       },
       "output": -1
     },
@@ -1130,9 +1130,9 @@
           "java",
           "cplus"
         ],
-        "target": "javapythoncpluspython"
+        "target": "javapythoncplus"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_94",
@@ -1172,9 +1172,9 @@
           "qrstuv",
           "wxzyab"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyzabc"
+        "target": "abcdefghijklmno"
       },
-      "output": 5
+      "output": 3
     },
     {
       "name": "case_97",
@@ -1187,9 +1187,9 @@
           "five",
           "six"
         ],
-        "target": "onetwothreefourfivesix"
+        "target": "onetwothreefour"
       },
-      "output": 6
+      "output": 4
     },
     {
       "name": "case_98",
@@ -1199,9 +1199,9 @@
           "two",
           "three"
         ],
-        "target": "onetwothreeonetwothree"
+        "target": "onetwothreeonet"
       },
-      "output": 6
+      "output": 5
     },
     {
       "name": "case_99",
@@ -1235,7 +1235,7 @@
           "green",
           "blue"
         ],
-        "target": "greenbluegreengreen"
+        "target": "greenbluegreeng"
       },
       "output": 4
     },
@@ -1262,9 +1262,9 @@
           "yellow",
           "purple"
         ],
-        "target": "bluegreenyellowpurple"
+        "target": "bluegreenyellow"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_104",
@@ -1320,11 +1320,11 @@
       "name": "case_108",
       "input": {
         "stickers": [
-          "programming",
+          "programmin",
           "in",
           "python"
         ],
-        "target": "grammipnnoingtih"
+        "target": "grammipnnoingti"
       },
       "output": 4
     },
@@ -1350,7 +1350,7 @@
           "cherry",
           "date"
         ],
-        "target": "abacaxibananacherry"
+        "target": "abacaxibananach"
       },
       "output": -1
     },
@@ -1363,9 +1363,9 @@
           "qrstuvwx",
           "yz"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 4
+      "output": 2
     },
     {
       "name": "case_112",
@@ -1401,7 +1401,7 @@
           "world",
           "python"
         ],
-        "target": "worldhellopython"
+        "target": "worldhellopytho"
       },
       "output": 3
     },
@@ -1463,9 +1463,9 @@
           "bar",
           "baz"
         ],
-        "target": "helloworldfoobarbaz"
+        "target": "helloworldfooba"
       },
-      "output": 5
+      "output": 4
     },
     {
       "name": "case_120",
@@ -1474,11 +1474,11 @@
           "hello",
           "world",
           "python",
-          "programming"
+          "programmin"
         ],
-        "target": "helloprogrammingworld"
+        "target": "helloprogrammin"
       },
-      "output": 3
+      "output": 2
     },
     {
       "name": "case_121",
@@ -1488,7 +1488,7 @@
           "words",
           "here"
         ],
-        "target": "repeatedwordshere"
+        "target": "repeatedwordshe"
       },
       "output": 3
     },
@@ -1546,9 +1546,9 @@
           "wx",
           "yz"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 13
+      "output": 8
     },
     {
       "name": "case_126",
@@ -1573,9 +1573,9 @@
           "this",
           "example"
         ],
-        "target": "repeatedwordshereinthisexample"
+        "target": "repeatedwordshe"
       },
-      "output": 6
+      "output": 3
     },
     {
       "name": "case_128",
@@ -1610,9 +1610,9 @@
           "opqrstu",
           "vwxyz"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": 4
+      "output": 3
     },
     {
       "name": "case_131",
@@ -1658,7 +1658,7 @@
           "two",
           "three"
         ],
-        "target": "threethreetwoone"
+        "target": "threethreetwoon"
       },
       "output": 4
     },
@@ -1670,7 +1670,7 @@
           "piano",
           "violin"
         ],
-        "target": "xylophonepianoviolin"
+        "target": "xylophonepianov"
       },
       "output": 3
     },
@@ -1682,7 +1682,7 @@
           "bbccdd",
           "ccddaa"
         ],
-        "target": "aabbccbbccddccddaa"
+        "target": "aabbccbbccddccd"
       },
       "output": 3
     },
@@ -1706,7 +1706,7 @@
           "fghij",
           "klmno"
         ],
-        "target": "ejihfckgmldnbaio"
+        "target": "ejihfckgmldnbai"
       },
       "output": 4
     },
@@ -1718,7 +1718,7 @@
           "ghijkl",
           "mnopqr"
         ],
-        "target": "jklmnopqrfgedbica"
+        "target": "jklmnopqrfgedbi"
       },
       "output": 3
     },
@@ -1745,9 +1745,9 @@
           "pqrst",
           "uvwxy"
         ],
-        "target": "abcdefghijklmnopqrstuvwxyz"
+        "target": "abcdefghijklmno"
       },
-      "output": -1
+      "output": 3
     },
     {
       "name": "case_142",
@@ -1761,9 +1761,9 @@
           "lazy",
           "dog"
         ],
-        "target": "quickbrownfoxjumpsoverlazydog"
+        "target": "quickbrownfoxju"
       },
-      "output": 7
+      "output": 4
     },
     {
       "name": "case_143",
