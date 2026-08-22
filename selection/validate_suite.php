@@ -118,24 +118,25 @@ function run_case($input, $method, $hasSol, $newClasses, $randomized) {
     return $hasSol ? (new Solution())->$method(...$base) : $method(...$base);
 }
 
-foreach ($out['expected'] as $c) {
+$__total = count($out['expected']);
+foreach ($out['expected'] as $__i => $c) {
     $name = $c['name'];
     $input = $c['input'];
     $is_design = isset($input['ops']) && isset($input['args']);
     try {
         $actual = run_case($input, $method, $hasSol, $newClasses, $randomized);
     } catch (\Throwable $e) {
-        fwrite(STDERR, "VALIDATE slug=$slug RE case=$name " . get_class($e) . ": " . $e->getMessage() . "\n");
+        fwrite(STDERR, "VALIDATE slug=$slug RE case=$name passed=$__i ncases=$__total " . get_class($e) . ": " . $e->getMessage() . "\n");
         exit(3);
     }
     $ok = $is_design ? seq_ok($actual, $c['output'])
          : (in_array($slug, $UNORDERED, true) ? unordered_eq($actual, $c['output']) : (canon($actual) === canon($c['output'])));
     if (!$ok) {
-        fwrite(STDERR, "VALIDATE slug=$slug FAIL case=$name "
+        fwrite(STDERR, "VALIDATE slug=$slug FAIL case=$name passed=$__i ncases=$__total "
             . "expected=" . substr(canon($c['output']), 0, 120) . " "
             . "actual="   . substr(canon($actual), 0, 120) . "\n");
         exit(1);
     }
 }
-fwrite(STDERR, "VALIDATE slug=$slug PASS ncases=" . count($out['expected']) . "\n");
+fwrite(STDERR, "VALIDATE slug=$slug PASS ncases=$__total passed=$__total\n");
 exit(0);

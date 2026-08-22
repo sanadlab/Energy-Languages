@@ -135,23 +135,24 @@ def run_case(input, camel, has_sol, randomized)
   recv.send(meth, *base)
 end
 
-out['expected'].each do |c|
+__total = out['expected'].length
+out['expected'].each_with_index do |c, __i|
   name = c['name']
   inp  = c['input']
   is_design = inp.is_a?(Hash) && inp.key?('ops') && inp.key?('args')
   begin
     actual = run_case(inp, camel, has_sol, randomized)
   rescue StandardError, ScriptError => e
-    STDERR.puts "VALIDATE slug=#{slug} RE case=#{name} #{e.class}: #{e}"; exit 3
+    STDERR.puts "VALIDATE slug=#{slug} RE case=#{name} passed=#{__i} ncases=#{__total} #{e.class}: #{e}"; exit 3
   end
   ok = if is_design then seq_ok(actual, c['output'])
        elsif UNORDERED.include?(slug) then unordered_eq(actual, c['output'])
        else HNS.canon(actual) == HNS.canon(c['output']) end
   unless ok
-    STDERR.puts "VALIDATE slug=#{slug} FAIL case=#{name} " \
+    STDERR.puts "VALIDATE slug=#{slug} FAIL case=#{name} passed=#{__i} ncases=#{__total} " \
       "expected=#{HNS.canon(c['output'])[0,120]} actual=#{HNS.canon(actual)[0,120]}"
     exit 1
   end
 end
-STDERR.puts "VALIDATE slug=#{slug} PASS ncases=#{out['expected'].length}"
+STDERR.puts "VALIDATE slug=#{slug} PASS ncases=#{__total} passed=#{__total}"
 exit 0

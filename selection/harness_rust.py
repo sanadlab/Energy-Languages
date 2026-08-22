@@ -830,7 +830,8 @@ fn main() {
     let slug = "__SLUG__";
     let doc = __load();
     let cases = doc.field("expected").as_arr();
-    for kase in cases {
+    let __total = cases.len();
+    for (__ci, kase) in cases.iter().enumerate() {   // __ci = cases passed before this one
         let name = kase.field("name").as_str().to_string();
         let __res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> i32 {
             let input = kase.field("input");
@@ -845,10 +846,10 @@ __CMP__
         match __res {
             Ok(0) => {}
             Ok(code) => std::process::exit(code),
-            Err(_) => { eprintln!("VALIDATE slug={} RE case={} panic", slug, name); std::process::exit(3); }
+            Err(_) => { eprintln!("VALIDATE slug={} RE case={} passed={} ncases={} panic", slug, name, __ci, __total); std::process::exit(3); }
         }
     }
-    eprintln!("VALIDATE slug={} PASS ncases={}", slug, cases.len());
+    eprintln!("VALIDATE slug={} PASS ncases={} passed={}", slug, __total, __total);
 }
 """
 
@@ -862,7 +863,8 @@ fn main() {
     let randomized = __RANDOMIZED__;
     let doc = __load();
     let cases = doc.field("expected").as_arr();
-    for kase in cases {
+    let __total = cases.len();
+    for (__ci, kase) in cases.iter().enumerate() {   // __ci = cases passed before this one
         let name = kase.field("name").as_str().to_string();
         let __res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| -> i32 {
             let input = kase.field("input");
@@ -886,10 +888,10 @@ __VALIDATE_DISPATCH__
         match __res {
             Ok(0) => {}
             Ok(code) => std::process::exit(code),
-            Err(_) => { eprintln!("VALIDATE slug={} RE case={} panic", slug, name); std::process::exit(3); }
+            Err(_) => { eprintln!("VALIDATE slug={} RE case={} passed={} ncases={} panic", slug, name, __ci, __total); std::process::exit(3); }
         }
     }
-    eprintln!("VALIDATE slug={} PASS ncases={}", slug, cases.len());
+    eprintln!("VALIDATE slug={} PASS ncases={} passed={}", slug, __total, __total);
 }
 """
 
@@ -924,7 +926,7 @@ def build_validate_call(sol, slug, sig):
             "            let mut __a = __actual.clone(); __a.sort();\n"
             "            let mut __e = __exp.clone(); __e.sort();\n"
             "            if __a != __e {\n"
-            '                eprintln!("VALIDATE slug={} FAIL case={} (unordered) expected={:?} actual={:?}", slug, name, __exp, __actual);\n'
+            '                eprintln!("VALIDATE slug={} FAIL case={} passed={} ncases={} (unordered) expected={:?} actual={:?}", slug, name, __ci, __total, __exp, __actual);\n'
             "                return 1i32;\n"
             "            }")
     elif "ListNode" in ret:
@@ -934,7 +936,7 @@ def build_validate_call(sol, slug, sig):
             "            let __e_ints: Vec<i32> = expected.as_arr().iter().map(|__e| __e.as_i64() as i32).collect();\n"
             "            let __e = __canon_list(&__build_list(&__e_ints));\n"
             "            if __a != __e {\n"
-            '                eprintln!("VALIDATE slug={} FAIL case={} expected={} actual={}", slug, name, __e, __a);\n'
+            '                eprintln!("VALIDATE slug={} FAIL case={} passed={} ncases={} expected={} actual={}", slug, name, __ci, __total, __e, __a);\n'
             "                return 1i32;\n"
             "            }")
     elif "TreeNode" in ret:
@@ -944,7 +946,7 @@ def build_validate_call(sol, slug, sig):
         cmp = (
             f"            let __exp: {ret} = {exp_marsh};\n"
             "            if __actual != __exp {\n"
-            '                eprintln!("VALIDATE slug={} FAIL case={} expected={:?} actual={:?}", slug, name, __exp, __actual);\n'
+            '                eprintln!("VALIDATE slug={} FAIL case={} passed={} ncases={} expected={:?} actual={:?}", slug, name, __ci, __total, __exp, __actual);\n'
             "                return 1i32;\n"
             "            }")
 
@@ -1017,7 +1019,7 @@ def build_validate_design(sol, slug, inp, cases, randomized):
                 f'            if !__exp.is_null() {{\n'
                 f'                let __p = __nums[__r as usize];\n'
                 f'                if __p != (__exp).as_i64() {{\n'
-                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} pos={{}} expected={{}} actual={{}}", slug, name, __i, (__exp).as_i64(), __p);\n'
+                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} passed={{}} ncases={{}} pos={{}} expected={{}} actual={{}}", slug, name, __ci, __total, __i, (__exp).as_i64(), __p);\n'
                 f'                    return 1i32;\n'
                 f'                }}\n'
                 f'            }}\n'
@@ -1030,7 +1032,7 @@ def build_validate_design(sol, slug, inp, cases, randomized):
                 f'            if !__exp.is_null() {{\n'
                 f'                let __e: {mret} = {em};\n'
                 f'                if __r != __e {{\n'
-                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} pos={{}} expected={{:?}} actual={{:?}}", slug, name, __i, __e, __r);\n'
+                f'                    eprintln!("VALIDATE slug={{}} FAIL case={{}} passed={{}} ncases={{}} pos={{}} expected={{:?}} actual={{:?}}", slug, name, __ci, __total, __i, __e, __r);\n'
                 f'                    return 1i32;\n'
                 f'                }}\n'
                 f'            }}\n'

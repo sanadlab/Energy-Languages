@@ -190,13 +190,15 @@ def main():
         sys.stderr.write(f"VALIDATE slug={SLUG} ERROR load: {e}\n")
         sys.exit(2)
 
-    for c in cases:
+    total = len(cases)
+    for i, c in enumerate(cases):        # i = cases that passed before this one
         name = c.get("name")
         try:
             actual = _run_case(mod, method, c)
         except Exception as e:  # noqa: BLE001
             sys.stderr.write(
-                f"VALIDATE slug={SLUG} RE case={name} {type(e).__name__}: {e}\n")
+                f"VALIDATE slug={SLUG} RE case={name} passed={i} ncases={total} "
+                f"{type(e).__name__}: {e}\n")
             sys.exit(3)
         expected = _norm(c["output"])
         inp = c["input"]
@@ -209,12 +211,12 @@ def main():
             ok = (actual == expected)
         if not ok:
             sys.stderr.write(
-                f"VALIDATE slug={SLUG} FAIL case={name} "
+                f"VALIDATE slug={SLUG} FAIL case={name} passed={i} ncases={total} "
                 f"expected={json.dumps(expected)[:120]} "
                 f"actual={json.dumps(actual, default=str)[:120]}\n")
             sys.exit(1)
 
-    sys.stderr.write(f"VALIDATE slug={SLUG} PASS ncases={len(cases)}\n")
+    sys.stderr.write(f"VALIDATE slug={SLUG} PASS ncases={total} passed={total}\n")
     sys.exit(0)
 
 

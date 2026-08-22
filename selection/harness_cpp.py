@@ -483,17 +483,17 @@ int main(int argc, char** argv) {
         try {
 __BUILD_INLINE__
         } catch (const std::exception& e) {
-            fprintf(stderr, "VALIDATE slug=%s RE case=%s %s\n", slug.c_str(), name.c_str(), e.what());
+            fprintf(stderr, "VALIDATE slug=%s RE case=%s passed=%zu ncases=%zu %s\n", slug.c_str(), name.c_str(), ci, expected->arr.size(), e.what());
             return 3;
         }
         std::string exp = outV ? __EXP_EXPR__ : std::string("null");
         if (exp != actual) {
-            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s expected=%s actual=%s\n",
-                    slug.c_str(), name.c_str(), exp.substr(0, 120).c_str(), actual.substr(0, 120).c_str());
+            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s passed=%zu ncases=%zu expected=%s actual=%s\n",
+                    slug.c_str(), name.c_str(), ci, expected->arr.size(), exp.substr(0, 120).c_str(), actual.substr(0, 120).c_str());
             return 1;
         }
     }
-    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu\n", slug.c_str(), expected->arr.size());
+    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu passed=%zu\n", slug.c_str(), expected->arr.size(), expected->arr.size());
     return 0;
 }
 '''
@@ -526,7 +526,7 @@ __CONSTRUCT__
 __DISPATCH__
             }
         } catch (const std::exception& e) {
-            fprintf(stderr, "VALIDATE slug=%s RE case=%s %s\n", slug.c_str(), name.c_str(), e.what());
+            fprintf(stderr, "VALIDATE slug=%s RE case=%s passed=%zu ncases=%zu %s\n", slug.c_str(), name.c_str(), ci, expected->arr.size(), e.what());
             return 3;
         }
         // random-pick: pick returns a valid index; reference stores nums[index].
@@ -539,21 +539,21 @@ __DISPATCH__
         const hz::JVal* outV = hz::field(kase, "output");
         const std::vector<hz::JVal>& exp = outV->arr;
         if (exp.size() != resVec.size()) {
-            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s size exp=%zu act=%zu\n",
-                    slug.c_str(), name.c_str(), exp.size(), resVec.size());
+            fprintf(stderr, "VALIDATE slug=%s FAIL case=%s passed=%zu ncases=%zu size exp=%zu act=%zu\n",
+                    slug.c_str(), name.c_str(), ci, expected->arr.size(), exp.size(), resVec.size());
             return 1;
         }
         for (size_t i = 0; i < exp.size(); i++) {
             if (exp[i].t == hz::JVal::NUL) continue;   // void op: not compared
             std::string e2 = canonJVal(exp[i]);
             if (e2 != resVec[i]) {
-                fprintf(stderr, "VALIDATE slug=%s FAIL case=%s pos=%zu expected=%s actual=%s\n",
-                        slug.c_str(), name.c_str(), i, e2.c_str(), resVec[i].c_str());
+                fprintf(stderr, "VALIDATE slug=%s FAIL case=%s passed=%zu ncases=%zu pos=%zu expected=%s actual=%s\n",
+                        slug.c_str(), name.c_str(), ci, expected->arr.size(), i, e2.c_str(), resVec[i].c_str());
                 return 1;
             }
         }
     }
-    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu\n", slug.c_str(), expected->arr.size());
+    fprintf(stderr, "VALIDATE slug=%s PASS ncases=%zu passed=%zu\n", slug.c_str(), expected->arr.size(), expected->arr.size());
     return 0;
 }
 '''

@@ -100,17 +100,19 @@ function seqOk(actual, expected){
   return true;
 }
 const cases = out.expected;
-for(const c of cases){
+const __total = cases.length;
+for(let __i=0;__i<cases.length;__i++){
+  const c = cases[__i];
   let actual;
   const isDesign = ('ops' in c.input && 'args' in c.input);
   try { actual = runCase(c.input); }
-  catch(e){ process.stderr.write(`VALIDATE slug=${slug} RE case=${c.name} ${e}\n`); process.exit(3); }
+  catch(e){ process.stderr.write(`VALIDATE slug=${slug} RE case=${c.name} passed=${__i} ncases=${__total} ${e}\n`); process.exit(3); }
   const ok = isDesign ? seqOk(actual, c.output) : (UNORDERED.has(slug) ? unorderedEq(actual, c.output) : (canon(actual) === canon(c.output)));
   if(!ok){
-    process.stderr.write(`VALIDATE slug=${slug} FAIL case=${c.name} `
+    process.stderr.write(`VALIDATE slug=${slug} FAIL case=${c.name} passed=${__i} ncases=${__total} `
       + `expected=${canon(c.output).slice(0,120)} actual=${canon(actual).slice(0,120)}\n`);
     process.exit(1);
   }
 }
-process.stderr.write(`VALIDATE slug=${slug} PASS ncases=${cases.length}\n`);
+process.stderr.write(`VALIDATE slug=${slug} PASS ncases=${__total} passed=${__total}\n`);
 process.exit(0);

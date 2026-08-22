@@ -625,7 +625,8 @@ func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool
 
 func hzValidate(slug string, cases []json.RawMessage) {
 	randomized := slug == "random-pick-index"
-	for _, raw := range cases {
+	total := len(cases)
+	for __i, raw := range cases {   // __i = cases passed before this one
 		var full struct {
 			Name   string          `json:"name"`
 			Input  json.RawMessage `json:"input"`
@@ -641,15 +642,15 @@ func hzValidate(slug string, cases []json.RawMessage) {
 		dec.Decode(&expected)
 		status, detail := hzCheckCase(hzCase{Name: full.Name, Input: full.Input}, expected, randomized, hzUnordered[slug])
 		if status == 3 {
-			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s RE case=%s %s\n", slug, full.Name, hzTrunc(detail, 200))
+			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s RE case=%s passed=%d ncases=%d %s\n", slug, full.Name, __i, total, hzTrunc(detail, 200))
 			os.Exit(3)
 		}
 		if status == 1 {
-			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s FAIL case=%s %s\n", slug, full.Name, hzTrunc(detail, 200))
+			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s FAIL case=%s passed=%d ncases=%d %s\n", slug, full.Name, __i, total, hzTrunc(detail, 200))
 			os.Exit(1)
 		}
 	}
-	fmt.Fprintf(os.Stderr, "VALIDATE slug=%s PASS ncases=%d\n", slug, len(cases))
+	fmt.Fprintf(os.Stderr, "VALIDATE slug=%s PASS ncases=%d passed=%d\n", slug, total, total)
 	os.Exit(0)
 }
 

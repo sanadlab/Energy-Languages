@@ -322,8 +322,8 @@ public static class Harness {
         la.Sort(StringComparer.Ordinal); le.Sort(StringComparer.Ordinal);
         return la.SequenceEqual(le);
     }
-    static int VFail(string slug, string name, object exp, object actual) {
-        Console.Error.WriteLine($"VALIDATE slug={slug} FAIL case={name} expected={Truncate(Convert.ToString(exp), 120)} actual={Truncate(Convert.ToString(actual), 120)}");
+    static int VFail(string slug, string name, object exp, object actual, int passed, int total) {
+        Console.Error.WriteLine($"VALIDATE slug={slug} FAIL case={name} passed={passed} ncases={total} expected={Truncate(Convert.ToString(exp), 120)} actual={Truncate(Convert.ToString(actual), 120)}");
         return 1;
     }
     static int Validate() {
@@ -338,7 +338,9 @@ public static class Harness {
             cases = (List<object>)outObj.Get("expected");
         } catch (Exception e) { Console.Error.WriteLine($"VALIDATE slug={slug} ERROR load: {e.Message}"); return 2; }
         bool randomized = slug == "random-pick-index";
-        foreach (var co in cases) {
+        int total = cases.Count;
+        for (int __i = 0; __i < cases.Count; __i++) {   // __i = cases passed before this one
+            var co = cases[__i];
             var c = (OMap)co; string name = Convert.ToString(c.Get("name"));
             var input = (OMap)c.Get("input");
             object expected = c.Get("output");
@@ -349,10 +351,10 @@ public static class Harness {
                     Type dc = FindType(Convert.ToString(ops[0])) ?? FindType("Solution");
                     var actual = ReplayResults(dc, ops, dargs, randomized);
                     var exp = (List<object>)expected;
-                    if (actual.Count != exp.Count) return VFail(slug, name, Canon(exp), Canon(actual));
+                    if (actual.Count != exp.Count) return VFail(slug, name, Canon(exp), Canon(actual), __i, total);
                     for (int i = 0; i < exp.Count; i++) {
                         if (exp[i] == null) continue;                 // void op: not compared
-                        if (Canon(exp[i]) != actual[i]) return VFail(slug, name, Canon(exp), Canon(actual));
+                        if (Canon(exp[i]) != actual[i]) return VFail(slug, name, Canon(exp), Canon(actual), __i, total);
                     }
                 } else {
                     Type sol = FindType("Solution");
@@ -364,15 +366,15 @@ public static class Harness {
                     int k = 0; foreach (var v in input.Vals) { baseArgs[k] = Marshal(pts[k].ParameterType, v); k++; }
                     object rawResult = mth.Invoke(inst, baseArgs);
                     bool okc = _UNORDERED.Contains(slug) ? UnorderedEq(rawResult, expected) : (Canon(rawResult) == Canon(expected));
-                    if (!okc) return VFail(slug, name, Canon(expected), Canon(rawResult));
+                    if (!okc) return VFail(slug, name, Canon(expected), Canon(rawResult), __i, total);
                 }
             } catch (Exception e) {
                 var cz = (e is TargetInvocationException tie && tie.InnerException != null) ? tie.InnerException : e;
-                Console.Error.WriteLine($"VALIDATE slug={slug} RE case={name} {cz.GetType().Name}: {cz.Message}");
+                Console.Error.WriteLine($"VALIDATE slug={slug} RE case={name} passed={__i} ncases={total} {cz.GetType().Name}: {cz.Message}");
                 return 3;
             }
         }
-        Console.Error.WriteLine($"VALIDATE slug={slug} PASS ncases={cases.Count}");
+        Console.Error.WriteLine($"VALIDATE slug={slug} PASS ncases={total} passed={total}");
         return 0;
     }
 

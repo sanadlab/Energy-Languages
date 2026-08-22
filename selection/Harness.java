@@ -237,8 +237,8 @@ public class Harness {
         Collections.sort(a); Collections.sort(e);
         return a.equals(e);
     }
-    static void vfail(String slug,String name,Object exp,Object actual){
-        System.err.println("VALIDATE slug="+slug+" FAIL case="+name+" expected="+truncate(String.valueOf(exp),120)+" actual="+truncate(String.valueOf(actual),120));
+    static void vfail(String slug,String name,Object exp,Object actual,int passed,int total){
+        System.err.println("VALIDATE slug="+slug+" FAIL case="+name+" passed="+passed+" ncases="+total+" expected="+truncate(String.valueOf(exp),120)+" actual="+truncate(String.valueOf(actual),120));
         System.exit(1);
     }
     @SuppressWarnings("unchecked")
@@ -254,7 +254,9 @@ public class Harness {
             cases=(List<Object>) out.get("expected");
         } catch(Throwable e){ System.err.println("VALIDATE slug="+slug+" ERROR load: "+e); System.exit(2); return; }
         boolean randomized = slug.equals("random-pick-index");
-        for(Object co: cases){
+        int total = cases.size();
+        for(int __i=0; __i<cases.size(); __i++){       // __i = cases passed before this one
+            Object co=cases.get(__i);
             Map<String,Object> c=(Map<String,Object>)co; String name=String.valueOf(c.get("name"));
             Map<String,Object> input=(Map<String,Object>)c.get("input");
             Object expected=c.get("output");
@@ -264,10 +266,10 @@ public class Harness {
                     Class<?> dc; try { dc=Class.forName(String.valueOf(ops.get(0))); } catch(ClassNotFoundException e){ dc=Class.forName("Solution"); }
                     List<String> actual=replayResults(dc, ops, dargs, randomized);
                     List<Object> exp=(List<Object>)expected;
-                    if(actual.size()!=exp.size()) vfail(slug,name,exp,actual);
+                    if(actual.size()!=exp.size()) vfail(slug,name,exp,actual,__i,total);
                     for(int i=0;i<exp.size();i++){
                         if(exp.get(i)==null) continue;                        // void op: not compared
-                        if(!canon(exp.get(i)).equals(actual.get(i))) vfail(slug,name,exp,actual);
+                        if(!canon(exp.get(i)).equals(actual.get(i))) vfail(slug,name,exp,actual,__i,total);
                     }
                 } else {                                                      // generic single call
                     Class<?> sol=Class.forName("Solution");
@@ -281,15 +283,15 @@ public class Harness {
                     boolean okc = _UNORDERED.contains(slug)
                             ? unorderedEq(rawResult, expected)
                             : canon(rawResult).equals(canon(expected));
-                    if(!okc) vfail(slug,name,canon(expected),canon(rawResult));
+                    if(!okc) vfail(slug,name,canon(expected),canon(rawResult),__i,total);
                 }
             } catch(Throwable e){
                 Throwable cz = (e instanceof InvocationTargetException && e.getCause()!=null) ? e.getCause() : e;
-                System.err.println("VALIDATE slug="+slug+" RE case="+name+" "+cz.getClass().getSimpleName()+": "+cz.getMessage());
+                System.err.println("VALIDATE slug="+slug+" RE case="+name+" passed="+__i+" ncases="+total+" "+cz.getClass().getSimpleName()+": "+cz.getMessage());
                 System.exit(3);
             }
         }
-        System.err.println("VALIDATE slug="+slug+" PASS ncases="+cases.size());
+        System.err.println("VALIDATE slug="+slug+" PASS ncases="+total+" passed="+total);
         System.exit(0);
     }
 
