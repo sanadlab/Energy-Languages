@@ -6,7 +6,7 @@
 #
 #   run_harness.sh <arena_lang> <budget_seconds> <case_index>
 #
-# arena_lang: python3 cpp java csharp golang javascript typescript php ruby rust
+# arena_lang: python3 cpp java csharp golang javascript typescript php ruby rust kotlin
 set -o pipefail
 LANG_ARG="$1"; BUDGET="${2:-1.0}"; IDX="${3:-0}"
 SEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -18,12 +18,19 @@ case "$LANG_ARG" in
   php)        php -d memory_limit=2G "$SEL/harness.php" "$BUDGET" "$IDX" ;;   # match other langs (no 128M cap)
   ruby)       ruby "$SEL/harness.rb" "$BUDGET" "$IDX" ;;
   cpp)        python3 "$SEL/harness_cpp.py" "$BUDGET" "$IDX" ;;    # codegen driver-generator
+  c)          python3 "$SEL/harness_c.py" "$BUDGET" "$IDX" ;;    # codegen driver-generator
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
   golang)     bash "$SEL/harness_go.sh" "$BUDGET" "$IDX" ;;
   java)
-    cp "$SEL/Harness.java" ./Harness.java
-    javac Harness.java solution.java >/dev/null 2>&1 && java Harness "$BUDGET" "$IDX"
-    rc=$?; rm -f Harness.java *.class; exit $rc ;;
+    cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
+    javac Harness.java TreeNode.java ListNode.java solution.java >/dev/null 2>&1 && java Harness "$BUDGET" "$IDX"
+    rc=$?; rm -f Harness.java TreeNode.java ListNode.java *.class; exit $rc ;;
+  kotlin)
+    cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
+    javac Harness.java TreeNode.java ListNode.java >/dev/null 2>&1 \
+      && kotlinc solution.kt -cp . -d . >/dev/null 2>&1 \
+      && kotlin -cp . Harness "$BUDGET" "$IDX"
+    rc=$?; rm -f Harness.java TreeNode.java ListNode.java *.class 2>/dev/null; rm -rf META-INF; exit $rc ;;
   csharp)
     cp "$SEL/Harness.cs" ./Harness.cs
     cat > bench.csproj <<'PROJ'

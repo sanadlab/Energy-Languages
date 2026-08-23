@@ -17,8 +17,8 @@ import java.math.BigInteger;
 import java.nio.file.*;
 import java.util.*;
 
-class TreeNode { int val; TreeNode left, right; TreeNode(int v){ val=v; } }
-class ListNode { int val; ListNode next; ListNode(int v){ val=v; } }
+// TreeNode / ListNode are provided as public TreeNode.java / ListNode.java
+// (shared with Kotlin cells), compiled alongside this harness.
 
 public class Harness {
     // ---------- minimal JSON parser ----------

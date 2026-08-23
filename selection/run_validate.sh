@@ -22,13 +22,23 @@ case "$LANG_ARG" in
   ruby)       ruby "$SEL/validate_suite.rb" ;;
   php)        php "$SEL/validate_suite.php" ;;
   java)
-    cp "$SEL/Harness.java" ./Harness.java
-    if javac Harness.java solution.java >/tmp/leetval_javac.log 2>&1; then
+    cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
+    if javac Harness.java TreeNode.java ListNode.java solution.java >/tmp/leetval_javac.log 2>&1; then
       java Harness validate; rc=$?
     else
       echo "validate: javac failed for java" >&2; rc=2
     fi
-    rm -f Harness.java *.class; exit $rc ;;
+    rm -f Harness.java TreeNode.java ListNode.java *.class; exit $rc ;;
+  kotlin)
+    cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
+    if ! javac Harness.java TreeNode.java ListNode.java >/tmp/leetval_javac.log 2>&1; then
+      echo "validate: javac harness failed for kotlin" >&2; rc=2
+    elif ! kotlinc solution.kt -cp . -d . >/tmp/leetval_ktc.log 2>&1; then
+      echo "validate: kotlinc failed for kotlin" >&2; rc=2
+    else
+      kotlin -cp . Harness validate; rc=$?
+    fi
+    rm -f Harness.java TreeNode.java ListNode.java *.class 2>/dev/null; rm -rf META-INF; exit $rc ;;
   typescript)
     # transpile solution.ts (types erased) then reuse the JS validator
     work="$(mktemp -d)"; cp solution.ts "$work/solution.ts"
@@ -55,6 +65,7 @@ PROJ
     rm -rf Harness.cs bench.csproj out obj bin; exit $rc ;;
   golang)     bash "$SEL/harness_go.sh" validate ;;
   cpp)        python3 "$SEL/harness_cpp.py" validate ;;
+  c)          python3 "$SEL/harness_c.py" validate ;;
   rust)       python3 "$SEL/harness_rust.py" validate ;;
   *) echo "validate: unknown lang $LANG_ARG" >&2; exit 2 ;;
 esac
