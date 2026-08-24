@@ -465,6 +465,19 @@ def _compile_solution_o(slug, info, tmp):
     cell = os.path.join(ROOT, "C", "leetcode", slug)
     src = open(os.path.join(cell, "solution.c")).read()
     import re as _re
+    # LeetCode C solutions never define main(); a model-added one (test
+    # scaffolding) collides with the harness driver's main. Strip a top-level
+    # `int main(...) { ... }` via brace matching.
+    mm = _re.search(r'\b(?:int|void)\s+main\s*\([^)]*\)\s*\{', src)
+    if mm:
+        depth, j = 0, mm.end() - 1
+        while j < len(src):
+            if src[j] == '{': depth += 1
+            elif src[j] == '}':
+                depth -= 1
+                if depth == 0: break
+            j += 1
+        src = src[:mm.start()] + src[j + 1:]
     def _defines(name):                    # a DEFINITION `struct X {`, not a reference
         return _re.search(r'struct\s+' + name + r'\s*\{', src) is not None
     if info["kind"] == "design":           # any node type across ctor/method params

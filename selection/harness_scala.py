@@ -297,10 +297,24 @@ def _canon_result(retn, callexpr):
     return "H.cv(%s)" % callexpr
 
 
+def _sol_receiver(slug):
+    """LeetCode's Scala template is `object Solution`, but models routinely write
+    `class Solution` (the "Solution class" system prompt). `Solution.m` only
+    resolves for an object, so pick the receiver from what the solution actually
+    defines: `object Solution` -> `Solution`, `class Solution` -> `(new Solution)`."""
+    p = os.path.join(ROOT, "Scala", "leetcode", slug, "solution.scala")
+    src = open(p).read() if os.path.exists(p) else ""
+    if _re.search(r'\bobject\s+Solution\b', src):
+        return "Solution"
+    if _re.search(r'\bclass\s+Solution\b', src):
+        return "(new Solution)"
+    return "Solution"
+
+
 def gen_validate(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
     args = _marshal_call(info["stypes"], lambda i: "E(%d)._2" % i)
-    call = "Solution.%s(%s)" % (info["method"], ", ".join(args))
+    call = "%s.%s(%s)" % (_sol_receiver(slug), info["method"], ", ".join(args))
     unordered = slug in _UNORDERED
     if unordered and info["retn"] in _ARR:
         actual = "H.mset(%s)" % call; exp = "H.canonJSONmset(outV)"
@@ -338,7 +352,7 @@ object Main {
 def gen_measure(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
     args = _marshal_call(info["stypes"], lambda i: "E(%d)._2" % i)
-    call = "Solution.%s(%s)" % (info["method"], ", ".join(args))
+    call = "%s.%s(%s)" % (_sol_receiver(slug), info["method"], ", ".join(args))
     beacon = _canon_result(info["retn"], call)
     body = r'''
 object Main {
