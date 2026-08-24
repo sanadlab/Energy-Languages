@@ -19,6 +19,8 @@ case "$LANG_ARG" in
   ruby)       ruby "$SEL/harness.rb" "$BUDGET" "$IDX" ;;
   cpp)        python3 "$SEL/harness_cpp.py" "$BUDGET" "$IDX" ;;    # codegen driver-generator
   c)          python3 "$SEL/harness_c.py" "$BUDGET" "$IDX" ;;    # codegen driver-generator
+  swift)      python3 "$SEL/harness_swift.py" "$BUDGET" "$IDX" ;; # native swiftc driver
+  scala)      python3 "$SEL/harness_scala.py" "$BUDGET" "$IDX" ;; # JVM scalac driver
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
   golang)     bash "$SEL/harness_go.sh" "$BUDGET" "$IDX" ;;
   java)

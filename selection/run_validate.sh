@@ -66,6 +66,8 @@ PROJ
   golang)     bash "$SEL/harness_go.sh" validate ;;
   cpp)        python3 "$SEL/harness_cpp.py" validate ;;
   c)          python3 "$SEL/harness_c.py" validate ;;
+  swift)      python3 "$SEL/harness_swift.py" validate ;;
+  scala)      python3 "$SEL/harness_scala.py" validate ;;
   rust)       python3 "$SEL/harness_rust.py" validate ;;
   *) echo "validate: unknown lang $LANG_ARG" >&2; exit 2 ;;
 esac
