@@ -61,7 +61,7 @@ function canon(r){
   if(r===undefined || r===null) return "null";          // void design methods return undefined
   if(r instanceof ListNode) return JSON.stringify(listToArr(r));
   if(r instanceof TreeNode) return JSON.stringify(treeToArr(r));
-  try { return JSON.stringify(r) ?? "null"; } catch(e){ return String(r); }
+  try { const s = JSON.stringify(r); return s === undefined ? "null" : s; } catch(e){ return String(r); }
 }
 function fold(acc, r){ let h=0; const s=canon(r); for(let i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))|0; return (acc*1000003 + h)|0; }
 

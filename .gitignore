@@ -16,3 +16,5 @@ leetcode-energy/**/Python.jsonl
 leetcode-energy/**/compile.json
 leetcode-energy/**/result_*.json
 leetcode-energy/**/energy_*.json
+.kt_built
+META-INF/

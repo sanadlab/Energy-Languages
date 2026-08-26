@@ -34,7 +34,7 @@ function canon(r){
   if(r===undefined || r===null) return "null";          // void design methods return undefined
   if(r instanceof ListNode) return JSON.stringify(listToArr(r));
   if(r instanceof TreeNode) return JSON.stringify(treeToArr(r));
-  try { return JSON.stringify(r) ?? "null"; } catch(e){ return String(r); }
+  try { const s = JSON.stringify(r); return s === undefined ? "null" : s; } catch(e){ return String(r); }
 }
 // V8's native JSON.stringify + a simple int charloop is faster than a pure-JS
 // recursive structural checksum (per-node type dispatch dominates), so the fold

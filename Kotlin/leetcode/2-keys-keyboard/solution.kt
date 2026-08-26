@@ -1,6 +1,6 @@
 class Solution {
     fun minSteps(n: Int): Int {
-        var res = 0
+        var res = 0; val _x = 1
         var m = n
         var d = 2
         while (d <= m) {

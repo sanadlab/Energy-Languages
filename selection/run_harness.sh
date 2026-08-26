@@ -29,10 +29,18 @@ case "$LANG_ARG" in
     rc=$?; rm -f Harness.java TreeNode.java ListNode.java *.class; exit $rc ;;
   kotlin)
     cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
-    javac Harness.java TreeNode.java ListNode.java >/dev/null 2>&1 \
-      && kotlinc solution.kt -cp . -d . >/dev/null 2>&1 \
-      && kotlin -cp . Harness "$BUDGET" "$IDX"
-    rc=$?; rm -f Harness.java TreeNode.java ListNode.java *.class 2>/dev/null; rm -rf META-INF; exit $rc ;;
+    # kotlinc cold-start (~30s) dominates, and the measure loop invokes this
+    # ONCE PER CURATED CASE (x2 for energy+memory). Recompiling every time blows
+    # the dispatch timeout, so compile ONCE per solution — keyed by content hash
+    # — and reuse the classes. A fresh submission (new solution.kt) recompiles.
+    h="$(cksum solution.kt 2>/dev/null | cut -d' ' -f1)"
+    if [ ! -f .kt_built ] || [ "$(cat .kt_built 2>/dev/null)" != "$h" ] || [ ! -f Harness.class ]; then
+      javac Harness.java TreeNode.java ListNode.java >/dev/null 2>&1 \
+        && kotlinc solution.kt -cp . -d . >/dev/null 2>&1 \
+        && printf '%s' "$h" > .kt_built
+    fi
+    kotlin -cp . Harness "$BUDGET" "$IDX"; rc=$?
+    rm -f Harness.java TreeNode.java ListNode.java; exit $rc ;;
   csharp)
     cp "$SEL/Harness.cs" ./Harness.cs
     cat > bench.csproj <<'PROJ'
