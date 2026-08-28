@@ -50,7 +50,14 @@ case "$LANG_ARG" in
 <AssemblyName>bench</AssemblyName><EnableDefaultCompileItems>false</EnableDefaultCompileItems>
 </PropertyGroup><ItemGroup><Compile Include="solution.cs"/><Compile Include="Harness.cs"/></ItemGroup></Project>
 PROJ
-    dotnet build bench.csproj -c Release -o out --nologo -v quiet >/dev/null 2>&1 && dotnet out/bench.dll "$BUDGET" "$IDX"
-    rc=$?; rm -rf Harness.cs bench.csproj out obj bin; exit $rc ;;
+    # `dotnet build` (~5-20s incl. restore) is invoked ONCE PER CURATED CASE by
+    # the measure loop; recompiling every time blows the dispatch timeout. So
+    # compile ONCE per solution (content-hash keyed) and reuse out/bench.dll.
+    h="$(cksum solution.cs 2>/dev/null | cut -d' ' -f1)"
+    if [ ! -f .cs_built ] || [ "$(cat .cs_built 2>/dev/null)" != "$h" ] || [ ! -f out/bench.dll ]; then
+      dotnet build bench.csproj -c Release -o out --nologo -v quiet >/dev/null 2>&1 && printf '%s' "$h" > .cs_built
+    fi
+    dotnet out/bench.dll "$BUDGET" "$IDX"; rc=$?
+    rm -f Harness.cs bench.csproj; rm -rf obj bin; exit $rc ;;
   *) echo "unknown lang $LANG_ARG" >&2; exit 2 ;;
 esac

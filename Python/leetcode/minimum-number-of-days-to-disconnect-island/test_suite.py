@@ -27,7 +27,7 @@ def load_case(slug, idx):
 
 def resolve_fn(method):
     spec = importlib.util.spec_from_file_location("solution", os.path.join(CELL, "solution.py"))
-    mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
+    mod = importlib.util.module_from_spec(spec); import typing as _ty; mod.__dict__.update({k: getattr(_ty, k) for k in _ty.__all__}); spec.loader.exec_module(mod)
     target = mod.Solution() if hasattr(mod, "Solution") else mod
     return getattr(target, method)
 

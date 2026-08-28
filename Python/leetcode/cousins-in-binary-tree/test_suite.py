@@ -53,7 +53,7 @@ def load_case(slug, idx):
 def load_solution():
     spec = importlib.util.spec_from_file_location("solution", os.path.join(CELL, "solution.py"))
     mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    import typing as _ty; mod.__dict__.update({k: getattr(_ty, k) for k in _ty.__all__}); spec.loader.exec_module(mod)
     return mod
 
 
