@@ -42,7 +42,8 @@ case "$LANG_ARG" in
   typescript)
     # transpile solution.ts (types erased) then reuse the JS validator
     work="$(mktemp -d)"; cp solution.ts "$work/solution.ts"
-    ( cd "$work" && tsc --target es2020 --module commonjs --strict false solution.ts ) >/dev/null 2>&1
+    TSC_JS="$(npm root -g)/typescript/lib/tsc.js"   # node loads the extensionless `tsc` bin as ESM on some hosts; run the .js entry
+    ( cd "$work" && node "$TSC_JS" --target es2020 --module commonjs --strict false solution.ts ) >/dev/null 2>&1
     if [ ! -f "$work/solution.js" ]; then
       echo "validate: tsc produced no JS for typescript" >&2; rm -rf "$work"; exit 2
     fi
