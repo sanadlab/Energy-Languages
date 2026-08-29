@@ -11,8 +11,8 @@ function approximate(n: number): number {
    for (let i=0; i<n; ++i) {
       u[i] = 1.0     
    }
-   for (let i=0; i<n; ++i) {
-      multiplyAtAv(n,u,v)
+   for (let i=0; i<10; ++i) {      // spectral-norm does 10 power iterations, not n;
+      multiplyAtAv(n,u,v)          // n iterations overflow to Infinity -> NaN at large n
       multiplyAtAv(n,v,u)
    }
    let vBv = 0.0, vv = 0.0

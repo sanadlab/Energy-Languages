@@ -37,6 +37,12 @@
 # when cross-compiling. Per-language COMPILE_CMDs should use $(CC),
 # $(CXX), etc. rather than hardcoded paths.
 
+# .NET formats floating-point with the CURRENT culture, so on a comma-decimal
+# host (or macOS, which ignores LC_NUMERIC) C# benchmarks emit "-0,169..." and
+# fail validation against the "-0.169..." reference. Force the invariant culture
+# so C# output is deterministic across hosts. Harmless for non-.NET languages.
+export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 1
+
 PERFARENA_WARMUP  ?= 10
 PERFARENA_MEASURE ?= 20
 PERFARENA_IDLE_S  ?= 5
@@ -140,35 +146,30 @@ endif
 # output against the reference. Measurement should be gated behind
 # this step.
 validate:
-	@if [ -z "$(REFERENCE_OUTPUT)" ]; then \
-	    echo "validate: REFERENCE_OUTPUT is not set for $(LANG)/$(TEST)" >&2 ; \
-	    exit 1 ; \
-	fi
-	@echo "validate: running $(TEST) at N=$(VALIDATION_N)..."
-	@# Capture child stderr to a temp file so a Python traceback / C++
-	@# runtime abort / rust panic reaches the caller (which surfaces it
-	@# in the runner's error_log field). Previously stderr was swallowed
-	@# via 2>/dev/null and the only diagnostic was make's own "target
-	@# failed" line — useless for debugging model-generated code.
-	@$(_FULL_VALIDATE_CMD) > $(_VALIDATION_ACTUAL) 2> $(_VALIDATION_ACTUAL).err ; rc=$$? ; \
-	    if [ $$rc -ne 0 ]; then \
-	        echo "validate: FAIL (program exited $$rc)" >&2 ; \
-	        cat $(_VALIDATION_ACTUAL).err >&2 ; \
-	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; \
-	        exit $$rc ; \
-	    fi
-	@if [ "$(BINARY_OUTPUT)" = "1" ]; then \
-	    cmp -s $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) ; \
+	@# One shell block (so exactly ONE path runs). Multi-case CLBG oracle when
+	@# reference/clbg/outputs/<problem>/cases.txt exists (>=5 golden cases);
+	@# otherwise the single-case REFERENCE_OUTPUT diff (LC cells: /dev/null = PASS).
+	@if [ -f "../../../reference/clbg/outputs/$(TEST)/cases.txt" ]; then \
+	    if bash ../../../selection/clbg_validate.sh "$(RUN_CMD)" "$(ARG)" "$(TEST)" "$(BINARY_OUTPUT)"; then \
+	        echo "validate: PASS" ; \
+	    else echo "validate: FAIL" >&2 ; exit 1 ; fi ; \
+	elif [ -z "$(REFERENCE_OUTPUT)" ]; then \
+	    echo "validate: REFERENCE_OUTPUT is not set for $(LANG)/$(TEST)" >&2 ; exit 1 ; \
 	else \
-	    diff -q $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) > /dev/null ; \
-	fi && echo "validate: PASS" || { \
-	    echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; \
-	    echo "--- first 20 lines of divergence ---" >&2 ; \
-	    diff $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | head -20 >&2 ; \
+	    echo "validate: running $(TEST) at N=$(VALIDATION_N)..." ; \
+	    $(_FULL_VALIDATE_CMD) > $(_VALIDATION_ACTUAL) 2> $(_VALIDATION_ACTUAL).err ; rc=$$? ; \
+	    if [ $$rc -ne 0 ]; then \
+	        echo "validate: FAIL (program exited $$rc)" >&2 ; cat $(_VALIDATION_ACTUAL).err >&2 ; \
+	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; exit $$rc ; \
+	    fi ; \
+	    if [ "$(BINARY_OUTPUT)" = "1" ]; then cmp -s $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) ; \
+	    else diff -q $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) > /dev/null ; fi && echo "validate: PASS" || { \
+	        echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; \
+	        echo "--- first 20 lines of divergence ---" >&2 ; \
+	        diff $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | head -20 >&2 ; \
+	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; exit 1 ; } ; \
 	    rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; \
-	    exit 1 ; \
-	}
-	@rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err
+	fi
 
 clean:
 	rm -f $(OUTPUT)
