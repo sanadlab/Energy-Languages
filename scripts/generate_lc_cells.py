@@ -107,10 +107,7 @@ LANGS: dict[str, Lang] = {
     "TypeScript": Lang("typescript", "TypeScript", "ts",     "test_suite.ts",    "combined.js",
                        "node combined.js",
                        "cat solution.ts test_suite.ts > combined.ts && "
-                       # node loads the extensionless `tsc` bin as ESM on some hosts
-                       # (ERR_UNKNOWN_FILE_EXTENSION); run the .js entry directly.
-                       'node "$$(npm root -g)/typescript/lib/tsc.js" '
-                       "--target es2020 --module commonjs --strict false combined.ts"),
+                       "tsc --target es2020 --module commonjs --strict false --skipLibCheck combined.ts"),
 }
 
 

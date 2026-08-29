@@ -11,7 +11,7 @@ SOURCE      = solution.ts
 OUTPUT      = combined.js
 ARG         =
 RUN_CMD     = node combined.js
-COMPILE_CMD = cat solution.ts test_suite.ts > combined.ts && node "$$(npm root -g)/typescript/lib/tsc.js" --target es2020 --module commonjs --strict false combined.ts
+COMPILE_CMD = cat solution.ts test_suite.ts > combined.ts && tsc --target es2020 --module commonjs --strict false --skipLibCheck combined.ts
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.
