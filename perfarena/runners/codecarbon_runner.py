@@ -172,7 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     test = args[2]
     warmup = int(args[3]) if len(args) > 3 else DEFAULT_WARMUP
     measure = int(args[4]) if len(args) > 4 else DEFAULT_MEASURE
-    idle_s = int(args[5]) if len(args) > 5 else DEFAULT_IDLE_S
+    idle_s = float(args[5]) if len(args) > 5 else DEFAULT_IDLE_S
 
     out_path = Path(f"../{language}.jsonl")
     out = out_path.open("a")
