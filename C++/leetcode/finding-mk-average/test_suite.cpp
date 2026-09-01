@@ -30,10 +30,8 @@ using namespace std;
 #include <vector>
 #include <string>
 int main() {
-    Solution sol;
-    auto __lc_a0 = 20;
-    auto __lc_a1 = 20;
-    auto result = sol.MKAverage(__lc_a0, __lc_a1);
-    (void)result;
+    // Design problem: compile-only gate. Correctness is the leetcode
+    // oracle's; measurement uses the design-aware Harness. The design
+    // class (e.g. MKAverage) is compiled via #include "solution.cpp".
     return 0;
 }

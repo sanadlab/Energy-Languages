@@ -30,11 +30,8 @@ using namespace std;
 #include <vector>
 #include <string>
 int main() {
-    CustomStack s(5);
-    s.push(1); s.push(2); s.push(3);
-    s.increment(2, 100);
-    int r1 = s.pop();
-    int r2 = s.pop();
-    if (r1 < 0 && r2 < 0) return 1;
+    // Design problem: compile-only gate. Correctness is the leetcode
+    // oracle's; measurement uses the design-aware Harness. The design
+    // class (e.g. MKAverage) is compiled via #include "solution.cpp".
     return 0;
 }

@@ -30,9 +30,8 @@ using namespace std;
 #include <vector>
 #include <string>
 int main() {
-    std::vector<int> __lc_nums{1,2,3,4,5};
-    Solution sol(__lc_nums);
-    auto result = sol.pick(3);
-    (void)result;
+    // Design problem: compile-only gate. Correctness is the leetcode
+    // oracle's; measurement uses the design-aware Harness. The design
+    // class (e.g. MKAverage) is compiled via #include "solution.cpp".
     return 0;
 }

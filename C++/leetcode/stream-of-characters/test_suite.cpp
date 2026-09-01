@@ -30,9 +30,8 @@ using namespace std;
 #include <vector>
 #include <string>
 int main() {
-    Solution sol;
-    auto __lc_a0 = std::vector<std::string>{"a","b","c"};
-    auto result = sol.StreamChecker(__lc_a0);
-    (void)result;
+    // Design problem: compile-only gate. Correctness is the leetcode
+    // oracle's; measurement uses the design-aware Harness. The design
+    // class (e.g. MKAverage) is compiled via #include "solution.cpp".
     return 0;
 }

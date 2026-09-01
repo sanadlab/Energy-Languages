@@ -803,6 +803,16 @@ def _default_args(lang_folder: str, sig: Sig) -> list[str]:
     return [default_literal(lang_folder, ty) for _, ty in sig.params]
 
 
+def _is_design_snippet(snippet: str) -> bool:
+    """A LeetCode 'design' problem ships a class with a constructor that is
+    instantiated and driven by an operation sequence (e.g. MKAverage,
+    StreamChecker, CustomStack). LC marks these with a boilerplate comment in
+    the starter snippet. Their class is NOT named `Solution`, so the standard
+    smoke test can't compile — the cell keeps a compile-only gate instead."""
+    return ("instantiated and called as such" in snippet
+            or "will be instantiated" in snippet)
+
+
 def process_cell(lang_folder: str, slug: str, dry_run: bool, overwrite: bool
                  ) -> tuple[str, str]:
     """Return (slug, status). status is 'wrote', 'skipped: <reason>', or 'already-exists'."""
@@ -818,6 +828,17 @@ def process_cell(lang_folder: str, slug: str, dry_run: bool, overwrite: bool
     snippet = snippets.get(L.key)
     if not snippet:
         return slug, f"skip: no code_snippets[{L.key}]"
+
+    if _is_design_snippet(snippet):
+        # Design problems (a class with a constructor invoked as an operation
+        # sequence, e.g. MKAverage/StreamChecker) can't use the standard
+        # `new Solution().method()` smoke test — the class isn't named
+        # `Solution`, so parsing grabs the constructor and the generated suite
+        # fails to compile. These cells' test suites are compile-only gates,
+        # hand-maintained; correctness comes from the leetcode oracle and
+        # measurement from the design-aware selection/ harness. Skip so a regen
+        # never clobbers them with a broken Solution-shaped suite.
+        return slug, "skip: design problem (test suite hand-maintained)"
 
     try:
         sig = PARSERS[lang_folder](snippet)

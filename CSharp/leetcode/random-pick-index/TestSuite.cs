@@ -1,8 +1,6 @@
-// LC-energy test suite (C#) — hardcoded single case.
+// LC-energy test suite (C#) — design problem: compile-only gate.
+// See the Java cell: design classes aren't named `Solution`, so the
+// gate only compiles the solution; correctness is the leetcode oracle's.
 public class TestSuite {
-    public static void Main() {
-        var sol = new Solution();
-        var result = sol.Pick(20);
-        if (result == null) System.Console.WriteLine(result);
-    }
+    public static void Main() {}
 }
