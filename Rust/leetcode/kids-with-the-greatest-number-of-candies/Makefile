@@ -11,7 +11,7 @@ SOURCE      = solution.rs
 OUTPUT      = test_suite
 ARG         =
 RUN_CMD     = ./test_suite
-COMPILE_CMD = { grep -q 'struct Solution' solution.rs || printf 'pub struct Solution;\n\n' ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && $(RUSTC) -O _combined.rs -o test_suite
+COMPILE_CMD = { grep -q 'struct Solution' solution.rs || grep -qE 'struct +Solution' solution.rs || printf 'pub struct Solution;\n\n' ; grep -q 'use rand' solution.rs && cat ../../../selection/rust_rand_shim.rs ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && $(RUSTC) -O _combined.rs -o test_suite
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

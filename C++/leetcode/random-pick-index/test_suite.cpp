@@ -26,6 +26,7 @@
 using namespace std;
 
 // LC-energy test suite (C++) — hardcoded single case.
+#include <random>
 #include "solution.cpp"
 #include <vector>
 #include <string>

@@ -30,11 +30,7 @@ using namespace std;
 #include <vector>
 #include <string>
 int main() {
-    Solution sol;
-    auto __lc_a0 = "abcde";
-    auto __lc_a1 = "abcde";
-    auto __lc_a2 = std::vector<std::string>{"a","b","c"};
-    auto result = sol.ladderLength(__lc_a0, __lc_a1, __lc_a2);
-    (void)result;
+    // Compile-only gate: List/collection params can't be typed as an
+    // array literal. Solution compiled via #include "solution.cpp".
     return 0;
 }

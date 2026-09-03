@@ -100,7 +100,7 @@ LANGS: dict[str, Lang] = {
     # Concatenate: header + solution.rs (has impl) + test_suite.rs body.
     "Rust":       Lang("rust",       "Rust",       "rs",     "test_suite.rs",    "test_suite",
                        "./test_suite",
-                       "{ printf 'pub struct Solution;\\n\\n' ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && "
+                       "{ grep -qE 'struct +Solution' solution.rs || printf 'pub struct Solution;\\n\\n' ; grep -q 'use rand' solution.rs && cat ../../../selection/rust_rand_shim.rs ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && "
                        "$(RUSTC) -O _combined.rs -o test_suite"),
     # TS: --outFile is deprecated in modern tsc. Concatenate first, then
     # compile the single file → .js.
@@ -813,6 +813,17 @@ def _is_design_snippet(snippet: str) -> bool:
             or "will be instantiated" in snippet)
 
 
+def _has_collection_param(snippet: str) -> bool:
+    """True when the primary method takes a generic collection parameter
+    (List / Map / Set<...>). The array literal the generator fabricates for the
+    smoke-test call does NOT type-check against these in Java/C++/C#
+    (`new String[]{…}` is not a `List<String>`), so those cells use a
+    compile-only gate instead of the `new Solution().method(args)` call."""
+    m = re.search(r'public\s+[\w<>\[\],\s]+?\s+\w+\s*\(([^)]*)\)', snippet)
+    params = m.group(1) if m else ""
+    return bool(re.search(r'\b(?:List|Map|Set)\s*<', params))
+
+
 def process_cell(lang_folder: str, slug: str, dry_run: bool, overwrite: bool
                  ) -> tuple[str, str]:
     """Return (slug, status). status is 'wrote', 'skipped: <reason>', or 'already-exists'."""
@@ -839,6 +850,13 @@ def process_cell(lang_folder: str, slug: str, dry_run: bool, overwrite: bool
         # measurement from the design-aware selection/ harness. Skip so a regen
         # never clobbers them with a broken Solution-shaped suite.
         return slug, "skip: design problem (test suite hand-maintained)"
+
+    if lang_folder in ("Java", "C++", "CSharp") and _has_collection_param(snippet):
+        # A List/Map/Set parameter can't be typed as the array literal the
+        # generator fabricates, so the method-call smoke test won't compile on
+        # the statically-typed compiled languages. These cells keep a
+        # compile-only gate; skip so a regen never clobbers it.
+        return slug, "skip: collection-param method (compile-only gate hand-maintained)"
 
     try:
         sig = PARSERS[lang_folder](snippet)

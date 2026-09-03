@@ -20,6 +20,21 @@ SLUG = os.path.basename(CELL)
 REF  = os.path.normpath(os.path.join(CELL, "..", "..", "..", "reference", "leetcode"))
 
 
+def _inject_lc_nodes(mod):
+    """LeetCode predefines TreeNode/ListNode; the model's solution.py (the
+    starter comments them out) does NOT define them, so its type annotations
+    and usage `NameError` at import. Inject them before exec; setdefault so a
+    solution that DOES define them still wins."""
+    class TreeNode:
+        def __init__(self, val=0, left=None, right=None):
+            self.val = val; self.left = left; self.right = right
+    class ListNode:
+        def __init__(self, val=0, next=None):
+            self.val = val; self.next = next
+    mod.__dict__.setdefault("TreeNode", TreeNode)
+    mod.__dict__.setdefault("ListNode", ListNode)
+
+
 def load_case(slug, idx):
     w = json.load(open(os.path.join(REF, "workloads", slug + ".json")))
     ep = (w.get("entry_point") or "").strip()          # e.g. "Solution().numComponents"
@@ -32,7 +47,7 @@ def load_case(slug, idx):
 
 def resolve(method):
     spec = importlib.util.spec_from_file_location("solution", os.path.join(CELL, "solution.py"))
-    mod = importlib.util.module_from_spec(spec); import typing as _ty; mod.__dict__.update({k: getattr(_ty, k) for k in _ty.__all__}); spec.loader.exec_module(mod)
+    mod = importlib.util.module_from_spec(spec); import typing as _ty; mod.__dict__.update({k: getattr(_ty, k) for k in _ty.__all__}); _inject_lc_nodes(mod); spec.loader.exec_module(mod)
     sol = mod.Solution() if hasattr(mod, "Solution") else mod
     return getattr(sol, method), mod.ListNode
 

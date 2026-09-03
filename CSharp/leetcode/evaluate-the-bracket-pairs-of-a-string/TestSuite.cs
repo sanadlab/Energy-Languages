@@ -1,8 +1,4 @@
-// LC-energy test suite (C#) — hardcoded single case.
+// LC-energy test suite (C#) — compile-only gate (see the Java cell).
 public class TestSuite {
-    public static void Main() {
-        var sol = new Solution();
-        var result = sol.Evaluate("abcde", new string[]{"a","b","c"});
-        if (result == null) System.Console.WriteLine(result);
-    }
+    public static void Main() {}
 }

@@ -1,8 +1,7 @@
-// LC-energy test suite (Java) — hardcoded single case.
+// LC-energy test suite (Java) — compile-only gate.
+// The generated `new Solution().method(args)` smoke test can't be typed
+// for List/collection parameters (an array literal != List<...>).
+// Correctness is the leetcode oracle's; measurement uses Harness.java.
 public class TestSuite {
-    public static void main(String[] args) {
-        Solution sol = new Solution();
-        Object result = sol.ladderLength("abcde", "abcde", new String[]{"a","b","c"});
-        if (result == null) System.out.println("null");
-    }
+    public static void main(String[] args) {}
 }

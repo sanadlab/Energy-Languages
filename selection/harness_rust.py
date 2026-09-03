@@ -662,6 +662,21 @@ def solution_header(sol):
     return "" if re.search(r"struct\s+Solution\b", sol) else "pub struct Solution;\n\n"
 
 
+def rand_shim(sol):
+    """Prepend a minimal `rand` module when the solution imports the rand crate.
+    LeetCode ships `rand`; the crate-free rustc compile does not, so `use rand`
+    fails with `unresolved import`. See selection/rust_rand_shim.rs (deterministic
+    xorshift — fine for perf; correctness is the LeetCode oracle's)."""
+    if "use rand" not in sol:
+        return ""
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "rust_rand_shim.rs")) as f:
+            return f.read() + "\n"
+    except OSError:
+        return ""
+
+
 def build_structured(sol, name, sig, values):
     """Tree/list entry method: build args from level-order/array input (parsed at
     runtime), call, and canonicalize (list results -> JSON int array)."""
@@ -717,7 +732,7 @@ def build_structured(sol, name, sig, values):
               .replace("__CALL_ARGS__", ", ".join(call_args))
               .replace("__CANON_FIRST__", canon_expr(ret, "first"))
               .replace("__FOLD_R__", fold_snippet(ret)))
-    return solution_header(sol) + sol + "\n" + driver, name
+    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver, name
 
 
 def build_design(sol, name, inp, cases):
@@ -809,7 +824,7 @@ def build_design(sol, name, inp, cases):
               .replace("__REPLAY_DISPATCH__", "\n".join(replay_branches))
               .replace("__DUMP_DISPATCH__", "\n".join(dump_branches)))
     # Design solutions already declare their structs; no Solution header needed.
-    return sol + "\n" + driver, name
+    return rand_shim(sol) + sol + "\n" + driver, name
 
 
 # ===========================================================================
@@ -966,7 +981,7 @@ def build_validate_call(sol, slug, sig):
               .replace("__RNAME__", rname)
               .replace("__CALL_ARGS__", ", ".join(call_args))
               .replace("__CMP__", cmp))
-    return solution_header(sol) + sol + "\n" + driver
+    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver
 
 
 def build_validate_design(sol, slug, inp, cases, randomized):
@@ -1044,7 +1059,7 @@ def build_validate_design(sol, slug, inp, cases, randomized):
               .replace("__RANDOMIZED__", "true" if randomized else "false")
               .replace("__CTOR__", ctor)
               .replace("__VALIDATE_DISPATCH__", dispatch))
-    return sol + "\n" + driver
+    return rand_shim(sol) + sol + "\n" + driver
 
 
 def build_validate_combined(cell, slug, ref):
@@ -1148,7 +1163,7 @@ def build_combined(cell, slug, ref, idx):
               .replace("__RNAME__", _rname)
               .replace("__CALL_ARGS__", ", ".join(call_args))
               .replace("__FOLD_R__", fold_snippet(ret)))
-    return solution_header(sol) + sol + "\n" + driver, name
+    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver, name
 
 
 def main():
