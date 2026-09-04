@@ -95,8 +95,12 @@ def _param_type(param):
     return re.sub(r'\s+', ' ', t).strip()
 
 def _norm(t):
-    """Normalise a C++ type to a marshaller key: strip const/ref, collapse spaces."""
-    t = t.replace('const', '').replace('&', '').strip()
+    """Normalise a C++ type to a marshaller key: strip const/ref/std::, collapse spaces."""
+    # Strip the `std::` qualifier too: models often write `std::vector<std::string>`,
+    # which is the SAME type as the bare `vector<string>` the MARSHAL keys use.
+    # Without this, such a signature was reported "unhandled param type" and the
+    # measurement failed with a Runtime Error even though the type is supported.
+    t = t.replace('const', '').replace('&', '').replace('std::', '').strip()
     t = re.sub(r'\s+', '', t)               # remove all spaces: 'long long' -> 'longlong'
     return t
 
