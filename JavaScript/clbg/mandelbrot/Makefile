@@ -2,7 +2,7 @@ LANG        = JavaScript
 TEST        = mandelbrot
 SOURCE      = mandelbrot.node
 OUTPUT      = mandelbrot.js
-ARG         = 16000
+ARG         = 7000
 RUN_CMD     = node --use_strict $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

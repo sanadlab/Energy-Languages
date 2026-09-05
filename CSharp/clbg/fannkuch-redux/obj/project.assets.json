@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "targets": {
     "net10.0": {}
   },
@@ -8,29 +8,29 @@
     "net10.0": []
   },
   "packageFolders": {
-    "/Users/rar9993/.nuget/packages/": {}
+    "/root/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/CSharp/clbg/fannkuch-redux/tmp.csproj",
+      "projectUniqueName": "/work/Energy-Languages/CSharp/clbg/fannkuch-redux/tmp.csproj",
       "projectName": "tmp",
-      "projectPath": "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/CSharp/clbg/fannkuch-redux/tmp.csproj",
-      "packagesPath": "/Users/rar9993/.nuget/packages/",
-      "outputPath": "/Users/rar9993/repos/research/leetcode_crawler/Energy-Languages/CSharp/clbg/fannkuch-redux/obj/",
+      "projectPath": "/work/Energy-Languages/CSharp/clbg/fannkuch-redux/tmp.csproj",
+      "packagesPath": "/root/.nuget/packages/",
+      "outputPath": "/work/Energy-Languages/CSharp/clbg/fannkuch-redux/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/rar9993/.nuget/NuGet/NuGet.Config"
+        "/root/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net10.0"
       ],
       "sources": {
-        "/opt/homebrew/Cellar/dotnet/10.0.107/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -45,10 +45,11 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "10.0.400"
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "imports": [
           "net461",
@@ -66,7 +67,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/10.0.107/libexec/sdk/10.0.107/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "/opt/dotnet/sdk/10.0.400/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

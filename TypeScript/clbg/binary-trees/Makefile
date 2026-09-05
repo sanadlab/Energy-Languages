@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = binary-trees
 SOURCE      = binarytrees.typescript-2.ts
 OUTPUT      = binary-trees.js
-ARG         = 21
+ARG         = 19
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc

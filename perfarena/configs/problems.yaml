@@ -28,7 +28,7 @@ problems:
       <count>\t trees of depth 4\t check: <sum>
       ...
       long lived tree of depth N\t check: <count>
-    default_argument: "21"
+    default_argument: "19"
     invocation_hint: "The program is invoked as: <prog> 21"
     algorithm_class: "recursive allocation, globally structured"
     needs_stdin: false
@@ -114,7 +114,7 @@ problems:
       (portable bitmap) format, one bit per pixel, to stdout.
     input_spec: "A single positive integer N read as a command-line argument."
     output_spec: "A binary PBM image N pixels wide and N pixels tall, written to stdout."
-    default_argument: "16000"
+    default_argument: "7000"
     invocation_hint: "The program is invoked as: <prog> 16000"
     algorithm_class: "Euclidean-structured numerical, embarrassingly parallel"
     needs_stdin: false

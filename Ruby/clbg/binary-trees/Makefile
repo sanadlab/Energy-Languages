@@ -2,7 +2,7 @@ LANG        = Ruby
 TEST        = binary-trees
 SOURCE      = binarytrees.yarv-5.yarv
 OUTPUT      = binary-trees.rb
-ARG         = 21
+ARG         = 19
 RUN_CMD     = ruby $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

@@ -1,93 +1,56 @@
-/**
- * The Computer Language Benchmarks Game
- * http://benchmarksgame.alioth.debian.org/
- *
- * based on Jarkko Miettinen's Java program
- * contributed by Tristan Dupont
- * *reset*
- */
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
-public class binarytrees {
-
+class binarytrees {
     private static final int MIN_DEPTH = 4;
-    private static final ExecutorService EXECUTOR_SERVICE = 
-        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-    public static void main(final String[] args) throws Exception {
-        int n = 0;
-        if (0 < args.length) {
-            n = Integer.parseInt(args[0]);
-        }
+    private static final class Node {
+        private final Node left;
+        private final Node right;
 
-        final int maxDepth = n < (MIN_DEPTH + 2) ? MIN_DEPTH + 2 : n;
-        final int stretchDepth = maxDepth + 1;
-
-        System.out.println("stretch tree of depth " + stretchDepth + "\t check: " 
-           + bottomUpTree( stretchDepth).itemCheck());
-
-        final TreeNode longLivedTree = bottomUpTree(maxDepth);
-
-        final String[] results = new String[(maxDepth - MIN_DEPTH) / 2 + 1];
-
-        for (int d = MIN_DEPTH; d <= maxDepth; d += 2) {
-            final int depth = d;
-            EXECUTOR_SERVICE.execute(() -> {
-                int check = 0;
-
-                final int iterations = 1 << (maxDepth - depth + MIN_DEPTH);
-                for (int i = 1; i <= iterations; ++i) {
-                    final TreeNode treeNode1 = bottomUpTree(depth);
-                    check += treeNode1.itemCheck();
-                }
-                results[(depth - MIN_DEPTH) / 2] = 
-                   iterations + "\t trees of depth " + depth + "\t check: " + check;
-            });
-        }
-
-        EXECUTOR_SERVICE.shutdown();
-        EXECUTOR_SERVICE.awaitTermination(120L, TimeUnit.SECONDS);
-
-        for (final String str : results) {
-            System.out.println(str);
-        }
-
-        System.out.println("long lived tree of depth " + maxDepth + 
-            "\t check: " + longLivedTree.itemCheck());
-    }
-
-    private static TreeNode bottomUpTree(final int depth) {
-        if (0 < depth) {
-            return new TreeNode(bottomUpTree(depth - 1), bottomUpTree(depth - 1));
-        }
-        return new TreeNode();
-    }
-
-    private static final class TreeNode {
-
-        private final TreeNode left;
-        private final TreeNode right;
-
-        private TreeNode(final TreeNode left, final TreeNode right) {
+        Node(Node left, Node right) {
             this.left = left;
             this.right = right;
         }
 
-        private TreeNode() {
-            this(null, null);
-        }
-
-        private int itemCheck() {
-            // if necessary deallocate here
-            if (null == left) {
+        long check() {
+            if (left == null) {
                 return 1;
             }
-            return 1 + left.itemCheck() + right.itemCheck();
+            return 1 + left.check() + right.check();
         }
-
     }
 
+    private static Node makeTree(int depth) {
+        if (depth <= 0) {
+            return new Node(null, null);
+        }
+        return new Node(makeTree(depth - 1), makeTree(depth - 1));
+    }
+
+    public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]);
+
+        Node stretchTree = makeTree(n + 1);
+        System.out.println(
+            "stretch tree of depth " + (n + 1) + "\t check: " + stretchTree.check()
+        );
+        stretchTree = null;
+
+        Node longLivedTree = makeTree(n);
+
+        for (int depth = MIN_DEPTH; depth <= n; depth += 2) {
+            long iterations = 1L << (n - depth + MIN_DEPTH);
+            long check = 0;
+
+            for (long i = 0; i < iterations; i++) {
+                check += makeTree(depth).check();
+            }
+
+            System.out.println(
+                iterations + "\t trees of depth " + depth + "\t check: " + check
+            );
+        }
+
+        System.out.println(
+            "long lived tree of depth " + n + "\t check: " + longLivedTree.check()
+        );
+    }
 }

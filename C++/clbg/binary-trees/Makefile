@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = binary-trees
 SOURCE  = binarytrees.portable.cpp
 OUTPUT  = binary-trees.gpp_run
-ARG         = 21
+ARG         = 19
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

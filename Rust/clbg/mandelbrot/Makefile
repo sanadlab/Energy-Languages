@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = mandelbrot
 SOURCE  = mandelbrot.rs
 OUTPUT  = mandelbrot.rust_run
-ARG         = 16000
+ARG         = 7000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc

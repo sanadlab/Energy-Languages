@@ -98,6 +98,13 @@ else
   endif
 endif
 
+# RAPL (the `perfarena_runner` C binary) needs MSR/root, so it runs under sudo.
+# codecarbon and the powermetrics runner read world-readable counters (or do a
+# TDP estimate) and need NO privilege — sudo'ing them only makes `make measure`
+# fail on a non-interactive runner without passwordless sudo ("sudo: a terminal
+# is required to read the password"). So sudo ONLY the RAPL runner.
+_MEASURE_SUDO := $(if $(findstring perfarena_runner,$(PERFARENA_RUNNER)),sudo,)
+
 CC  ?= gcc
 CXX ?= g++
 
@@ -131,8 +138,8 @@ else
 	    echo "perfarena.mk: $(PERFARENA_RUNNER) is missing; build RAPL/ first" >&2 ; \
 	    exit 1 ; \
 	fi
-	sudo modprobe msr || true
-	sudo $(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_WARMUP) $(PERFARENA_MEASURE) $(PERFARENA_IDLE_S)
+	$(_MEASURE_SUDO) modprobe msr 2>/dev/null || true
+	$(_MEASURE_SUDO) $(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_WARMUP) $(PERFARENA_MEASURE) $(PERFARENA_IDLE_S)
 endif
 
 mem:
