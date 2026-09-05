@@ -852,7 +852,18 @@ def build_and_run(slug, budget, idx, keep=False):
                         capture_output=True, text=True)
     if cc.returncode != 0:
         if keep: print(src[:400], file=sys.stderr)
-        return "compile_error", cc.stderr.strip().splitlines()[-1] if cc.stderr else "", None
+        # Report the actual `error:` line(s), not stderr's LAST line — for g++
+        # that last line is the caret/underline (`^~~~~~`), which is useless on
+        # its own. Fall back to the last non-empty line only if no `error:` line
+        # is found.
+        errlines = [l.strip() for l in (cc.stderr or "").splitlines()
+                    if "error:" in l]
+        if errlines:
+            msg = " | ".join(errlines[:3])
+        else:
+            nonempty = [l.strip() for l in (cc.stderr or "").splitlines() if l.strip()]
+            msg = nonempty[-1] if nonempty else ""
+        return "compile_error", msg, None
     celldir = os.path.join(ROOT, "C++", "leetcode", slug)
     rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True,
                         text=True, cwd=celldir, timeout=max(30, budget * 4 + 20))

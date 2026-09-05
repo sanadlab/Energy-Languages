@@ -24,7 +24,13 @@ const ts = loadTS();
 function transpile(src) {
   return ts.transpileModule(src, {
     compilerOptions: {
-      target: ts.ScriptTarget.ES2020,
+      // ES2019, NOT ES2020: `??` and `?.` are ES2020 syntax, so an ES2020
+      // target leaves them untouched and `new Function(jsSrc)` then throws
+      // "Unexpected token '?'" on any Node older than 14. Targeting ES2019
+      // makes TypeScript down-level them (to `!== null && !== void 0 ? …`),
+      // so the transpiled solution runs regardless of the runner's Node
+      // version. Only solutions using that syntax hit this; the rest passed.
+      target: ts.ScriptTarget.ES2019,
       module: ts.ModuleKind.CommonJS,
       removeComments: false,
     },
