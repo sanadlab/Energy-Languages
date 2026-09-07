@@ -1,166 +1,127 @@
-/*
-The Computer Language Benchmarks Game
-http://benchmarksgame.alioth.debian.org/
- 
-Based on C# entry by Isaac Gouy
-contributed by Jarkko Miettinen
-Parallel by The Anh Tran
- */
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-public class spectralnorm
-{
-    private static final NumberFormat formatter = new DecimalFormat ("#.000000000");
-    
-    public static void main (String[] args)
-    {
-        int n = 1000;
-        if (args.length > 0) n = Integer.parseInt (args[0]);
-        
-        System.out.println (formatter.format (spectralnormGame (n)) );
+class spectralnorm {
+    private static final int POWER_ITERATIONS = 10;
+
+    private static final class Worker extends Thread {
+        private final int n;
+        private final int start;
+        private final int end;
+        private final double[] u;
+        private final double[] v;
+        private final double[] tmp;
+        private final CyclicBarrier barrier;
+
+        Worker(int n, int start, int end,
+               double[] u, double[] v, double[] tmp,
+               CyclicBarrier barrier) {
+            this.n = n;
+            this.start = start;
+            this.end = end;
+            this.u = u;
+            this.v = v;
+            this.tmp = tmp;
+            this.barrier = barrier;
+        }
+
+        @Override
+        public void run() {
+            try {
+                for (int iteration = 0; iteration < POWER_ITERATIONS; iteration++) {
+                    multiplyA(u, tmp, n, start, end);
+                    barrier.await();
+
+                    multiplyAt(tmp, v, n, start, end);
+                    barrier.await();
+
+                    multiplyA(v, tmp, n, start, end);
+                    barrier.await();
+
+                    multiplyAt(tmp, u, n, start, end);
+                    barrier.await();
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            } catch (BrokenBarrierException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
-    
-    
-    private static final double spectralnormGame (int n)
-    {
-        // create unit vector
+
+    private static void multiplyA(double[] input, double[] output,
+                                  int n, int start, int end) {
+        for (int i = start; i < end; i++) {
+            double denominator = 0.5 * i * (i + 1.0) + i + 1.0;
+            double increment = i + 1.0;
+            double sum = 0.0;
+
+            for (int j = 0; j < n; j++) {
+                sum += input[j] / denominator;
+                denominator += increment;
+                increment += 1.0;
+            }
+            output[i] = sum;
+        }
+    }
+
+    private static void multiplyAt(double[] input, double[] output,
+                                   int n, int start, int end) {
+        for (int i = start; i < end; i++) {
+            double denominator = 0.5 * i * (i + 1.0) + 1.0;
+            double increment = i + 2.0;
+            double sum = 0.0;
+
+            for (int j = 0; j < n; j++) {
+                sum += input[j] / denominator;
+                denominator += increment;
+                increment += 1.0;
+            }
+            output[i] = sum;
+        }
+    }
+
+    public static void main(String[] args) {
+        int n = Integer.parseInt(args[0]);
+
         double[] u = new double[n];
         double[] v = new double[n];
         double[] tmp = new double[n];
-        
-        for (int i = 0; i < n; i++)
-            u[i] = 1.0;
-        
-        // get available processor, then set up syn object
-        int nthread = Runtime.getRuntime ().availableProcessors ();
-        Approximate.barrier = new CyclicBarrier (nthread);
-        
-        int chunk = n / nthread;
-        Approximate[] ap = new Approximate[nthread];
-        
-        for (int i = 0; i < nthread; i++)
-        {
-            int r1 = i * chunk;
-            int r2 = (i < (nthread -1)) ? r1 + chunk : n;
-            
-            ap[i] = new Approximate (u, v, tmp, r1, r2);
+        Arrays.fill(u, 1.0);
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        int workerCount = Math.min(processors, Math.max(1, (n + 15) / 16));
+        workerCount = Math.min(workerCount, n);
+
+        CyclicBarrier barrier = new CyclicBarrier(workerCount);
+        Worker[] workers = new Worker[workerCount];
+
+        for (int i = 0; i < workerCount; i++) {
+            int start = i * n / workerCount;
+            int end = (i + 1) * n / workerCount;
+            workers[i] = new Worker(n, start, end, u, v, tmp, barrier);
+            workers[i].start();
         }
-        
-        
-        double vBv = 0, vv = 0;
-        for (int i = 0; i < nthread; i++)
-        {
-            try
-            {
-                ap[i].join ();
-                
-                vBv += ap[i].m_vBv;
-                vv += ap[i].m_vv;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace ();
+
+        for (Worker worker : workers) {
+            try {
+                worker.join();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
             }
         }
-        
-        return Math.sqrt (vBv/vv);
-    }
-    
-    
-    private static class Approximate extends Thread
-    {
-        private static CyclicBarrier barrier;
-        
-        private double[] _u;
-        private double[] _v;
-        private double[] _tmp;
-        
-        private int range_begin, range_end;
-        private double m_vBv = 0, m_vv = 0;
-        
-        
-        public Approximate (double[] u, double[] v, double[] tmp, int rbegin, int rend)
-        {
-            super ();
-            
-            _u = u;
-            _v = v;
-            _tmp = tmp;
-            
-            range_begin = rbegin;
-            range_end = rend;
-            
-            start ();
+
+        double uv = 0.0;
+        double vv = 0.0;
+        for (int i = 0; i < n; i++) {
+            uv += u[i] * v[i];
+            vv += v[i] * v[i];
         }
-        
-        public void run ()
-        {
-            // 20 steps of the power method
-            for (int i = 0; i < 10; i++)
-            {
-                MultiplyAtAv (_u, _tmp, _v);
-                MultiplyAtAv (_v, _tmp, _u);
-            }
-            
-            for (int i = range_begin; i < range_end; i++)
-            {
-                m_vBv += _u[i] * _v[i];
-                m_vv  += _v[i] * _v[i];
-            }
-        }
-        
-        /* return element i,j of infinite matrix A */
-        private final static double eval_A (int i, int j)
-        {
-            int div = ( ((i+j) * (i+j+1) >>> 1) +i+1 );
-            return 1.0 / div;
-        }
-        
-        /* multiply vector v by matrix A, each thread evaluate its range only */
-        private final void MultiplyAv (final double[] v, double[] Av)
-        {
-            for (int i = range_begin; i < range_end; i++)
-            {
-                double sum = 0;
-                for (int j = 0; j < v.length; j++)
-                    sum += eval_A (i, j) * v[j];
-                
-                Av[i] = sum;
-            }
-        }
-        
-        /* multiply vector v by matrix A transposed */
-        private final void MultiplyAtv (final double[] v, double[] Atv)
-        {
-            for (int i = range_begin; i < range_end; i++)
-            {
-                double sum = 0;
-                for (int j = 0; j < v.length; j++)
-                    sum += eval_A (j, i) * v[j];
-                
-                Atv[i] = sum;
-            }
-        }
-        
-        /* multiply vector v by matrix A and then by matrix A transposed */
-        private final void MultiplyAtAv (final double[] v, double[] tmp, double[] AtAv)
-        {
-            try
-            {
-                MultiplyAv (v, tmp);
-                // all thread must syn at completion
-                barrier.await ();
-                MultiplyAtv (tmp, AtAv);
-                // all thread must syn at completion
-                barrier.await ();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace ();
-            }
-        }
+
+        System.out.printf(Locale.US, "%.9f%n", Math.sqrt(uv / vv));
     }
 }

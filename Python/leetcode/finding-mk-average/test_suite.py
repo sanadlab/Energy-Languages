@@ -34,7 +34,19 @@ def load_case(slug, idx):
 def resolve_solution():
     spec = importlib.util.spec_from_file_location("solution", os.path.join(CELL, "solution.py"))
     mod = importlib.util.module_from_spec(spec); import typing as _ty; mod.__dict__.update({k: getattr(_ty, k) for k in _ty.__all__}); spec.loader.exec_module(mod)
-    return mod.Solution
+    # The design class is named by the problem (MKAverage / StreamChecker / …),
+    # and models write it under that REAL name — not necessarily `Solution`.
+    # Resolve by the reference's class name (ops[0]); fall back to `Solution`
+    # (if a model aliased it) or the module's single defined class.
+    _name = json.load(open(os.path.join(REF, "outputs", SLUG + ".json")))["expected"][0]["input"]["ops"][0]
+    cls = getattr(mod, _name, None) or getattr(mod, "Solution", None)
+    if cls is None:
+        _cs = [v for v in vars(mod).values()
+               if isinstance(v, type) and getattr(v, "__module__", None) == mod.__name__]
+        cls = _cs[0] if len(_cs) == 1 else None
+    if cls is None:
+        raise RuntimeError(f"design class {_name!r} not found in solution.py")
+    return cls
 
 def replay(Solution, ops, args):
     """One solve: construct on op 0, replay the rest; return list of results."""

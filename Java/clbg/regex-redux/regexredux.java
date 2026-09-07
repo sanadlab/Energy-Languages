@@ -1,78 +1,125 @@
-/*
-   The Computer Language Benchmarks Game
-   http://benchmarksgame.alioth.debian.org/
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-   contributed by Francois Green
-*/
-
-import java.io.*;
-
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.Map.Entry;
-import java.util.function.*;
-import java.util.regex.*;
-
-import static java.util.stream.Collectors.*;
-
-public class regexredux {
-
-  public static void main(String[] args) throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    {
-        byte[] buf = new byte[65536];
-        int count;
-        while ((count = System.in.read(buf)) > 0) {
-            baos.write(buf, 0, count);
-        }
-    }
-    final String input = baos.toString("US-ASCII");
-
-    final int initialLength = input.length();
-
-    final String sequence = input.replaceAll(">.*\n|\n", "");
-
-    CompletableFuture<String> replacements = CompletableFuture.supplyAsync(() -> {
-        final Map<String, String> iub = new LinkedHashMap<>();
-        iub.put("tHa[Nt]", "<4>");
-        iub.put("aND|caN|Ha[DS]|WaS", "<3>");
-        iub.put("a[NSt]|BY", "<2>");
-        iub.put("<[^>]*>", "|");
-        iub.put("\\|[^|][^|]*\\|", "-");
-
-        String buffer = sequence;
-        for (Map.Entry<String, String> entry : iub.entrySet()) {
-            buffer = Pattern.compile(entry.getKey()).matcher(buffer).replaceAll(entry.getValue());
-        }
-        return buffer;
-    });
-
-    final int codeLength = sequence.length();
-
-    final List<String> variants = Arrays.asList("agggtaaa|tttaccct",
-                                                "[cgt]gggtaaa|tttaccc[acg]",
-                                                "a[act]ggtaaa|tttacc[agt]t",
-                                                "ag[act]gtaaa|tttac[agt]ct",
-                                                "agg[act]taaa|ttta[agt]cct",
-                                                "aggg[acg]aaa|ttt[cgt]ccct",
-                                                "agggt[cgt]aa|tt[acg]accct",
-                                                "agggta[cgt]a|t[acg]taccct",
-                                                "agggtaa[cgt]|[acg]ttaccct");
-
-    BiFunction<String, String, Entry<String, Long>> counts = (v, s) -> {
-      Long count = Pattern.compile(v).splitAsStream(s).count() - 1; //Off by one
-      return new AbstractMap.SimpleEntry<>(v, count);
+class regexredux {
+    private static final String[] VARIANT_STRINGS = {
+        "agggtaaa|tttaccct",
+        "[cgt]gggtaaa|tttaccc[acg]",
+        "a[act]ggtaaa|tttacc[agt]t",
+        "ag[act]gtaaa|tttac[agt]ct",
+        "agg[act]taaa|ttta[agt]cct",
+        "aggg[acg]aaa|ttt[cgt]ccct",
+        "agggt[cgt]aa|tt[acg]accct",
+        "agggta[cgt]a|t[acg]taccct",
+        "agggtaa[cgt]|[acg]ttaccct"
     };
 
-    final Map<String, Long> results = variants.parallelStream()
-                                              .map(variant -> counts.apply(variant, sequence))
-                                              .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private static final Pattern[] VARIANTS = new Pattern[VARIANT_STRINGS.length];
 
-    variants.forEach(variant -> System.out.println(variant + " " + results.get(variant)));
+    private static final Pattern[] SUBSTITUTION_PATTERNS = {
+        Pattern.compile("tHa[Nt]"),
+        Pattern.compile("aND|caN|Ha[DS]|WaS"),
+        Pattern.compile("a[NSt]|BY"),
+        Pattern.compile("<[^>]*>"),
+        Pattern.compile("\\|[^|][^|]*\\|")
+    };
 
-    System.out.println();
-    System.out.println(initialLength);
-    System.out.println(codeLength);
-    System.out.println(replacements.join().length());
-  }
+    private static final String[] REPLACEMENTS = {
+        "<4>",
+        "<3>",
+        "<2>",
+        "|",
+        "-"
+    };
+
+    static {
+        for (int i = 0; i < VARIANT_STRINGS.length; i++) {
+            VARIANTS[i] = Pattern.compile(VARIANT_STRINGS[i]);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Integer.parseInt(args[0]);
+
+        byte[] input = readAllInput();
+        int originalLength = input.length;
+        int strippedLength = stripFastaInPlace(input);
+
+        String sequence = new String(
+            input, 0, strippedLength, StandardCharsets.ISO_8859_1
+        );
+
+        StringBuilder output = new StringBuilder(512);
+
+        for (int i = 0; i < VARIANTS.length; i++) {
+            Matcher matcher = VARIANTS[i].matcher(sequence);
+            long count = 0;
+            while (matcher.find()) {
+                count++;
+            }
+
+            output.append(VARIANT_STRINGS[i])
+                  .append(' ')
+                  .append(count)
+                  .append('\n');
+        }
+
+        String substituted = sequence;
+        for (int i = 0; i < SUBSTITUTION_PATTERNS.length; i++) {
+            substituted = SUBSTITUTION_PATTERNS[i]
+                .matcher(substituted)
+                .replaceAll(REPLACEMENTS[i]);
+        }
+
+        output.append('\n')
+              .append(originalLength).append('\n')
+              .append(strippedLength).append('\n')
+              .append(substituted.length()).append('\n');
+
+        System.out.print(output);
+    }
+
+    private static byte[] readAllInput() throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream(1 << 20);
+        byte[] block = new byte[1 << 16];
+        int count;
+
+        while ((count = System.in.read(block)) != -1) {
+            buffer.write(block, 0, count);
+        }
+
+        return buffer.toByteArray();
+    }
+
+    private static int stripFastaInPlace(byte[] data) {
+        int write = 0;
+        boolean atLineStart = true;
+        boolean inHeader = false;
+
+        for (byte value : data) {
+            int c = value & 0xff;
+
+            if (inHeader) {
+                if (c == '\n' || c == '\r') {
+                    inHeader = false;
+                    atLineStart = true;
+                }
+                continue;
+            }
+
+            if (c == '\n' || c == '\r') {
+                atLineStart = true;
+            } else if (atLineStart && c == '>') {
+                inHeader = true;
+            } else {
+                data[write++] = value;
+                atLineStart = false;
+            }
+        }
+
+        return write;
+    }
 }

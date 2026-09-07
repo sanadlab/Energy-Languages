@@ -1,78 +1,104 @@
-/* The Computer Language Benchmarks Game
- * http://benchmarksgame.alioth.debian.org/
- * 
- * contributed by Stefan Krause
- * slightly modified by Chad Whipkey
- * parallelized by Colin D Bennett 2008-10-04
- * reduce synchronization cost by The Anh Tran
- * optimizations and refactoring by Enotus 2010-11-11
- * optimization by John Stalcup 2012-2-19
- */
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicInteger;
 
+class mandelbrot {
+    private static int size;
+    private static int bytesPerRow;
+    private static byte[] image;
+    private static double[] realCoordinates;
+    private static final AtomicInteger nextRow = new AtomicInteger();
 
-import java.io.*;
-import java.util.concurrent.atomic.*;
+    private static boolean isBounded(double cr, double ci) {
+        double ci2 = ci * ci;
 
-public final class mandelbrot {
-   static byte[][] out;
-   static AtomicInteger yCt;
-   static double[] Crb;
-   static double[] Cib;
+        // Main cardioid.
+        double x = cr - 0.25;
+        double q = x * x + ci2;
+        if (q * (q + x) <= 0.25 * ci2) {
+            return true;
+        }
 
-   static int getByte(int x, int y){
-      int res=0;
-      for(int i=0;i<8;i+=2){
-         double Zr1=Crb[x+i];
-         double Zi1=Cib[y];
+        // Period-2 bulb.
+        double bulbX = cr + 1.0;
+        if (bulbX * bulbX + ci2 <= 0.0625) {
+            return true;
+        }
 
-         double Zr2=Crb[x+i+1];
-         double Zi2=Cib[y];
+        double zr = 0.0;
+        double zi = 0.0;
+        double zr2 = 0.0;
+        double zi2 = 0.0;
 
-         int b=0;
-         int j=49;do{
-            double nZr1=Zr1*Zr1-Zi1*Zi1+Crb[x+i];
-            double nZi1=Zr1*Zi1+Zr1*Zi1+Cib[y];
-            Zr1=nZr1;Zi1=nZi1;
+        for (int i = 0; i < 50; i++) {
+            zi = 2.0 * zr * zi + ci;
+            zr = zr2 - zi2 + cr;
+            zr2 = zr * zr;
+            zi2 = zi * zi;
 
-            double nZr2=Zr2*Zr2-Zi2*Zi2+Crb[x+i+1];
-            double nZi2=Zr2*Zi2+Zr2*Zi2+Cib[y];
-            Zr2=nZr2;Zi2=nZi2;
-
-            if(Zr1*Zr1+Zi1*Zi1>4){b|=2;if(b==3)break;}
-            if(Zr2*Zr2+Zi2*Zi2>4){b|=1;if(b==3)break;}
-         }while(--j>0);
-         res=(res<<2)+b;
-      }
-      return res^-1;
-   }
-
-   static void putLine(int y, byte[] line){
-      for (int xb=0; xb<line.length; xb++)
-         line[xb]=(byte)getByte(xb*8,y);
-   }
-
-   public static void main(String[] args) throws Exception {
-      int N=6000;
-      if (args.length>=1) N=Integer.parseInt(args[0]);
-
-      Crb=new double[N+7]; Cib=new double[N+7];
-      double invN=2.0/N; for(int i=0;i<N;i++){ Cib[i]=i*invN-1.0; Crb[i]=i*invN-1.5; }
-      yCt=new AtomicInteger();
-      out=new byte[N][(N+7)/8];
-
-      Thread[] pool=new Thread[2*Runtime.getRuntime().availableProcessors()];
-      for (int i=0;i<pool.length;i++)
-         pool[i]=new Thread(){
-            public void run() {
-                int y; while((y=yCt.getAndIncrement())<out.length) putLine(y,out[y]);
+            if (zr2 + zi2 > 4.0) {
+                return false;
             }
-         };
-      for (Thread t:pool) t.start();
-      for (Thread t:pool) t.join();
+        }
+        return true;
+    }
 
-      OutputStream stream = new BufferedOutputStream(System.out);
-      stream.write(("P4\n"+N+" "+N+"\n").getBytes());
-      for(int i=0;i<N;i++) stream.write(out[i]);
-      stream.close();
-   }
+    private static void computeRows() {
+        int y;
+        while ((y = nextRow.getAndIncrement()) < size) {
+            double ci = (2.0 * y / size) - 1.0;
+            int rowOffset = y * bytesPerRow;
+            int x = 0;
+
+            for (int columnByte = 0; columnByte < bytesPerRow; columnByte++) {
+                int bits = 0;
+                int count = Math.min(8, size - x);
+
+                for (int bit = 0; bit < count; bit++, x++) {
+                    bits <<= 1;
+                    if (isBounded(realCoordinates[x], ci)) {
+                        bits |= 1;
+                    }
+                }
+
+                bits <<= 8 - count;
+                image[rowOffset + columnByte] = (byte) bits;
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        size = Integer.parseInt(args[0]);
+        bytesPerRow = (size + 7) >>> 3;
+        image = new byte[size * bytesPerRow];
+        realCoordinates = new double[size];
+
+        for (int x = 0; x < size; x++) {
+            realCoordinates[x] = (2.0 * x / size) - 1.5;
+        }
+
+        int processors = Runtime.getRuntime().availableProcessors();
+        int threadCount = Math.min(processors, Math.max(1, size / 16));
+        threadCount = Math.min(threadCount, 64);
+
+        Thread[] workers = new Thread[threadCount - 1];
+        for (int i = 0; i < workers.length; i++) {
+            workers[i] = new Thread(mandelbrot::computeRows);
+            workers[i].start();
+        }
+
+        computeRows();
+
+        for (Thread worker : workers) {
+            worker.join();
+        }
+
+        BufferedOutputStream out = new BufferedOutputStream(System.out, 1 << 20);
+        byte[] header = ("P4\n" + size + " " + size + "\n")
+                .getBytes(StandardCharsets.US_ASCII);
+        out.write(header);
+        out.write(image);
+        out.flush();
+    }
 }

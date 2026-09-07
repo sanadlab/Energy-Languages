@@ -1,43 +1,46 @@
 import sys
-from math import isqrt
+
 
 def main():
-    N = int(sys.argv[1])
+    target = int(sys.argv[1])
 
-    # Unbounded spigot algorithm (Rabinowitz and Wagon)
-    q, r, t, k, n, l = 1, 0, 1, 1, 3, 3
-    out = []
-    line = []
+    q, r, t = 1, 0, 1
+    k, digit, l = 1, 3, 3
 
-    for i in range(N):
-        while 4 * q + r - t >= n * t:
-            q, r, t, k, n, l = (
-                10 * q,
-                10 * (r - n * t),
-                t,
-                k,
-                (10 * (3 * q + r)) // t - 10 * n,
-                l,
-            )
+    produced = 0
+    group = []
+    output = []
 
-        line.append(str(n))
-        if len(line) == 10:
-            out.append("".join(line) + "\t:" + str(i + 1))
-            line.clear()
+    while produced < target:
+        digit_t = digit * t
 
-        q, r, t, k, n, l = (
-            q * k,
-            (2 * q + r) * l,
-            t * l,
-            k + 1,
-            (q * (7 * k + 2) + r * l) // (t * l),
-            l + 2,
-        )
+        if (q << 2) + r - t < digit_t:
+            group.append(chr(48 + digit))
+            produced += 1
 
-    if line:
-        out.append("".join(line) + "\t:" + str(N))
+            old_q, old_r = q, r
+            q = old_q * 10
+            r = (old_r - digit_t) * 10
+            digit = (10 * (3 * old_q + old_r)) // t - digit * 10
 
-    sys.stdout.write("\n".join(out))
+            if len(group) == 10 or produced == target:
+                digits = ''.join(group)
+                output.append(digits.ljust(10) + "\t:" + str(produced))
+                group.clear()
+        else:
+            qk = q * k
+            rl = r * l
+            tl = t * l
+
+            digit = (7 * qk + rl + 2) // tl
+            r = rl + (qk << 2) + (q << 1)
+            q = qk
+            t = tl
+            k += 1
+            l += 2
+
+    sys.stdout.write('\n'.join(output) + '\n')
+
 
 if __name__ == "__main__":
     main()

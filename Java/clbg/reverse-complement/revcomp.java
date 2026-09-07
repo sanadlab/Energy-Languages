@@ -1,235 +1,123 @@
-/* The Computer Language Benchmarks Game
-   http://benchmarksgame.alioth.debian.org/
- 
-   contributed by Leonhard Holz
-   thanks to Anthony Donnefort for the basic mapping idea
-*/
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
 
-public class revcomp
-{
-   private static final byte[] map = new byte[256];      
-   private static final int CHUNK_SIZE = 1024 * 1024 * 16;
-   private static final int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
-   private static final ExecutorService service = Executors.newFixedThreadPool(NUMBER_OF_CORES);
-   private static final List<byte[]> list = Collections.synchronizedList(new ArrayList<byte[]>());
+class revcomp {
+    private static final byte[] COMPLEMENT = new byte[256];
 
-   static {
-      for (int i = 0; i < map.length; i++) {
-         map[i] = (byte) i;
-      }
-       map['t'] = map['T'] = 'A';
-       map['a'] = map['A'] = 'T';
-       map['g'] = map['G'] = 'C';
-       map['c'] = map['C'] = 'G';
-       map['v'] = map['V'] = 'B';
-       map['h'] = map['H'] = 'D';
-       map['r'] = map['R'] = 'Y';
-       map['m'] = map['M'] = 'K';
-       map['y'] = map['Y'] = 'R';
-       map['k'] = map['K'] = 'M';
-       map['b'] = map['B'] = 'V';
-       map['d'] = map['D'] = 'H';
-       map['u'] = map['U'] = 'A';
-   }
+    static {
+        for (int i = 0; i < COMPLEMENT.length; i++) {
+            COMPLEMENT[i] = (byte) i;
+        }
 
-   public static void main(String[] args) throws IOException
-   {
-      int read;
-      byte[] buffer;
-      Finder lastFinder = null; 
-      
-      do {
-         buffer = new byte[CHUNK_SIZE];
-         read = System.in.read(buffer);
-         list.add(buffer);
+        String bases = "ACBDGHKMNSRUTWVYacbdghkmnsrutwvy";
+        String complements = "TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR";
 
-         Finder finder = new Finder(buffer, read, lastFinder);
-         service.execute(finder);
-         lastFinder = finder;
+        for (int i = 0; i < bases.length(); i++) {
+            COMPLEMENT[bases.charAt(i)] = (byte) complements.charAt(i);
+        }
+    }
 
-      } while (read == CHUNK_SIZE);
+    public static void main(String[] args) throws IOException {
+        int n = Integer.parseInt(args[0]);
 
-      Status status = lastFinder.finish();
-      Mapper mapper = new Mapper(status.lastFinding, status.count - 1, status.lastMapper);
-      service.execute(mapper);
+        byte[] data = readAll(System.in);
+        int length = data.length;
+        int sequenceStart = -1;
 
-      service.shutdown();
-   }
+        for (int i = 0; i < length; ) {
+            boolean lineStart = i == 0 || data[i - 1] == '\n' || data[i - 1] == '\r';
 
-   private static final class Status
-   {
-      private int count = 0;
-      private int lastFinding = 0;
-      private Mapper lastMapper = null;
-   }
-   
-   private static final class Finder implements Runnable
-   {
-      private int size;
-      private byte[] a;
-      private Status status;
-      private Finder previous;
-      private boolean done = false;
-      
-      public Finder(byte[] a, int size, Finder previous)
-      {
-         this.a = a;
-         this.size = size;
-         this.previous = previous;
-      }
-      
-      public Status finish()
-      {
-         while (!done) try {
-            Thread.sleep(1);
-         } catch (InterruptedException e) {
-            // ignored
-         }
-         return status;
-      }
+            if (lineStart && data[i] == '>') {
+                if (sequenceStart >= 0) {
+                    reverseComplement(data, sequenceStart, i);
+                }
 
-      public void run()
-      {
-         LinkedList<Integer> findings = new LinkedList<Integer>();
+                while (i < length && data[i] != '\n' && data[i] != '\r') {
+                    i++;
+                }
 
-         for (int i = 0; i < size; i++) {
-            if (a[i] == '>') {
-               findings.add(i);
-            }
-         }
-      
-         if (previous == null) {
-            status = new Status();
-         } else {
-            status = previous.finish();
-            findings.add(0, status.lastFinding);
-            for (int i = 1; i < findings.size(); i++) {
-               findings.set(i, findings.get(i) + status.count);
-            }
-         }
-      
-         if (findings.size() > 1) for (int i = 0; i < findings.size() - 1; i++) {
-            status.lastMapper = new Mapper(findings.get(i), findings.get(i + 1) - 1, status.lastMapper);
-            service.execute(status.lastMapper);
-         }
-         
-         status.lastFinding = findings.get(findings.size() - 1);
-         status.count += size;
-         done = true;
-      }
-   }
-   
-   private static final class Mapper implements Runnable
-   {
-      private int end;
-      private int start;
-      private Mapper previous;
-      private boolean done = false;
-      
-      public Mapper(int start, int end, Mapper previous)
-      {
-         this.end = end;
-         this.start = start;
-         this.previous = previous;
-      }
-      
-      public void finish()
-      {
-         while (!done) try {
-            Thread.sleep(1);
-         } catch (InterruptedException e) {
-            // ignored
-         }
-      }
+                if (i < length && data[i] == '\r') {
+                    i++;
+                    if (i < length && data[i] == '\n') {
+                        i++;
+                    }
+                } else if (i < length) {
+                    i++;
+                }
 
-      public void run()
-      {
-         int[] positions = find(list, start, end);
-         
-         int lp1 = positions[0];
-         byte[] tob = list.get(lp1);
-
-         int lp2 = positions[2];
-         byte[] bot = list.get(lp2);
-         
-         int p1 = positions[1];
-         while (tob[p1] != '\n') p1++;
-
-         int p2 = positions[3];
-      
-         while (lp1 < lp2 || p1 < p2) {
-            if (tob[p1] == '\n') {
-               p1++;
-            } else if (bot[p2] == '\n') {
-               p2--;
+                sequenceStart = i;
             } else {
-               byte tmp = tob[p1];
-               tob[p1] = map[bot[p2]];
-               bot[p2] = map[tmp];
-               p1++;
-               p2--;
+                i++;
             }
-            if (p1 == tob.length) {
-               lp1++;
-               tob = list.get(lp1);
-               p1 = 0;
+        }
+
+        if (sequenceStart >= 0) {
+            reverseComplement(data, sequenceStart, length);
+        }
+
+        OutputStream out = System.out;
+        out.write(data, 0, length);
+        out.flush();
+    }
+
+    private static void reverseComplement(byte[] data, int left, int rightExclusive) {
+        int right = rightExclusive - 1;
+
+        while (left <= right) {
+            while (left <= right && isLineBreak(data[left])) {
+                left++;
             }
-            if (p2 == -1) {
-               lp2--;
-               bot = list.get(lp2);
-               p2 = bot.length - 1;
+            while (left <= right && isLineBreak(data[right])) {
+                right--;
             }
-         }
 
-         if (previous != null) {
-            previous.finish();
-         }
+            if (left > right) {
+                break;
+            }
 
-         write(list, positions[0], positions[1], positions[2], positions[3]);
-         done = true;
-      }
-   }
+            byte a = data[left];
+            byte b = data[right];
+            data[left] = COMPLEMENT[b & 0xFF];
+            data[right] = COMPLEMENT[a & 0xFF];
 
-   private static void write(List<byte[]> list, int lpStart, int start, int lpEnd, int end)
-   {
-      byte[] a = list.get(lpStart);
-      while (lpStart < lpEnd) {
-         System.out.write(a, start, a.length - start);
-         lpStart++;
-         a = list.get(lpStart);
-         start = 0;
-      }
-      System.out.write(a, start, end - start + 1);
-   }
-   
-   private static int[] find(List<byte[]> list, int start, int end)
-   {
-      int n = 0, lp = 0;
-      int[] result = new int[4];
-      boolean foundStart = false;
+            left++;
+            right--;
+        }
+    }
 
-      for (byte[] bytes : list) {
-         if (!foundStart && n + bytes.length > start) {
-            result[0] = lp;
-            result[1] = start - n;
-            foundStart = true;
-         }
-         if (foundStart && n + bytes.length > end) {
-            result[2] = lp;
-            result[3] = end - n;
-            break;
-         }
-         n += bytes.length;
-         lp++;
-      }
-      return result;
-   }   
+    private static boolean isLineBreak(byte value) {
+        return value == '\n' || value == '\r';
+    }
+
+    private static byte[] readAll(InputStream in) throws IOException {
+        byte[] buffer = new byte[1 << 20];
+        int length = 0;
+
+        while (true) {
+            if (length == buffer.length) {
+                buffer = Arrays.copyOf(buffer, buffer.length << 1);
+            }
+
+            int count = in.read(buffer, length, buffer.length - length);
+            if (count < 0) {
+                break;
+            }
+            if (count == 0) {
+                int value = in.read();
+                if (value < 0) {
+                    break;
+                }
+                if (length == buffer.length) {
+                    buffer = Arrays.copyOf(buffer, buffer.length << 1);
+                }
+                buffer[length++] = (byte) value;
+            } else {
+                length += count;
+            }
+        }
+
+        return length == buffer.length ? buffer : Arrays.copyOf(buffer, length);
+    }
 }

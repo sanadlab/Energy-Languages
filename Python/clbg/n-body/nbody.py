@@ -1,102 +1,287 @@
 import sys
-from math import sqrt
+from math import pi, sqrt
 
-PI = 3.141592653589793
-SOLAR_MASS = 4 * PI * PI
+
+SOLAR_MASS = 4.0 * pi * pi
 DAYS_PER_YEAR = 365.24
+DT = 0.01
 
 
-def offset_momentum(px, py, pz, bodies):
-    sun = bodies[0]
-    sun[3] = -px / SOLAR_MASS
-    sun[4] = -py / SOLAR_MASS
-    sun[5] = -pz / SOLAR_MASS
+def initial_state():
+    masses = [
+        SOLAR_MASS,
+        9.54791938424326609e-4 * SOLAR_MASS,
+        2.85885980666130812e-4 * SOLAR_MASS,
+        4.36624404335156298e-5 * SOLAR_MASS,
+        5.15138902046611451e-5 * SOLAR_MASS,
+    ]
+
+    x = [
+        0.0,
+        4.84143144246472090,
+        8.34336671824457987,
+        12.8943695621391310,
+        15.3796971148509165,
+    ]
+    y = [
+        0.0,
+        -1.16032004402742839,
+        4.12479856412430479,
+        -15.1111514016986312,
+        -25.9193146099879641,
+    ]
+    z = [
+        0.0,
+        -0.103622044471123109,
+        -0.403523417114321381,
+        -0.223307578892655734,
+        0.179258772950371181,
+    ]
+
+    vx = [
+        0.0,
+        1.66007664274403694e-3 * DAYS_PER_YEAR,
+        -2.76742510726862411e-3 * DAYS_PER_YEAR,
+        2.96460137564761618e-3 * DAYS_PER_YEAR,
+        2.68067772490389322e-3 * DAYS_PER_YEAR,
+    ]
+    vy = [
+        0.0,
+        7.69901118419740425e-3 * DAYS_PER_YEAR,
+        4.99852801234917238e-3 * DAYS_PER_YEAR,
+        2.37847173959480950e-3 * DAYS_PER_YEAR,
+        1.62824170038242295e-3 * DAYS_PER_YEAR,
+    ]
+    vz = [
+        0.0,
+        -6.90460016972063023e-5 * DAYS_PER_YEAR,
+        2.30417297573763929e-5 * DAYS_PER_YEAR,
+        -2.96589568540237556e-5 * DAYS_PER_YEAR,
+        -9.51592254519715870e-5 * DAYS_PER_YEAR,
+    ]
+
+    px = py = pz = 0.0
+    for i in range(1, 5):
+        mass = masses[i]
+        px += vx[i] * mass
+        py += vy[i] * mass
+        pz += vz[i] * mass
+
+    vx[0] = -px / SOLAR_MASS
+    vy[0] = -py / SOLAR_MASS
+    vz[0] = -pz / SOLAR_MASS
+
+    return x, y, z, vx, vy, vz, masses
 
 
-def energy(bodies):
-    e = 0.0
-    nb = len(bodies)
-    for i in range(nb):
-        bi = bodies[i]
-        m1 = bi[6]
-        e += 0.5 * m1 * (bi[3] * bi[3] + bi[4] * bi[4] + bi[5] * bi[5])
-        for j in range(i + 1, nb):
-            bj = bodies[j]
-            dx = bi[0] - bj[0]
-            dy = bi[1] - bj[1]
-            dz = bi[2] - bj[2]
-            dist = sqrt(dx * dx + dy * dy + dz * dz)
-            e -= (m1 * bj[6]) / dist
-    return e
+def energy(x, y, z, vx, vy, vz, masses):
+    total = 0.0
+
+    for i in range(5):
+        total += 0.5 * masses[i] * (
+            vx[i] * vx[i] + vy[i] * vy[i] + vz[i] * vz[i]
+        )
+
+        for j in range(i + 1, 5):
+            dx = x[i] - x[j]
+            dy = y[i] - y[j]
+            dz = z[i] - z[j]
+            total -= masses[i] * masses[j] / sqrt(
+                dx * dx + dy * dy + dz * dz
+            )
+
+    return total
 
 
-def advance(bodies, dt, n):
+def advance(n, x, y, z, vx, vy, vz, masses):
+    x0, x1, x2, x3, x4 = x
+    y0, y1, y2, y3, y4 = y
+    z0, z1, z2, z3, z4 = z
+    vx0, vx1, vx2, vx3, vx4 = vx
+    vy0, vy1, vy2, vy3, vy4 = vy
+    vz0, vz1, vz2, vz3, vz4 = vz
+    m0, m1, m2, m3, m4 = masses
+
+    d0 = DT * m0
+    d1 = DT * m1
+    d2 = DT * m2
+    d3 = DT * m3
+    d4 = DT * m4
+
+    root = sqrt
+
     for _ in range(n):
-        # Update velocities
-        for i in range(len(bodies)):
-            bi = bodies[i]
-            xi, yi, zi, vxi, vyi, vzi, mi = bi
-            for j in range(i + 1, len(bodies)):
-                bj = bodies[j]
-                dx = xi - bj[0]
-                dy = yi - bj[1]
-                dz = zi - bj[2]
-                dist2 = dx * dx + dy * dy + dz * dz
-                dist = sqrt(dist2)
-                mag = dt / (dist2 * dist)
-                mj = bj[6]
-                bi[3] -= dx * mj * mag
-                bi[4] -= dy * mj * mag
-                bi[5] -= dz * mj * mag
-                bj[3] += dx * mi * mag
-                bj[4] += dy * mi * mag
-                bj[5] += dz * mi * mag
+        dx = x0 - x1
+        dy = y0 - y1
+        dz = z0 - z1
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d1 * inv
+        b = d0 * inv
+        vx0 -= dx * a
+        vy0 -= dy * a
+        vz0 -= dz * a
+        vx1 += dx * b
+        vy1 += dy * b
+        vz1 += dz * b
 
-        # Update positions
-        for b in bodies:
-            b[0] += dt * b[3]
-            b[1] += dt * b[4]
-            b[2] += dt * b[5]
+        dx = x0 - x2
+        dy = y0 - y2
+        dz = z0 - z2
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d2 * inv
+        b = d0 * inv
+        vx0 -= dx * a
+        vy0 -= dy * a
+        vz0 -= dz * a
+        vx2 += dx * b
+        vy2 += dy * b
+        vz2 += dz * b
+
+        dx = x0 - x3
+        dy = y0 - y3
+        dz = z0 - z3
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d3 * inv
+        b = d0 * inv
+        vx0 -= dx * a
+        vy0 -= dy * a
+        vz0 -= dz * a
+        vx3 += dx * b
+        vy3 += dy * b
+        vz3 += dz * b
+
+        dx = x0 - x4
+        dy = y0 - y4
+        dz = z0 - z4
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d4 * inv
+        b = d0 * inv
+        vx0 -= dx * a
+        vy0 -= dy * a
+        vz0 -= dz * a
+        vx4 += dx * b
+        vy4 += dy * b
+        vz4 += dz * b
+
+        dx = x1 - x2
+        dy = y1 - y2
+        dz = z1 - z2
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d2 * inv
+        b = d1 * inv
+        vx1 -= dx * a
+        vy1 -= dy * a
+        vz1 -= dz * a
+        vx2 += dx * b
+        vy2 += dy * b
+        vz2 += dz * b
+
+        dx = x1 - x3
+        dy = y1 - y3
+        dz = z1 - z3
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d3 * inv
+        b = d1 * inv
+        vx1 -= dx * a
+        vy1 -= dy * a
+        vz1 -= dz * a
+        vx3 += dx * b
+        vy3 += dy * b
+        vz3 += dz * b
+
+        dx = x1 - x4
+        dy = y1 - y4
+        dz = z1 - z4
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d4 * inv
+        b = d1 * inv
+        vx1 -= dx * a
+        vy1 -= dy * a
+        vz1 -= dz * a
+        vx4 += dx * b
+        vy4 += dy * b
+        vz4 += dz * b
+
+        dx = x2 - x3
+        dy = y2 - y3
+        dz = z2 - z3
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d3 * inv
+        b = d2 * inv
+        vx2 -= dx * a
+        vy2 -= dy * a
+        vz2 -= dz * a
+        vx3 += dx * b
+        vy3 += dy * b
+        vz3 += dz * b
+
+        dx = x2 - x4
+        dy = y2 - y4
+        dz = z2 - z4
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d4 * inv
+        b = d2 * inv
+        vx2 -= dx * a
+        vy2 -= dy * a
+        vz2 -= dz * a
+        vx4 += dx * b
+        vy4 += dy * b
+        vz4 += dz * b
+
+        dx = x3 - x4
+        dy = y3 - y4
+        dz = z3 - z4
+        r2 = dx * dx + dy * dy + dz * dz
+        inv = 1.0 / (r2 * root(r2))
+        a = d4 * inv
+        b = d3 * inv
+        vx3 -= dx * a
+        vy3 -= dy * a
+        vz3 -= dz * a
+        vx4 += dx * b
+        vy4 += dy * b
+        vz4 += dz * b
+
+        x0 += DT * vx0
+        y0 += DT * vy0
+        z0 += DT * vz0
+        x1 += DT * vx1
+        y1 += DT * vy1
+        z1 += DT * vz1
+        x2 += DT * vx2
+        y2 += DT * vy2
+        z2 += DT * vz2
+        x3 += DT * vx3
+        y3 += DT * vy3
+        z3 += DT * vz3
+        x4 += DT * vx4
+        y4 += DT * vy4
+        z4 += DT * vz4
+
+    x[:] = x0, x1, x2, x3, x4
+    y[:] = y0, y1, y2, y3, y4
+    z[:] = z0, z1, z2, z3, z4
+    vx[:] = vx0, vx1, vx2, vx3, vx4
+    vy[:] = vy0, vy1, vy2, vy3, vy4
+    vz[:] = vz0, vz1, vz2, vz3, vz4
 
 
 def main():
     n = int(sys.argv[1])
+    x, y, z, vx, vy, vz, masses = initial_state()
 
-    bodies = [
-        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, SOLAR_MASS],
-        [4.84143144246472090e+00, -1.16032004402742839e+00, -1.03622044471123109e-01,
-         1.66007664274403694e-03 * DAYS_PER_YEAR,
-         7.69901118419740425e-03 * DAYS_PER_YEAR,
-         -6.90460016972063023e-05 * DAYS_PER_YEAR,
-         9.54791938424326609e-04 * SOLAR_MASS],
-        [8.34336671824457987e+00, 4.12479856412430479e+00, -4.03523417114321381e-01,
-         -2.76742510726862411e-03 * DAYS_PER_YEAR,
-         4.99852801234917238e-03 * DAYS_PER_YEAR,
-         2.30417297573763929e-05 * DAYS_PER_YEAR,
-         2.85885980666130812e-04 * SOLAR_MASS],
-        [1.28943695621391310e+01, -1.51111514016986312e+01, -2.23307578892655734e-01,
-         2.96460137564761618e-03 * DAYS_PER_YEAR,
-         2.37847173959480950e-03 * DAYS_PER_YEAR,
-         -2.96589568540237556e-05 * DAYS_PER_YEAR,
-         4.36624404335156298e-05 * SOLAR_MASS],
-        [1.53796971148509165e+01, -2.59193146099879641e+01, 1.79258772950371181e-01,
-         2.68067772490389322e-03 * DAYS_PER_YEAR,
-         1.62824170038242295e-03 * DAYS_PER_YEAR,
-         -9.51592254519715870e-05 * DAYS_PER_YEAR,
-         5.15138902046611451e-05 * SOLAR_MASS],
-    ]
-
-    px = py = pz = 0.0
-    for b in bodies:
-        m = b[6]
-        px += b[3] * m
-        py += b[4] * m
-        pz += b[5] * m
-    offset_momentum(px, py, pz, bodies)
-
-    print(f"{energy(bodies):.9f}")
-    advance(bodies, 0.01, n)
-    print(f"{energy(bodies):.9f}")
+    print(f"{energy(x, y, z, vx, vy, vz, masses):.9f}")
+    advance(n, x, y, z, vx, vy, vz, masses)
+    print(f"{energy(x, y, z, vx, vy, vz, masses):.9f}")
 
 
 if __name__ == "__main__":

@@ -1,58 +1,52 @@
-import sys
 import re
+import sys
+
 
 def main():
-    # Read entire FASTA input
-    data = sys.stdin.buffer.read().decode()
+    _ = int(sys.argv[1])
 
-    # Preserve original length exactly as input characters count
+    data = sys.stdin.buffer.read()
     original_length = len(data)
 
-    # Strip FASTA headers and all whitespace/newlines
-    seq = re.sub(r'>[^\n]*\n|\s+', '', data)
-    stripped_length = len(seq)
+    sequence = re.sub(br'>[^\r\n]*(?:\r\n|\n|\r|$)|\r\n|\r|\n', b'', data)
+    stripped_length = len(sequence)
 
-    # Patterns from the regex-redux benchmark
     patterns = [
-        r'agggtaaa|tttaccct',
-        r'[cgt]gggtaaa|tttaccc[acg]',
-        r'a[act]ggtaaa|tttacc[agt]t',
-        r'ag[act]gtaaa|tttac[agt]ct',
-        r'agg[act]taaa|ttta[agt]cct',
-        r'aggg[acg]aaa|ttt[cgt]ccct',
-        r'agggt[cgt]aa|tt[a-c]accct',
-        r'agggta[cgt]a|t[acg]taccct',
+        b'agggtaaa|tttaccct',
+        b'[cgt]gggtaaa|tttaccc[acg]',
+        b'a[act]ggtaaa|tttacc[agt]t',
+        b'ag[act]gtaaa|tttac[agt]ct',
+        b'agg[act]taaa|ttta[agt]cct',
+        b'aggg[acg]aaa|ttt[cgt]ccct',
+        b'agggt[cgt]aa|tt[acg]accct',
+        b'agggta[cgt]a|t[acg]taccct',
+        b'agggtaa[cgt]|[acg]ttaccct',
     ]
 
-    out = []
-    for pat in patterns:
-        out.append(f"{pat} {len(re.findall(pat, seq))}")
+    output = []
+    for pattern in patterns:
+        count = sum(1 for _ in re.finditer(pattern, sequence))
+        output.append(f'{pattern.decode()} {count}')
 
-    # IUPAC substitutions
     substitutions = [
-        (r'B', '(c|g|t)'),
-        (r'D', '(a|g|t)'),
-        (r'H', '(a|c|t)'),
-        (r'K', '(g|t)'),
-        (r'M', '(a|c)'),
-        (r'N', '(a|c|g|t)'),
-        (r'R', '(a|g)'),
-        (r'S', '(c|g)'),
-        (r'V', '(a|c|g)'),
-        (r'W', '(a|t)'),
-        (r'Y', '(c|t)'),
+        (br'tHa[Nt]', b'<4>'),
+        (br'aND|caN|Ha[DS]|WaS', b'<3>'),
+        (br'a[NSt]|BY', b'<2>'),
+        (br'<[^>]*>', b'|'),
+        (br'\|[^|][^|]*\|', b'-'),
     ]
 
-    for pat, repl in substitutions:
-        seq = re.sub(pat, repl, seq)
+    encoded = sequence
+    for pattern, replacement in substitutions:
+        encoded = re.sub(pattern, replacement, encoded)
 
-    post_length = len(seq)
+    output.append('')
+    output.append(str(original_length))
+    output.append(str(stripped_length))
+    output.append(str(len(encoded)))
 
-    out.append(str(original_length))
-    out.append(str(stripped_length))
-    out.append(str(post_length))
+    sys.stdout.write('\n'.join(output) + '\n')
 
-    sys.stdout.write("\n".join(out))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

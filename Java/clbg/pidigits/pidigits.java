@@ -1,132 +1,79 @@
-/**
- * The Computer Language Benchmarks Game
- * http://benchmarksgame.alioth.debian.org/
- * contributed by Mike Pall
- * java port by Stefan Krause
-*/
 import java.math.BigInteger;
 
-public class pidigits {
-   
-   final GmpInteger q = new GmpInteger(), r = new GmpInteger(),
-   s = new GmpInteger(), t = new GmpInteger(); 
-   final GmpInteger u = new GmpInteger(), v = new GmpInteger(),
-   w = new GmpInteger(); 
+class pidigits {
+    private static final BigInteger TWO = BigInteger.valueOf(2);
+    private static final BigInteger THREE = BigInteger.valueOf(3);
+    private static final BigInteger FOUR = BigInteger.valueOf(4);
+    private static final BigInteger SEVEN = BigInteger.valueOf(7);
+    private static final BigInteger TEN = BigInteger.TEN;
 
-   int i, k, c; 
-   int digit;
-   int d;
-   StringBuffer strBuf = new StringBuffer(20);
-   final int n;
-   
-   private pidigits(int n)
-   {
-      this.n=n;
-   }
-   
-   private void compose_r(int bq, int br, int bs, int bt)
-   {
-     u.mul(r, bs);
-     r.mul(r, bq);
-     v.mul(t, br);
-     r.add(r, v);
-     t.mul(t, bt);
-     t.add(t, u);
-     s.mul(s, bt);
-     u.mul(q, bs);
-     s.add(s, u);
-     q.mul(q, bq);
-   }
+    public static void main(String[] args) {
+        int limit = Integer.parseInt(args[0]);
 
-   /* Compose matrix with numbers on the left. */
-   private void compose_l(int bq, int br, int bs, int bt)
-   {
-     r.mul(r, bt);
-     u.mul(q, br);
-     r.add(r, u);
-     u.mul(t, bs);
-     t.mul(t, bt);
-     v.mul(s, br);
-     t.add(t, v);
-     s.mul(s, bq);
-     s.add(s, u);
-     q.mul(q, bq);
-   }
+        BigInteger q = BigInteger.ONE;
+        BigInteger r = BigInteger.ZERO;
+        BigInteger t = BigInteger.ONE;
 
-   /* Extract one digit. */
-   private int extract(int j)
-   {
-     u.mul(q, j);
-     u.add(u, r);
-     v.mul(s, j);
-     v.add(v, t);
-     w.div(u, v);
-     return w.intValue();
-   }
+        long k = 1;
+        long l = 3;
+        int digit = 3;
+        int produced = 0;
 
-   /* Print one digit. Returns 1 for the last digit. */
-   private boolean prdigit(int y)
-   {
-      strBuf.append(y);
-      if (++i % 10 == 0 || i == n) {
-         if (i%10!=0) for (int j=10-(i%10);j>0;j--) { strBuf.append(" "); }
-         strBuf.append("\t:");
-         strBuf.append(i);
-         System.out.println(strBuf);
-         strBuf = new StringBuffer(20);
-      }
-      return i == n;
-   }
+        StringBuilder output = new StringBuilder(limit + (limit / 10 + 1) * 16);
 
-   /* Generate successive digits of PI. */
-   void pidigits()
-   {
-     int k = 1;
-     d = 0;
-     i = 0;
-     q.set(1);
-     r.set(0);
-     s.set(0);
-     t.set(1);
-     for (;;) {
-       int y = extract(3);
-       if (y == extract(4)) {
-         if (prdigit(y)) return;
-         compose_r(10, -10*y, 0, 1);
-       } else {
-         compose_l(k, 4*k+2, 0, 2*k+1);
-         k++;
-       }
-     }
-   }
-      
-   public static void main(String[] args) {
-      pidigits m = new pidigits(Integer.parseInt(args[0]));
-      m.pidigits();
-   }
-}
+        while (produced < limit) {
+            BigInteger digitTimesT = t.multiply(BigInteger.valueOf(digit));
+            BigInteger test = q.multiply(FOUR).add(r).subtract(t);
 
+            if (test.compareTo(digitTimesT) < 0) {
+                output.append((char) ('0' + digit));
+                produced++;
 
+                if (produced % 10 == 0) {
+                    output.append('\t').append(':').append(produced).append('\n');
+                }
 
-class GmpInteger {
-   private BigInteger value;
+                BigInteger oldQ = q;
+                BigInteger oldR = r;
 
-   public GmpInteger() { value = BigInteger.ZERO; }
+                q = oldQ.multiply(TEN);
+                r = oldR.subtract(digitTimesT).multiply(TEN);
+                digit = oldQ.multiply(THREE)
+                            .add(oldR)
+                            .multiply(TEN)
+                            .divide(t)
+                            .intValue() - 10 * digit;
+            } else {
+                BigInteger oldQ = q;
+                BigInteger oldR = r;
+                BigInteger kValue = BigInteger.valueOf(k);
+                BigInteger lValue = BigInteger.valueOf(l);
 
-   public GmpInteger(int value) {
-      this();
-      set(value);
-   }
-   
-   public void set(int value) { this.value = BigInteger.valueOf(value); }
+                BigInteger newT = t.multiply(lValue);
+                BigInteger newR = oldQ.multiply(TWO).add(oldR).multiply(lValue);
 
-   public void mul(GmpInteger src, int val) { value = src.value.multiply(BigInteger.valueOf(val)); }
-   
-   public void add(GmpInteger op1, GmpInteger op2) { value = op1.value.add(op2.value); }
-   
-   public void div(GmpInteger op1, GmpInteger op2) { value = op1.value.divide(op2.value); }
-   
-   public int intValue() { return value.intValue(); }
-   
-   public double doubleValue() { return value.doubleValue(); }
+                digit = oldQ.multiply(kValue.multiply(SEVEN))
+                            .add(TWO)
+                            .add(oldR.multiply(lValue))
+                            .divide(newT)
+                            .intValue();
+
+                q = oldQ.multiply(kValue);
+                r = newR;
+                t = newT;
+                k++;
+                l += 2;
+            }
+        }
+
+        int remainder = limit % 10;
+        if (remainder != 0) {
+            for (int i = remainder; i < 10; i++) {
+                output.append(' ');
+            }
+            output.append('\t').append(':').append(limit).append('\n');
+        }
+
+        System.out.print(output);
+    }
 }
