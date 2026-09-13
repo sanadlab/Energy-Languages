@@ -32,7 +32,11 @@ INP = os.path.join(ROOT, "reference", "clbg", "inputs")
 ARG_CASES = {
     "n-body":         [10, 100, 500],
     "fannkuch-redux": [4, 6, 8],
-    "binary-trees":   [4, 8, 12],
+    # binary-trees is only well-defined for N >= minDepth+2 (=6): at smaller N
+    # the reference clamps maxDepth to 6, but many correct solutions use
+    # maxDepth=N directly, so an N<6 case fails them spuriously while N>=6 passes.
+    # Keep every case >= 6.
+    "binary-trees":   [6, 8, 12],
     "spectral-norm":  [10, 50, 200],
     "fasta":          [50, 250, 1000],
     "pidigits":       [8, 16, 28],
