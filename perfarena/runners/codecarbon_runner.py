@@ -37,8 +37,8 @@ try:
 except ImportError:
     EmissionsTracker = None  # type: ignore[assignment,misc]
 
-DEFAULT_WARMUP = 10
-DEFAULT_MEASURE = 20
+DEFAULT_WARMUP = 1
+DEFAULT_MEASURE = 7
 DEFAULT_IDLE_S = 5
 
 

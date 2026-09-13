@@ -43,8 +43,15 @@
 # so C# output is deterministic across hosts. Harmless for non-.NET languages.
 export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 1
 
-PERFARENA_WARMUP  ?= 10
-PERFARENA_MEASURE ?= 20
+# CLBG whole-program measurement uses discrete RUN COUNTS: N_WARMUP uncounted
+# runs then N_MEASURE counted runs of the whole program at the default ARG.
+# This is a DIFFERENT mechanism from the LeetCode per-op path, which loops the
+# solution's function call to a wall-time BUDGET (PERFARENA_BUDGET_S) split into
+# a warmup FRACTION and a measured fraction (no discrete run counts). The names
+# are *_RUNS here so the two are never conflated. Old names (PERFARENA_WARMUP /
+# PERFARENA_MEASURE) are still honoured if set, for back-compat.
+PERFARENA_CLBG_WARMUP_RUNS  ?= $(if $(PERFARENA_WARMUP),$(PERFARENA_WARMUP),1)
+PERFARENA_CLBG_MEASURE_RUNS ?= $(if $(PERFARENA_MEASURE),$(PERFARENA_MEASURE),7)
 PERFARENA_IDLE_S  ?= 5
 
 # Energy-measurement runner selection.
@@ -132,14 +139,14 @@ run:
 
 measure:
 ifeq ($(shell uname -s),Darwin)
-	$(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_WARMUP) $(PERFARENA_MEASURE) $(PERFARENA_IDLE_S)
+	$(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_CLBG_WARMUP_RUNS) $(PERFARENA_CLBG_MEASURE_RUNS) $(PERFARENA_IDLE_S)
 else
 	@if echo "$(PERFARENA_RUNNER)" | grep -q "perfarena_runner$$" && [ ! -x $(PERFARENA_RUNNER) ]; then \
 	    echo "perfarena.mk: $(PERFARENA_RUNNER) is missing; build RAPL/ first" >&2 ; \
 	    exit 1 ; \
 	fi
 	$(_MEASURE_SUDO) modprobe msr 2>/dev/null || true
-	$(_MEASURE_SUDO) $(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_WARMUP) $(PERFARENA_MEASURE) $(PERFARENA_IDLE_S)
+	$(_MEASURE_SUDO) $(PERFARENA_RUNNER) "$(_FULL_RUN_CMD)" $(LANG) $(TEST) $(PERFARENA_CLBG_WARMUP_RUNS) $(PERFARENA_CLBG_MEASURE_RUNS) $(PERFARENA_IDLE_S)
 endif
 
 mem:

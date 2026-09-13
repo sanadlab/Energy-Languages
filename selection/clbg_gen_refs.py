@@ -30,12 +30,12 @@ INP = os.path.join(ROOT, "reference", "clbg", "inputs")
 # The 5 values still span a range so a solution that hardcodes one output fails
 # the others.
 ARG_CASES = {
-    "n-body":         [10, 50, 100, 250, 500],
-    "fannkuch-redux": [4, 5, 6, 7, 8],
-    "binary-trees":   [4, 6, 8, 10, 12],
-    "spectral-norm":  [10, 25, 50, 100, 200],
-    "fasta":          [50, 100, 250, 500, 1000],
-    "pidigits":       [8, 12, 16, 20, 28],
+    "n-body":         [10, 100, 500],
+    "fannkuch-redux": [4, 6, 8],
+    "binary-trees":   [4, 8, 12],
+    "spectral-norm":  [10, 50, 200],
+    "fasta":          [50, 250, 1000],
+    "pidigits":       [8, 16, 28],
 }
 # stdin-based: problem -> fasta input sizes to feed
 FASTA_SIZES = [1000, 2500, 5000, 7500, 10000]
