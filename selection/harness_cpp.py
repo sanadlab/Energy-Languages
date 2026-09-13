@@ -105,7 +105,12 @@ def _norm(t):
     return t
 
 def _defines_struct(src, name):
-    return re.search(r'\b(struct|class)\s+' + re.escape(name) + r'\b', src) is not None
+    # Strip comments first: LeetCode's header comment carries the struct
+    # definition inside /** ... */, and matching it there suppresses the
+    # injection the build needs (same bug class as harness_c._defines).
+    src_nc = re.sub(r'/\*.*?\*/', '', src, flags=re.S)
+    src_nc = re.sub(r'//[^\n]*', '', src_nc)
+    return re.search(r'\b(struct|class)\s+' + re.escape(name) + r'\b', src_nc) is not None
 
 # marshaller: normalised-type -> (to_fn, )
 MARSHAL = {
@@ -127,6 +132,49 @@ def _marshal_for(raw):
     if 'ListNode' in raw: return 'to_list'
     return MARSHAL.get(_norm(raw))
 
+# Python starter-code type hint -> C++ type. The workload's `starter_code`
+# carries the canonical LeetCode signature (committed, ALWAYS present), so it is
+# the stable source for the method shape when a committed solution.cpp is absent
+# (9 of the 99 C++ cells have none — the tree/list/design problems). Without
+# this, analyze() read the per-submission solution.cpp and crashed with
+# FileNotFoundError, or parsed a STALE C++ solution left by an unrelated
+# submission and produced a wrong driver (the `^~` compile error seen for C /
+# Scala / Swift, which all reuse this analyze()).
+def _py_hint_to_cpp(h):
+    h = h.strip()
+    m = re.match(r'Optional\[(.+)\]$', h)
+    if m: h = m.group(1).strip()
+    m = re.match(r'List\[(.+)\]$', h)
+    if m: return "vector<%s>" % _py_hint_to_cpp(m.group(1))
+    if 'TreeNode' in h: return "TreeNode*"
+    if 'ListNode' in h: return "ListNode*"
+    return {"int": "int", "float": "double", "bool": "bool", "str": "string",
+            "None": "void"}.get(h, h)
+
+def _cpp_stub_from_starter(slug, method):
+    """Synthesize a C++ `class Solution { <ret> <method>(<params>){} };` from the
+    workload's Python starter_code, so the existing signature parser can read a
+    stable shape without a committed solution.cpp. Returns None if the starter
+    lacks the method signature."""
+    wl = json.load(open(os.path.join(REF, "workloads", slug + ".json")))
+    sc = wl.get("starter_code", "") or ""
+    m = re.search(r'def\s+' + re.escape(method) + r'\s*\(\s*self\s*,?(.*?)\)\s*->\s*([^\n:]+)',
+                  sc, re.S)
+    if not m:
+        return None
+    ret = _py_hint_to_cpp(m.group(2))
+    params = []
+    for p in _split_params(m.group(1)):
+        p = p.split('=')[0].strip()
+        if not p or p == "self":
+            continue
+        name, _, hint = p.partition(':')
+        params.append("%s %s" % (_py_hint_to_cpp(hint) if hint else "int", name.strip()))
+    return "%s%sclass Solution { public: %s %s(%s){ %s } };" % (
+        STD_TREENODE, STD_LISTNODE, ret, method, ", ".join(params),
+        "" if ret == "void" else "return {};")
+
+
 def analyze(slug):
     """-> dict(kind=, method=, ...) ; kind in plain/tree/list/design/unsupported.
 
@@ -140,7 +188,17 @@ def analyze(slug):
     keys = list(inp.keys()) if isinstance(inp, dict) else []
     if isinstance(inp, dict) and "ops" in inp and "args" in inp:
         return dict(kind="design", method=method)
-    src = open(os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")).read()
+    # Prefer the committed solution.cpp; fall back to the starter-code stub when
+    # the cell has none (so the shape is derived from a STABLE, committed source
+    # rather than a missing/stale per-submission file — see _cpp_stub_from_starter).
+    sol_path = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
+    if os.path.exists(sol_path):
+        src = open(sol_path).read()
+    else:
+        src = _cpp_stub_from_starter(slug, method)
+        if not src:
+            return dict(kind="unsupported", method=method,
+                        reason="no solution.cpp and no parseable starter_code signature")
     ret, params = _method_sig(src, method)
     kind = "tree" if "root" in keys else ("list" if "head" in keys else None)
     if ret is None:

@@ -22,14 +22,20 @@ PY = os.path.join(ROOT, "Python", "clbg")   # memory-safe reference for stdin pr
 OUT = os.path.join(ROOT, "reference", "clbg", "outputs")
 INP = os.path.join(ROOT, "reference", "clbg", "inputs")
 
-# arg-based: problem -> 5 small, fast, deterministic N values
+# arg-based: problem -> 5 small, fast, deterministic N values.
+# Kept intentionally LIGHT: correctness is an exact-output diff, so a small N
+# discriminates a wrong solution just as well as a large one, and a small N
+# validates a slow-but-correct model solution quickly instead of timing out.
+# (Measurement uses the Makefile ARG at full size — these affect VALIDATION only.)
+# The 5 values still span a range so a solution that hardcodes one output fails
+# the others.
 ARG_CASES = {
-    "n-body":         [100, 500, 1000, 2000, 5000],
-    "fannkuch-redux": [5, 6, 7, 8, 9],
-    "binary-trees":   [6, 8, 10, 12, 14],
-    "spectral-norm":  [50, 100, 200, 500, 1000],
-    "fasta":          [100, 500, 1000, 2500, 5000],
-    "pidigits":       [10, 20, 27, 30, 40],
+    "n-body":         [10, 50, 100, 250, 500],
+    "fannkuch-redux": [4, 5, 6, 7, 8],
+    "binary-trees":   [4, 6, 8, 10, 12],
+    "spectral-norm":  [10, 25, 50, 100, 200],
+    "fasta":          [50, 100, 250, 500, 1000],
+    "pidigits":       [8, 12, 16, 20, 28],
 }
 # stdin-based: problem -> fasta input sizes to feed
 FASTA_SIZES = [1000, 2500, 5000, 7500, 10000]

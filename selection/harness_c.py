@@ -479,7 +479,13 @@ def _compile_solution_o(slug, info, tmp):
             j += 1
         src = src[:mm.start()] + src[j + 1:]
     def _defines(name):                    # a DEFINITION `struct X {`, not a reference
-        return _re.search(r'struct\s+' + name + r'\s*\{', src) is not None
+        # Strip comments first: models reproduce LeetCode's header comment,
+        # which contains the struct definition INSIDE /** ... */ — matching
+        # it there skips the injection and the build dies with
+        # "incomplete definition of type 'struct X'".
+        src_nc = _re.sub(r'/\*.*?\*/', '', src, flags=_re.S)
+        src_nc = _re.sub(r'//[^\n]*', '', src_nc)
+        return _re.search(r'struct\s+' + name + r'\s*\{', src_nc) is not None
     if info["kind"] == "design":           # any node type across ctor/method params
         allt = list(info["design"][1]) + [t for _o, _r, mn in info["design"][2] for t in mn]
     else:
@@ -497,7 +503,9 @@ def _compile_solution_o(slug, info, tmp):
     cc = subprocess.run(["gcc", "-O2", "-std=c11", "-w", "-c", cpath, "-o", obj],
                         capture_output=True, text=True)
     if cc.returncode != 0:
-        return None, (cc.stderr.strip().splitlines()[-1] if cc.stderr else "gcc failed")
+        lines = cc.stderr.strip().splitlines() if cc.stderr else []
+        err = next((l for l in lines if "error:" in l), lines[-1] if lines else "gcc failed")
+        return None, err
     return obj, None
 
 

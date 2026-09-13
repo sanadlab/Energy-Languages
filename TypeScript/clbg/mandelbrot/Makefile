@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = mandelbrot
 SOURCE      = mandelbrot.ts
 OUTPUT      = mandelbrot.js
-ARG         = 16000
+ARG         = 7000
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc
