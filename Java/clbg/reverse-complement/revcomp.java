@@ -1,9 +1,8 @@
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-class revcomp {
+public class revcomp {
     private static final byte[] COMPLEMENT = new byte[256];
 
     static {
@@ -11,45 +10,92 @@ class revcomp {
             COMPLEMENT[i] = (byte) i;
         }
 
-        String bases = "ACBDGHKMNSRUTWVYacbdghkmnsrutwvy";
-        String complements = "TGVHCDMKNSYAAWBRTGVHCDMKNSYAAWBR";
-
+        String bases = "ACGTUMRWSYKVHDBN";
+        String complements = "TGCAAKYWSRMBDHVN";
         for (int i = 0; i < bases.length(); i++) {
-            COMPLEMENT[bases.charAt(i)] = (byte) complements.charAt(i);
+            char base = bases.charAt(i);
+            byte complement = (byte) complements.charAt(i);
+            COMPLEMENT[base] = complement;
+            COMPLEMENT[Character.toLowerCase(base)] = complement;
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    private static void reverseComplement(byte[] data, int start, int end) {
+        int left = start;
+        int right = end - 1;
+
+        while (left <= right) {
+            byte a = data[left];
+            if (a == '\n' || a == '\r') {
+                left++;
+                continue;
+            }
+
+            byte b = data[right];
+            if (b == '\n' || b == '\r') {
+                right--;
+                continue;
+            }
+
+            data[left++] = COMPLEMENT[b & 255];
+            data[right--] = COMPLEMENT[a & 255];
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
         int n = Integer.parseInt(args[0]);
 
-        byte[] data = readAll(System.in);
-        int length = data.length;
+        InputStream input = System.in;
+        byte[] data = new byte[65536];
+        int length = 0;
+
+        while (true) {
+            if (length == data.length) {
+                int capacity = data.length <= (Integer.MAX_VALUE - 8) / 2
+                        ? data.length * 2
+                        : Integer.MAX_VALUE - 8;
+                if (capacity <= data.length) {
+                    throw new OutOfMemoryError("FASTA input is too large");
+                }
+                data = Arrays.copyOf(data, capacity);
+            }
+
+            int count = input.read(data, length, data.length - length);
+            if (count < 0) {
+                break;
+            }
+            length += count;
+        }
+
         int sequenceStart = -1;
+        int position = 0;
+        boolean lineStart = true;
 
-        for (int i = 0; i < length; ) {
-            boolean lineStart = i == 0 || data[i - 1] == '\n' || data[i - 1] == '\r';
+        while (position < length) {
+            byte current = data[position];
 
-            if (lineStart && data[i] == '>') {
+            if (lineStart && current == '>') {
                 if (sequenceStart >= 0) {
-                    reverseComplement(data, sequenceStart, i);
+                    reverseComplement(data, sequenceStart, position);
                 }
 
-                while (i < length && data[i] != '\n' && data[i] != '\r') {
-                    i++;
+                while (position < length
+                        && data[position] != '\n'
+                        && data[position] != '\r') {
+                    position++;
+                }
+                if (position < length && data[position] == '\r') {
+                    position++;
+                }
+                if (position < length && data[position] == '\n') {
+                    position++;
                 }
 
-                if (i < length && data[i] == '\r') {
-                    i++;
-                    if (i < length && data[i] == '\n') {
-                        i++;
-                    }
-                } else if (i < length) {
-                    i++;
-                }
-
-                sequenceStart = i;
+                sequenceStart = position;
+                lineStart = true;
             } else {
-                i++;
+                lineStart = current == '\n' || current == '\r';
+                position++;
             }
         }
 
@@ -57,67 +103,8 @@ class revcomp {
             reverseComplement(data, sequenceStart, length);
         }
 
-        OutputStream out = System.out;
-        out.write(data, 0, length);
-        out.flush();
-    }
-
-    private static void reverseComplement(byte[] data, int left, int rightExclusive) {
-        int right = rightExclusive - 1;
-
-        while (left <= right) {
-            while (left <= right && isLineBreak(data[left])) {
-                left++;
-            }
-            while (left <= right && isLineBreak(data[right])) {
-                right--;
-            }
-
-            if (left > right) {
-                break;
-            }
-
-            byte a = data[left];
-            byte b = data[right];
-            data[left] = COMPLEMENT[b & 0xFF];
-            data[right] = COMPLEMENT[a & 0xFF];
-
-            left++;
-            right--;
-        }
-    }
-
-    private static boolean isLineBreak(byte value) {
-        return value == '\n' || value == '\r';
-    }
-
-    private static byte[] readAll(InputStream in) throws IOException {
-        byte[] buffer = new byte[1 << 20];
-        int length = 0;
-
-        while (true) {
-            if (length == buffer.length) {
-                buffer = Arrays.copyOf(buffer, buffer.length << 1);
-            }
-
-            int count = in.read(buffer, length, buffer.length - length);
-            if (count < 0) {
-                break;
-            }
-            if (count == 0) {
-                int value = in.read();
-                if (value < 0) {
-                    break;
-                }
-                if (length == buffer.length) {
-                    buffer = Arrays.copyOf(buffer, buffer.length << 1);
-                }
-                buffer[length++] = (byte) value;
-            } else {
-                length += count;
-            }
-        }
-
-        return length == buffer.length ? buffer : Arrays.copyOf(buffer, length);
+        OutputStream output = System.out;
+        output.write(data, 0, length);
+        output.flush();
     }
 }

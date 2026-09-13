@@ -1,103 +1,98 @@
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class mandelbrot {
-    private static int size;
-    private static int bytesPerRow;
-    private static byte[] image;
-    private static double[] realCoordinates;
-    private static final AtomicInteger nextRow = new AtomicInteger();
+public class mandelbrot {
+    private static void renderRow(
+            double[] real, double imaginary, byte[] image,
+            int offset, int rowBytes, int n) {
 
-    private static boolean isBounded(double cr, double ci) {
-        double ci2 = ci * ci;
+        for (int bx = 0; bx < rowBytes; bx++) {
+            int bits = 0;
+            int base = bx << 3;
 
-        // Main cardioid.
-        double x = cr - 0.25;
-        double q = x * x + ci2;
-        if (q * (q + x) <= 0.25 * ci2) {
-            return true;
-        }
+            for (int pair = 0; pair < 8; pair += 2) {
+                double cr0 = real[base + pair];
+                double cr1 = real[base + pair + 1];
 
-        // Period-2 bulb.
-        double bulbX = cr + 1.0;
-        if (bulbX * bulbX + ci2 <= 0.0625) {
-            return true;
-        }
+                double zr0 = 0.0, zi0 = 0.0;
+                double zr1 = 0.0, zi1 = 0.0;
+                double rr0 = 0.0, ii0 = 0.0;
+                double rr1 = 0.0, ii1 = 0.0;
+                int escaped = 0;
 
-        double zr = 0.0;
-        double zi = 0.0;
-        double zr2 = 0.0;
-        double zi2 = 0.0;
+                for (int iteration = 0; iteration < 50; iteration++) {
+                    zi0 = 2.0 * zr0 * zi0 + imaginary;
+                    zr0 = rr0 - ii0 + cr0;
+                    zi1 = 2.0 * zr1 * zi1 + imaginary;
+                    zr1 = rr1 - ii1 + cr1;
 
-        for (int i = 0; i < 50; i++) {
-            zi = 2.0 * zr * zi + ci;
-            zr = zr2 - zi2 + cr;
-            zr2 = zr * zr;
-            zi2 = zi * zi;
+                    rr0 = zr0 * zr0;
+                    ii0 = zi0 * zi0;
+                    rr1 = zr1 * zr1;
+                    ii1 = zi1 * zi1;
 
-            if (zr2 + zi2 > 4.0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void computeRows() {
-        int y;
-        while ((y = nextRow.getAndIncrement()) < size) {
-            double ci = (2.0 * y / size) - 1.0;
-            int rowOffset = y * bytesPerRow;
-            int x = 0;
-
-            for (int columnByte = 0; columnByte < bytesPerRow; columnByte++) {
-                int bits = 0;
-                int count = Math.min(8, size - x);
-
-                for (int bit = 0; bit < count; bit++, x++) {
-                    bits <<= 1;
-                    if (isBounded(realCoordinates[x], ci)) {
-                        bits |= 1;
+                    if (rr0 + ii0 > 4.0) {
+                        escaped |= 2;
+                    }
+                    if (rr1 + ii1 > 4.0) {
+                        escaped |= 1;
+                    }
+                    if (escaped == 3) {
+                        break;
                     }
                 }
 
-                bits <<= 8 - count;
-                image[rowOffset + columnByte] = (byte) bits;
+                bits = (bits << 2) | (escaped ^ 3);
             }
+
+            image[offset + bx] = (byte) bits;
+        }
+
+        int remaining = n & 7;
+        if (remaining != 0) {
+            image[offset + rowBytes - 1] &= (byte) (0xFF << (8 - remaining));
         }
     }
 
     public static void main(String[] args) throws Exception {
-        size = Integer.parseInt(args[0]);
-        bytesPerRow = (size + 7) >>> 3;
-        image = new byte[size * bytesPerRow];
-        realCoordinates = new double[size];
+        final int n = Integer.parseInt(args[0]);
+        final int rowBytes = (n >>> 3) + ((n & 7) == 0 ? 0 : 1);
+        final byte[] image = new byte[Math.multiplyExact(n, rowBytes)];
+        final double[] real = new double[Math.multiplyExact(rowBytes, 8)];
 
-        for (int x = 0; x < size; x++) {
-            realCoordinates[x] = (2.0 * x / size) - 1.5;
+        for (int x = 0; x < n; x++) {
+            real[x] = 2.0 * x / n - 1.5;
         }
 
-        int processors = Runtime.getRuntime().availableProcessors();
-        int threadCount = Math.min(processors, Math.max(1, size / 16));
-        threadCount = Math.min(threadCount, 64);
+        final AtomicInteger nextRow = new AtomicInteger();
+        final Runnable render = () -> {
+            int first;
+            while ((first = nextRow.getAndAdd(4)) < n) {
+                int end = Math.min(first + 4, n);
+                for (int y = first; y < end; y++) {
+                    double imaginary = 2.0 * y / n - 1.0;
+                    renderRow(real, imaginary, image, y * rowBytes, rowBytes, n);
+                }
+            }
+        };
 
-        Thread[] workers = new Thread[threadCount - 1];
+        int workerCount = Math.min(n, Runtime.getRuntime().availableProcessors());
+        Thread[] workers = new Thread[workerCount - 1];
+
         for (int i = 0; i < workers.length; i++) {
-            workers[i] = new Thread(mandelbrot::computeRows);
+            workers[i] = new Thread(render);
             workers[i].start();
         }
 
-        computeRows();
+        render.run();
 
         for (Thread worker : workers) {
             worker.join();
         }
 
-        BufferedOutputStream out = new BufferedOutputStream(System.out, 1 << 20);
-        byte[] header = ("P4\n" + size + " " + size + "\n")
-                .getBytes(StandardCharsets.US_ASCII);
-        out.write(header);
+        BufferedOutputStream out = new BufferedOutputStream(System.out, 65536);
+        out.write(("P4\n" + n + " " + n + "\n").getBytes(StandardCharsets.US_ASCII));
         out.write(image);
         out.flush();
     }

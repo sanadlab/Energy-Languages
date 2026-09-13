@@ -1,11 +1,15 @@
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class regexredux {
-    private static final String[] VARIANT_STRINGS = {
+public class regexredux {
+    private static final String[] VARIANTS = {
         "agggtaaa|tttaccct",
         "[cgt]gggtaaa|tttaccc[acg]",
         "a[act]ggtaaa|tttacc[agt]t",
@@ -13,113 +17,75 @@ class regexredux {
         "agg[act]taaa|ttta[agt]cct",
         "aggg[acg]aaa|ttt[cgt]ccct",
         "agggt[cgt]aa|tt[acg]accct",
-        "agggta[cgt]a|t[acg]taccct",
-        "agggtaa[cgt]|[acg]ttaccct"
+        "agggta[cgt]a|t[acg]taccct"
     };
 
-    private static final Pattern[] VARIANTS = new Pattern[VARIANT_STRINGS.length];
-
-    private static final Pattern[] SUBSTITUTION_PATTERNS = {
-        Pattern.compile("tHa[Nt]"),
-        Pattern.compile("aND|caN|Ha[DS]|WaS"),
-        Pattern.compile("a[NSt]|BY"),
-        Pattern.compile("<[^>]*>"),
-        Pattern.compile("\\|[^|][^|]*\\|")
+    private static final String[] SUBSTITUTIONS = {
+        "tHa[Nt]",
+        "aND|caN|Ha[DS]|WaS",
+        "a[NSt]|BY",
+        "<[^>]*>",
+        "\\|[^|][^|]*\\|"
     };
 
     private static final String[] REPLACEMENTS = {
-        "<4>",
-        "<3>",
-        "<2>",
-        "|",
-        "-"
+        "<4>", "<3>", "<2>", "|", "-"
     };
 
-    static {
-        for (int i = 0; i < VARIANT_STRINGS.length; i++) {
-            VARIANTS[i] = Pattern.compile(VARIANT_STRINGS[i]);
-        }
+    private static String readInput() throws IOException {
+        return new String(System.in.readAllBytes(), StandardCharsets.ISO_8859_1);
     }
 
     public static void main(String[] args) throws Exception {
-        Integer.parseInt(args[0]);
+        int n = Integer.parseInt(args[0]);
 
-        byte[] input = readAllInput();
-        int originalLength = input.length;
-        int strippedLength = stripFastaInPlace(input);
+        String input = readInput();
+        int originalLength = input.length();
 
-        String sequence = new String(
-            input, 0, strippedLength, StandardCharsets.ISO_8859_1
-        );
+        final String sequence = Pattern.compile(">[^\\n]*\\n|\\n")
+                .matcher(input)
+                .replaceAll("");
+        int strippedLength = sequence.length();
+        input = null;
 
-        StringBuilder output = new StringBuilder(512);
+        int workers = Math.max(1, Math.min(
+                VARIANTS.length, Runtime.getRuntime().availableProcessors()));
+        ExecutorService executor = Executors.newFixedThreadPool(workers);
 
-        for (int i = 0; i < VARIANTS.length; i++) {
-            Matcher matcher = VARIANTS[i].matcher(sequence);
-            long count = 0;
-            while (matcher.find()) {
-                count++;
+        try {
+            List<Future<Integer>> counts = new ArrayList<>(VARIANTS.length);
+
+            for (String variant : VARIANTS) {
+                counts.add(executor.submit(() -> {
+                    Matcher matcher = Pattern.compile(variant).matcher(sequence);
+                    int count = 0;
+                    while (matcher.find()) {
+                        count++;
+                    }
+                    return count;
+                }));
             }
 
-            output.append(VARIANT_STRINGS[i])
-                  .append(' ')
-                  .append(count)
-                  .append('\n');
-        }
-
-        String substituted = sequence;
-        for (int i = 0; i < SUBSTITUTION_PATTERNS.length; i++) {
-            substituted = SUBSTITUTION_PATTERNS[i]
-                .matcher(substituted)
-                .replaceAll(REPLACEMENTS[i]);
-        }
-
-        output.append('\n')
-              .append(originalLength).append('\n')
-              .append(strippedLength).append('\n')
-              .append(substituted.length()).append('\n');
-
-        System.out.print(output);
-    }
-
-    private static byte[] readAllInput() throws IOException {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(1 << 20);
-        byte[] block = new byte[1 << 16];
-        int count;
-
-        while ((count = System.in.read(block)) != -1) {
-            buffer.write(block, 0, count);
-        }
-
-        return buffer.toByteArray();
-    }
-
-    private static int stripFastaInPlace(byte[] data) {
-        int write = 0;
-        boolean atLineStart = true;
-        boolean inHeader = false;
-
-        for (byte value : data) {
-            int c = value & 0xff;
-
-            if (inHeader) {
-                if (c == '\n' || c == '\r') {
-                    inHeader = false;
-                    atLineStart = true;
-                }
-                continue;
+            String encoded = sequence;
+            for (int i = 0; i < SUBSTITUTIONS.length; i++) {
+                encoded = Pattern.compile(SUBSTITUTIONS[i])
+                        .matcher(encoded)
+                        .replaceAll(REPLACEMENTS[i]);
             }
 
-            if (c == '\n' || c == '\r') {
-                atLineStart = true;
-            } else if (atLineStart && c == '>') {
-                inHeader = true;
-            } else {
-                data[write++] = value;
-                atLineStart = false;
+            StringBuilder output = new StringBuilder(512);
+            for (int i = 0; i < VARIANTS.length; i++) {
+                output.append(VARIANTS[i]).append(' ')
+                        .append(counts.get(i).get()).append('\n');
             }
-        }
 
-        return write;
+            output.append(originalLength).append('\n')
+                    .append(strippedLength).append('\n')
+                    .append(encoded.length()).append('\n');
+
+            System.out.print(output);
+        } finally {
+            executor.shutdown();
+        }
     }
 }
