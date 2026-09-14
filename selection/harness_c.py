@@ -500,7 +500,7 @@ def _compile_solution_o(slug, info, tmp):
     cpath = os.path.join(tmp, "solution.c")
     open(cpath, "w").write(C_STD_PRELUDE + inject + src)
     obj = os.path.join(tmp, "solution.o")
-    cc = subprocess.run(["gcc", "-O2", "-std=c11", "-w", "-c", cpath, "-o", obj],
+    cc = subprocess.run(["gcc", *cpp.compile_flags(["-O2", "-std=c11", "-w"]), "-c", cpath, "-o", obj],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         lines = cc.stderr.strip().splitlines() if cc.stderr else []
@@ -523,7 +523,7 @@ def _build(slug, mode):
         src = gen_validate(slug, info) if mode == "validate" else gen_measure(slug, info)
     cpp_path = os.path.join(tmp, "driver.cpp"); binp = os.path.join(tmp, "driver")
     open(cpp_path, "w").write(src)
-    cc = subprocess.run(["g++", "-O2", "-std=c++17", cpp_path, obj, "-o", binp],
+    cc = subprocess.run(["g++", *cpp.compile_flags(["-O2", "-std=c++17"]), cpp_path, obj, "-o", binp],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         return None, info, "driver link: " + (cc.stderr.strip().splitlines()[-1] if cc.stderr else "")

@@ -536,7 +536,7 @@ def _build(slug, mode):
     open(driver, "w").write(inject + src)
     soltmp = os.path.join(tmp, "solution.swift"); open(soltmp, "w").write(sol)
     binp = os.path.join(tmp, "driver")
-    cc = subprocess.run(["swiftc", "-O", driver, soltmp, "-o", binp],
+    cc = subprocess.run(["swiftc", *cpp.compile_flags(["-O"]), driver, soltmp, "-o", binp],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         # surface the first real "error:" line, not swiftc's source-context tail

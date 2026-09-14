@@ -29,6 +29,16 @@ import json, os, re, subprocess, sys, tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REF  = os.path.join(ROOT, "reference", "leetcode")
 
+
+def compile_flags(default):
+    """Per-run compilation flags. The env var `PERFARENA_COMPILE_FLAGS` (set by
+    the runner from the submission's `compile_flags`) FULLY REPLACES the given
+    `default` list when non-empty — so a custom value must include any language
+    essentials it needs (e.g. `-std=c++17`). Empty => the default (unchanged
+    legacy behaviour). Shared by the C / Swift / Scala harnesses too."""
+    custom = os.environ.get("PERFARENA_COMPILE_FLAGS", "").split()
+    return custom if custom else list(default)
+
 # Problems LeetCode judges order-insensitively (special judge): multiset compare.
 _UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
               "restore-the-array-from-adjacent-pairs"}
@@ -870,7 +880,7 @@ def build_and_validate(slug, keep=False):
     tmp = tempfile.mkdtemp(prefix="hz_cppv_")
     cpp = os.path.join(tmp, "driver.cpp"); binp = os.path.join(tmp, "driver")
     open(cpp, "w").write(src)
-    cc = subprocess.run(["g++", "-O2", "-std=c++17", cpp, "-o", binp],
+    cc = subprocess.run(["g++", *compile_flags(["-O2", "-std=c++17"]), cpp, "-o", binp],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         sys.stderr.write("VALIDATE slug=%s ERROR compile: %s\n" %
@@ -906,7 +916,7 @@ def build_and_run(slug, budget, idx, keep=False):
     cpp = os.path.join(tmp, "driver.cpp")
     binp = os.path.join(tmp, "driver")
     open(cpp, "w").write(src)
-    cc = subprocess.run(["g++", "-O2", "-std=c++17", cpp, "-o", binp],
+    cc = subprocess.run(["g++", *compile_flags(["-O2", "-std=c++17"]), cpp, "-o", binp],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         if keep: print(src[:400], file=sys.stderr)

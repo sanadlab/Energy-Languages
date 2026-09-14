@@ -1098,7 +1098,7 @@ def run_validate(cell, slug, ref):
     with open(src_path, "w") as f:
         f.write(combined)
     try:
-        cp = subprocess.run([RUSTC, "-O", src_path, "-o", bin_path],
+        cp = subprocess.run([RUSTC, *(os.environ.get("PERFARENA_COMPILE_FLAGS","").split() or ["-O"]), src_path, "-o", bin_path],
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if cp.returncode != 0:
             last = cp.stderr.strip().splitlines()[-1] if cp.stderr else ""

@@ -115,6 +115,22 @@ _MEASURE_SUDO := $(if $(findstring perfarena_runner,$(PERFARENA_RUNNER)),sudo,)
 CC  ?= gcc
 CXX ?= g++
 
+# Per-run compilation flags. `PERFARENA_COMPILE_FLAGS` (an env var set by the
+# runner from the submission's `compile_flags`) OVERRIDES the cell/language
+# default when non-empty; empty => each cell keeps its own default (`CXXFLAGS ?=
+# -O3 …`, cargo release profile, etc.), so legacy behaviour is unchanged. This
+# runs AFTER the cell set its own vars (cells `include` this file last), so the
+# `:=` assignments win. Raw per-language flags: the value must be valid for that
+# language's tool (g++ flags for C/C++, rustc flags for cargo RUSTFLAGS, go
+# flags for GOFLAGS). Clearing the env var (the invalid-flag fallback) reverts
+# every language to its default in one shot.
+ifneq ($(strip $(PERFARENA_COMPILE_FLAGS)),)
+  CXXFLAGS := $(PERFARENA_COMPILE_FLAGS)
+  CFLAGS   := $(PERFARENA_COMPILE_FLAGS)
+  export RUSTFLAGS := $(PERFARENA_COMPILE_FLAGS)
+  export GOFLAGS   := $(PERFARENA_COMPILE_FLAGS)
+endif
+
 VALIDATION_N       ?=
 REFERENCE_OUTPUT   ?=
 BINARY_OUTPUT      ?= 0

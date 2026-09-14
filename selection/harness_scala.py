@@ -560,7 +560,7 @@ def _build(slug, mode):
     driver = os.path.join(tmp, "Main.scala"); open(driver, "w").write(inject + src)
     soltmp = os.path.join(tmp, "solution.scala"); open(soltmp, "w").write(sol)
     outd = os.path.join(tmp, "out"); os.makedirs(outd)
-    cc = subprocess.run(["scalac", "-d", outd, soltmp, driver],
+    cc = subprocess.run(["scalac", *cpp.compile_flags([]), "-d", outd, soltmp, driver],
                         capture_output=True, text=True, timeout=300)
     if cc.returncode != 0:
         errs = [l for l in (cc.stderr or "").splitlines() if "error" in l.lower()]
