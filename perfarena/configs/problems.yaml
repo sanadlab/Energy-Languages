@@ -169,7 +169,7 @@ problems:
     name: "regex-redux"
     description: >-
       Read a FASTA-formatted DNA sequence from stdin, strip the
-      FASTA headers and newlines, count occurrences of eight
+      FASTA headers and newlines, count occurrences of nine
       specific IUPAC regex patterns on the stripped sequence, then
       apply a series of regex substitutions to produce an
       "IUPAC-encoded" sequence and report the original and
@@ -178,7 +178,7 @@ problems:
     output_spec: |
       <pattern_1> <count>
       ...
-      <pattern_8> <count>
+      <pattern_9> <count>
       <original length>
       <stripped length>
       <post-substitution length>
