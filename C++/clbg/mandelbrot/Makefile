@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = mandelbrot
 SOURCE  = mandelbrot.portable.cpp
 OUTPUT  = mandelbrot.gpp_run
-ARG         = 7000
+ARG         = 3500
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

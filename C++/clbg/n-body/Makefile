@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = n-body
 SOURCE  = nbody.portable.cpp
 OUTPUT  = n-body.gpp_run
-ARG         = 50000000
+ARG         = 15000000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

@@ -2,7 +2,7 @@ LANG        = PHP
 TEST        = spectral-norm
 SOURCE      = spectralnorm.php
 OUTPUT      = spectral-norm.php
-ARG         = 5500
+ARG         = 4000
 RUN_CMD     = php -n -d memory_limit=2G $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

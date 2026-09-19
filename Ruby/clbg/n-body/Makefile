@@ -2,7 +2,7 @@ LANG        = Ruby
 TEST        = n-body
 SOURCE      = nbody.yarv-2.yarv
 OUTPUT      = n-body.rb
-ARG         = 50000000
+ARG         = 15000000
 RUN_CMD     = ruby $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

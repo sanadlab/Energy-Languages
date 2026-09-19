@@ -2,7 +2,7 @@ LANG        = JavaScript
 TEST        = binary-trees
 SOURCE      = binarytrees.node
 OUTPUT      = binary-trees.js
-ARG         = 19
+ARG         = 18
 RUN_CMD     = node --use_strict $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

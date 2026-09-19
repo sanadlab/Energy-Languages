@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = fannkuch-redux
 SOURCE  = fannkuchredux.rs
 OUTPUT  = fannkuch-redux.rust_run
-ARG         = 12
+ARG         = 11
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc

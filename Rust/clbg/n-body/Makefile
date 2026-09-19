@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = n-body
 SOURCE  = nbody.rs
 OUTPUT  = n-body.rust_run
-ARG         = 50000000
+ARG         = 15000000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc

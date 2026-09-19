@@ -2,7 +2,7 @@ LANG        = Ruby
 TEST        = spectral-norm
 SOURCE      = spectralnorm.yarv-5.yarv
 OUTPUT      = spectral-norm.rb
-ARG         = 5500
+ARG         = 4000
 RUN_CMD     = ruby $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

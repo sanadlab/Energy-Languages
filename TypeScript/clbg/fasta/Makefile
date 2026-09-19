@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = fasta
 SOURCE      = fasta.ts
 OUTPUT      = fasta.js
-ARG         = 25000000
+ARG         = 12000000
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc

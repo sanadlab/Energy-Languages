@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = fannkuch-redux
 SOURCE  = fannkuchredux.gpp-5.c++
 OUTPUT  = fannkuch-redux.gpp_run
-ARG         = 12
+ARG         = 11
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

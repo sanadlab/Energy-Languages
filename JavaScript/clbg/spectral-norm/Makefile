@@ -2,7 +2,7 @@ LANG        = JavaScript
 TEST        = spectral-norm
 SOURCE      = spectralnorm.node-2.node
 OUTPUT      = spectral-norm.js
-ARG         = 5500
+ARG         = 4000
 RUN_CMD     = node --use_strict $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

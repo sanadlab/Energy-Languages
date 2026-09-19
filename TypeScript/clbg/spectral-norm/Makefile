@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = spectral-norm
 SOURCE      = spectralnorm.ts
 OUTPUT      = spectral-norm.js
-ARG         = 5500
+ARG         = 4000
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc

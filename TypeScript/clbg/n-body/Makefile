@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = n-body
 SOURCE      = nbody.typescript-3.ts
 OUTPUT      = n-body.js
-ARG         = 50000000
+ARG         = 15000000
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc

@@ -2,7 +2,7 @@ LANG        = TypeScript
 TEST        = fannkuch-redux
 SOURCE      = fannkuchredux.ts
 OUTPUT      = fannkuch-redux.js
-ARG         = 12
+ARG         = 11
 RUN_CMD     = node $(OUTPUT) $(ARG)
 
 TSC ?= npx --yes -p typescript@5.9.3 tsc

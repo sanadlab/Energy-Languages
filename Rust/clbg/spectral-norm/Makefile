@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = spectral-norm
 SOURCE  = spectralnorm.rs
 OUTPUT  = spectral-norm.rust_run
-ARG         = 5500
+ARG         = 4000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc

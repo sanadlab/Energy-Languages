@@ -2,7 +2,7 @@ LANG        = Ruby
 TEST        = mandelbrot
 SOURCE      = mandelbrot.yarv-5.yarv
 OUTPUT      = mandelbrot.rb
-ARG         = 7000
+ARG         = 3500
 RUN_CMD     = ruby $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 

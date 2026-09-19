@@ -2,7 +2,7 @@ LANG    = Go
 TEST    = fannkuch-redux
 SOURCE  = fannkuchredux.go
 OUTPUT  = fannkuch-redux.go_run
-ARG         = 12
+ARG         = 11
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 COMPILE_CMD = go build -o $(OUTPUT) $(SOURCE)

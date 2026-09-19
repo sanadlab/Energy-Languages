@@ -2,7 +2,7 @@ LANG    = CSharp
 TEST    = binary-trees
 SOURCE  = Program.cs
 OUTPUT  = bin/Release/binary-trees
-ARG         = 19
+ARG         = 18
 RUN_CMD = dotnet run --configuration Release -- $(ARG)
 
 COMPILE_CMD = dotnet build --configuration Release --nologo

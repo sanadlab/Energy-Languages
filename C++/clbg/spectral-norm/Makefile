@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = spectral-norm
 SOURCE  = spectralnorm.portable.cpp
 OUTPUT  = spectral-norm.gpp_run
-ARG         = 5500
+ARG         = 4000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

@@ -2,7 +2,7 @@ LANG    = Java
 TEST    = binary-trees
 SOURCE  = binarytrees.java-7.java
 OUTPUT  = binarytrees.class
-ARG         = 19
+ARG         = 18
 RUN_CMD = java binarytrees $(ARG)
 
 JAVAC ?= javac

@@ -2,7 +2,7 @@ LANG    = Java
 TEST    = mandelbrot
 SOURCE  = mandelbrot.java-2.java
 OUTPUT  = mandelbrot.class
-ARG         = 7000
+ARG         = 3500
 RUN_CMD = java mandelbrot $(ARG)
 
 JAVAC ?= javac

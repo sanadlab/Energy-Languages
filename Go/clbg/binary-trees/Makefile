@@ -2,7 +2,7 @@ LANG    = Go
 TEST    = binary-trees
 SOURCE  = binarytrees.go-2.go
 OUTPUT  = binary-trees.go_run
-ARG         = 19
+ARG         = 18
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 COMPILE_CMD = go build -o $(OUTPUT) $(SOURCE)

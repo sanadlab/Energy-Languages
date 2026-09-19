@@ -2,7 +2,7 @@ LANG    = Java
 TEST    = fannkuch-redux
 SOURCE  = fannkuchredux.java
 OUTPUT  = fannkuchredux.class
-ARG         = 12
+ARG         = 11
 RUN_CMD = java fannkuchredux $(ARG)
 
 JAVAC ?= javac

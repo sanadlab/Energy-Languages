@@ -2,7 +2,7 @@ LANG    = C++
 TEST    = fasta
 SOURCE  = fasta.gpp-5.c++
 OUTPUT  = fasta.gpp_run
-ARG         = 25000000
+ARG         = 12000000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 CXXFLAGS ?= -O3 -fomit-frame-pointer -std=c++17

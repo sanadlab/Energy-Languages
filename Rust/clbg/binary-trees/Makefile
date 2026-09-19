@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = binary-trees
 SOURCE  = binarytrees.rs
 OUTPUT  = binary-trees.rust_run
-ARG         = 19
+ARG         = 18
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc

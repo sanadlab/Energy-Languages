@@ -28,7 +28,7 @@ problems:
       <count>\t trees of depth 4\t check: <sum>
       ...
       long lived tree of depth N\t check: <count>
-    default_argument: "18"
+    default_argument: "19"
     invocation_hint: "The program is invoked as: <prog> 21"
     algorithm_class: "recursive allocation, globally structured"
     needs_stdin: false
@@ -48,7 +48,7 @@ problems:
     output_spec: |
       <checksum>
       Pfannkuchen(N) = <max_flips>
-    default_argument: "11"
+    default_argument: "12"
     invocation_hint: "The program is invoked as: <prog> 12"
     algorithm_class: "exhaustive permutation enumeration"
     needs_stdin: false
@@ -73,7 +73,7 @@ problems:
       <weighted-random sequence of length 3N, wrapped at 60 cols>
       >THREE Homo sapiens frequency
       <weighted-random sequence of length 5N, wrapped at 60 cols>
-    default_argument: "12000000"
+    default_argument: "25000000"
     invocation_hint: "The program is invoked as: <prog> 25000000"
     algorithm_class: "deterministic PRNG streaming, I/O-bound"
     needs_stdin: false
@@ -114,7 +114,7 @@ problems:
       (portable bitmap) format, one bit per pixel, to stdout.
     input_spec: "A single positive integer N read as a command-line argument."
     output_spec: "A binary PBM image N pixels wide and N pixels tall, written to stdout."
-    default_argument: "3500"
+    default_argument: "7000"
     invocation_hint: "The program is invoked as: <prog> 16000"
     algorithm_class: "Euclidean-structured numerical, embarrassingly parallel"
     needs_stdin: false
@@ -135,7 +135,7 @@ problems:
     output_spec: |
       <initial energy, 9 decimal places>
       <final energy, 9 decimal places>
-    default_argument: "15000000"
+    default_argument: "50000000"
     invocation_hint: "The program is invoked as: <prog> 50000000"
     algorithm_class: "numerical integration, locally optimized data layout"
     needs_stdin: false
@@ -220,7 +220,7 @@ problems:
       to nine decimal places.
     input_spec: "A single positive integer N (number of iterations) read as a command-line argument."
     output_spec: "<estimate, 9 decimal places>"
-    default_argument: "4000"
+    default_argument: "5500"
     invocation_hint: "The program is invoked as: <prog> 5500"
     algorithm_class: "dense linear algebra, floating-point arithmetic"
     needs_stdin: false

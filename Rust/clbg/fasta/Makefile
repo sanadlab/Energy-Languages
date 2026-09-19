@@ -2,7 +2,7 @@ LANG    = Rust
 TEST    = fasta
 SOURCE  = fasta.rs
 OUTPUT  = fasta.rust_run
-ARG         = 25000000
+ARG         = 12000000
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 RUSTC       ?= rustc
