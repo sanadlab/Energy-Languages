@@ -114,7 +114,7 @@ problems:
       (portable bitmap) format, one bit per pixel, to stdout.
     input_spec: "A single positive integer N read as a command-line argument."
     output_spec: "A binary PBM image N pixels wide and N pixels tall, written to stdout."
-    default_argument: "3500"
+    default_argument: "3504"
     invocation_hint: "The program is invoked as: <prog> 16000"
     algorithm_class: "Euclidean-structured numerical, embarrassingly parallel"
     needs_stdin: false
@@ -167,18 +167,51 @@ problems:
 
   - key: regex-redux
     name: "regex-redux"
-    description: >-
-      Read a FASTA-formatted DNA sequence from stdin, strip the
-      FASTA headers and newlines, count occurrences of nine
-      specific IUPAC regex patterns on the stripped sequence, then
-      apply a series of regex substitutions to produce an
-      "IUPAC-encoded" sequence and report the original and
-      post-processing lengths.
-    input_spec: "A FASTA-formatted DNA sequence on stdin."
+    description: |
+      Read a FASTA-formatted DNA sequence from standard input and reproduce the
+      Computer Language Benchmarks Game regex-redux benchmark.
+
+      1. Read all of standard input. The original length is the total number of
+         bytes read.
+      2. Remove every FASTA header line (matching the regex `>.*\n`) and every
+         remaining newline (`\n`). The result is the stripped sequence; its
+         length is the stripped length.
+      3. Count the non-overlapping matches of each of these nine regular
+         expressions in the stripped sequence, in this exact order, and print
+         the pattern, a single space, then its count, one per line:
+             agggtaaa|tttaccct
+             [cgt]gggtaaa|tttaccc[acg]
+             a[act]ggtaaa|tttacc[agt]t
+             ag[act]gtaaa|tttac[agt]ct
+             agg[act]taaa|ttta[agt]cct
+             aggg[acg]aaa|ttt[cgt]ccct
+             agggt[cgt]aa|tt[acg]accct
+             agggta[cgt]a|t[acg]taccct
+             agggtaa[cgt]|[acg]ttaccct
+      4. Apply these substitutions to the stripped sequence, in this exact
+         order, replacing every match of the left regex with the right text:
+             tHa[Nt]            -> <4>
+             aND|caN|Ha[DS]|WaS -> <3>
+             a[NSt]|BY          -> <2>
+             <[^>]*>            -> |
+             \|[^|][^|]*\|      -> -
+      5. Print an empty line, then the original length, the stripped length, and
+         the length of the sequence after all substitutions, each on its own
+         line.
+
+      Matching is case-sensitive. Print nothing else.
+    input_spec: "A FASTA-formatted DNA sequence on standard input."
     output_spec: |
-      <pattern_1> <count>
-      ...
-      <pattern_9> <count>
+      agggtaaa|tttaccct <count>
+      [cgt]gggtaaa|tttaccc[acg] <count>
+      a[act]ggtaaa|tttacc[agt]t <count>
+      ag[act]gtaaa|tttac[agt]ct <count>
+      agg[act]taaa|ttta[agt]cct <count>
+      aggg[acg]aaa|ttt[cgt]ccct <count>
+      agggt[cgt]aa|tt[acg]accct <count>
+      agggta[cgt]a|t[acg]taccct <count>
+      agggtaa[cgt]|[acg]ttaccct <count>
+
       <original length>
       <stripped length>
       <post-substitution length>

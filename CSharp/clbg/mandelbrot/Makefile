@@ -2,7 +2,7 @@ LANG    = CSharp
 TEST    = mandelbrot
 SOURCE  = Program.cs
 OUTPUT  = bin/Release/mandelbrot
-ARG         = 3500
+ARG         = 3504
 RUN_CMD = dotnet run --configuration Release -- $(ARG)
 
 COMPILE_CMD = dotnet build --configuration Release --nologo

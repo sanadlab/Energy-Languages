@@ -348,7 +348,7 @@ def _rewrite_php(cell: Path, original: str) -> str | None:
         f"SOURCE      = {source}\n"
         f"OUTPUT      = {output}\n"
         f"ARG         = {arg}\n"
-        f"RUN_CMD     = php -n -d memory_limit=2G $(OUTPUT) $(ARG)\n"
+        f"RUN_CMD     = php -d short_open_tag=On -d memory_limit=2G $(OUTPUT) $(ARG)\n"
         f"COMPILE_CMD = cp $(SOURCE) $(OUTPUT)\n"
     )
     return _finalize(body, cell.name, cell.parent.name)

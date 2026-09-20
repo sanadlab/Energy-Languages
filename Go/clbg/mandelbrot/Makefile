@@ -2,7 +2,7 @@ LANG    = Go
 TEST    = mandelbrot
 SOURCE  = mandelbrot.go-3.go
 OUTPUT  = mandelbrot.go_run
-ARG         = 3500
+ARG         = 3504
 RUN_CMD = ./$(OUTPUT) $(ARG)
 
 COMPILE_CMD = go build -o $(OUTPUT) $(SOURCE)
