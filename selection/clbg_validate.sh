@@ -15,6 +15,42 @@ INDIR="$BASE/reference/clbg/inputs"
 CASES="$DIR/cases.txt"
 [ -f "$CASES" ] || { echo "clbg-validate: no cases for $PROB" >&2; exit 2; }
 
+# Numeric tolerance for FLOAT-output problems. n-body and spectral-norm print a
+# floating-point result to 9 decimals; a correct solution that does not
+# reproduce the exact summation order of the reference differs in the last one
+# or two digits, so an exact byte match rejects correct code. Compare those
+# numerically within TOL instead. A per-problem `tolerance` file overrides the
+# default. Empty TOL keeps the exact diff for every other problem.
+TOL=""
+if [ -f "$DIR/tolerance" ]; then
+  TOL="$(tr -d '[:space:]' < "$DIR/tolerance")"
+elif [ "$PROB" = "n-body" ] || [ "$PROB" = "spectral-norm" ]; then
+  TOL="1e-6"
+fi
+
+# _num_eq <actual> <ref> <tol>: 0 iff the files match field-by-field, comparing
+# numeric fields within <tol> and non-numeric fields exactly.
+_num_eq() {
+  awk -v tol="$3" '
+    function isnum(x){ return (x ~ /^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?$/) }
+    NR==FNR { a[FNR]=$0; na=FNR; next }
+    { b[FNR]=$0; nb=FNR }
+    END {
+      if (na != nb) exit 1
+      for (i=1;i<=na;i++) {
+        n1=split(a[i],f1," "); n2=split(b[i],f2," ")
+        if (n1!=n2) exit 1
+        for (j=1;j<=n1;j++) {
+          if (isnum(f1[j]) && isnum(f2[j])) {
+            d=f1[j]-f2[j]; if (d<0) d=-d
+            if (d>tol) exit 1
+          } else if (f1[j]!=f2[j]) exit 1
+        }
+      }
+      exit 0
+    }' "$1" "$2"
+}
+
 act="$(mktemp)"; err="$(mktemp)"
 i=0; pass=0; total=0; firstfail=""
 while IFS= read -r cv; do
@@ -31,7 +67,13 @@ while IFS= read -r cv; do
     [ -z "$firstfail" ] && firstfail="case $i (=$cv) crashed rc=$rc: $(tail -1 "$err" 2>/dev/null)"
     continue
   fi
-  if [ "$BIN" = "1" ]; then cmp -s "$act" "$ref"; else diff -q "$act" "$ref" >/dev/null 2>&1; fi
+  if [ "$BIN" = "1" ]; then
+    cmp -s "$act" "$ref"
+  elif [ -n "$TOL" ]; then
+    _num_eq "$act" "$ref" "$TOL"
+  else
+    diff -q "$act" "$ref" >/dev/null 2>&1
+  fi
   if [ $? -eq 0 ]; then
     pass=$((pass + 1))
   else

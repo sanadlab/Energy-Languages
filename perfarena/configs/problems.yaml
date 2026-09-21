@@ -59,12 +59,44 @@ problems:
 
   - key: fasta
     name: "fasta"
-    description: >-
-      Generate three DNA-like sequences and write them in FASTA
-      format. The first sequence is produced by repeating a fixed
-      "ALU" string. The second and third are produced by sampling
-      from weighted symbol distributions using a specified linear
-      congruential PRNG (IM=139968, IA=3877, IC=29573) seeded at 42.
+    description: |
+      Generate three DNA-like sequences and write them in FASTA format,
+      reproducing the Computer Language Benchmarks Game fasta benchmark exactly.
+      Print all output to standard output.
+
+      Random generator. Use this exact linear congruential generator, shared and
+      advanced across the two random sections, starting from seed 42:
+          seed = (seed * 3877 + 29573) mod 139968
+      Each draw first advances the seed, then uses the value seed / 139968 (a
+      number in [0, 1)) to pick a symbol.
+
+      Symbol selection. Build the cumulative probabilities of a table in the
+      given order. For a draw value r, output the first symbol whose cumulative
+      probability is strictly greater than r.
+
+      1. `>ONE Homo sapiens alu` followed by a sequence of length 2N formed by
+         repeating this ALU string (no randomness):
+             GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGGGAGGCCGAGGCGGGCGGA
+             TCACCTGAGGTCAGGAGTTCGAGACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACT
+             AAAAATACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCAGCTACTCGGGAG
+             GCTGAGGCAGGAGAATCGCTTGAACCCGGGAGGCGGAGGTTGCAGTGAGCCGAGATCGCG
+             CCACTGCACTCCAGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA
+         (concatenate the five lines above into one 287-character string).
+      2. `>TWO IUB ambiguity codes` followed by a random sequence of length 3N
+         drawn from this table, in this order:
+             a 0.27  c 0.12  g 0.12  t 0.27
+             B 0.02  D 0.02  H 0.02  K 0.02  M 0.02  N 0.02
+             R 0.02  S 0.02  V 0.02  W 0.02  Y 0.02
+      3. `>THREE Homo sapiens frequency` followed by a random sequence of length
+         5N drawn from this table, in this order (the seed continues from the
+         end of section 2, it does not reset):
+             a 0.3029549426680
+             c 0.1979883004921
+             g 0.1975473066391
+             t 0.3015094502008
+
+      Wrap every generated sequence at 60 characters per line. The final line of
+      each sequence may be shorter than 60. Print nothing else.
     input_spec: "A single positive integer N read as a command-line argument."
     output_spec: |
       >ONE Homo sapiens alu
