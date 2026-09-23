@@ -24,6 +24,7 @@ from __future__ import annotations
 import json
 import os
 import resource
+import signal
 import subprocess
 import sys
 import time
@@ -98,7 +99,14 @@ def _run_child(command: str, timeout: float = 600.0) -> tuple[int, float, int]:
         peak_rss = 0
     while proc.poll() is None:
         if time.monotonic() - t0 > timeout:
-            proc.kill()
+            # SIGKILL the whole process group, not just the leader. The child is
+            # a start_new_session group leader, so a hung `node` (and any worker
+            # it spawned) all die here. A bare proc.kill() leaves them orphaned
+            # to peg a core and trip the next measure's isolation check.
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                proc.kill()
             proc.wait()
             raise subprocess.TimeoutExpired(command, timeout)
         try:
@@ -122,7 +130,10 @@ def _measure_with_codecarbon(
     extra: dict[str, Any] = {}
     if EmissionsTracker is None:
         # No CodeCarbon installed; fall back to wall-time only.
-        exit_code, wall_ms, peak_rss_kb = _run_child(command, timeout)
+        try:
+            exit_code, wall_ms, peak_rss_kb = _run_child(command, timeout)
+        except subprocess.TimeoutExpired:
+            return 124, timeout * 1000.0, 0, 0, "timeout", {"timed_out": True}
         return exit_code, wall_ms, peak_rss_kb, 0, "none", {"note": "codecarbon not installed"}
 
     tracker = EmissionsTracker(
@@ -134,11 +145,22 @@ def _measure_with_codecarbon(
     )
 
     tracker.start()
-    exit_code, wall_ms, peak_rss_kb = _run_child(command, timeout)
+    timed_out = False
+    try:
+        exit_code, wall_ms, peak_rss_kb = _run_child(command, timeout)
+    except subprocess.TimeoutExpired:
+        # The run exceeded the per-run cap and was group-killed. Record it as a
+        # failed run instead of crashing the measure; the caller stops the loop.
+        timed_out = True
+        exit_code, wall_ms, peak_rss_kb = 124, timeout * 1000.0, 0
     try:
         tracker.stop()
     except Exception as exc:  # noqa: BLE001
-        return exit_code, wall_ms, peak_rss_kb, 0, "codecarbon-error", {"error": str(exc)}
+        src = "timeout" if timed_out else "codecarbon-error"
+        return exit_code, wall_ms, peak_rss_kb, 0, src, {"error": str(exc), "timed_out": timed_out}
+
+    if timed_out:
+        return exit_code, wall_ms, peak_rss_kb, 0, "timeout", {"timed_out": True, "timeout_s": timeout}
 
     data = tracker.final_emissions_data
     if data is None or data.energy_consumed is None:
@@ -215,6 +237,11 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     # --- Warm-up + measurement ---
+    # Per-run wall-clock cap. A CLBG whole-program run finishes in seconds, so a
+    # run that blows past this is a broken (hung or pathologically slow) solution.
+    # Cap it low enough that a hang dies fast and cannot orphan a core-pegging
+    # process, rather than burning the full handler timeout.
+    run_timeout = float(os.environ.get("PERFARENA_CLBG_RUN_TIMEOUT_S", "120"))
     total = warmup + measure
     for i in range(total):
         phase = "warmup" if i < warmup else "measure"
@@ -222,11 +249,16 @@ def main(argv: list[str] | None = None) -> int:
             f"[codecarbon-runner] {phase} {i + 1}/{total}...",
             file=sys.stderr,
         )
-        exit_code, wall_ms, peak_rss_kb, energy_uj, source, extra = _measure_with_codecarbon(command)
+        exit_code, wall_ms, peak_rss_kb, energy_uj, source, extra = _measure_with_codecarbon(command, run_timeout)
         _write_row(
             out, test, language, i + 1, phase,
             wall_ms, energy_uj, source, 0, exit_code, peak_rss_kb, extra,
         )
+        if exit_code != 0:
+            # A hung or crashing solution: don't burn the remaining iterations.
+            print(f"[codecarbon-runner] run exited {exit_code} ({source}); "
+                  f"stopping early", file=sys.stderr)
+            break
 
     out.close()
     print(f"[codecarbon-runner] done. wrote {out_path}", file=sys.stderr)
