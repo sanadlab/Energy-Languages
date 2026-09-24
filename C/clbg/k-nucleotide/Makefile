@@ -1,11 +1,18 @@
-compile:
-	/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp -std=c99 -IInclude knucleotide.c -o knucleotide.gcc_run
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./knucleotide.gcc_run 0 < knucleotide-input25000000.txt" C k-nucleotide
+# Converted from the raw upstream C Makefile to the perfarena harness.
+# ARG/VALIDATION_N/golden mirror the C++ cell; compile line from upstream C.
+LANG        = C
+TEST        = k-nucleotide
+SOURCE      = knucleotide.c
+OUTPUT      = k-nucleotide.gcc_run
+ARG         = 0
+RUN_CMD     = ./$(OUTPUT) $(ARG)
 
-run:
-	./knucleotide.gcc_run 0 < knucleotide-input25000000.txt
+CC          ?= gcc
 
-mem:
-	/usr/bin/time -v ./knucleotide.gcc_run 0 < knucleotide-input25000000.txt
+COMPILE_CMD = $(CC) -pipe -Wall -O3 -fomit-frame-pointer -march=native -fopenmp -std=c99 -IInclude $(SOURCE) -o $(OUTPUT)
+
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/k-nucleotide.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-10000.txt
+
+include ../../../perfarena.mk

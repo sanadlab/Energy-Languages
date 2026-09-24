@@ -1,0 +1,18 @@
+# Python runtime dependencies for the measurement oracle.
+#
+# Install into the interpreter that RUNS the CLBG solutions (system python3 on
+# the current host) and into the harness runner venv.
+#
+#   python3 -m pip install -r requirements-oracle.txt
+#
+# gmpy2 needs the system libraries libgmp, libmpfr, and libmpc
+# (e.g. `apt-get install libgmp-dev libmpfr-dev libmpc-dev`).
+#
+# System packages the CLBG C references need to compile (Debian/Ubuntu names):
+#   apt-get install libapr1-dev    # C binary-trees (apr_pools.h)
+#   apt-get install libpcre3-dev   # C regex-redux (pcre.h)
+#   apt-get install libhts-dev     # C k-nucleotide (htslib/khash.h)
+#   plus a C/C++ toolchain with OpenMP (gcc, g++, libgomp).
+
+gmpy2        # CLBG pidigits reference: `from gmpy2 import xmpz, t_div, mul, add`
+codecarbon   # energy measurement backend (PERFARENA_ENERGY_TOOL=codecarbon)

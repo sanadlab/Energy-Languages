@@ -1,0 +1,51 @@
+/* The Computer Language Benchmarks Game
+   http://benchmarksgame.alioth.debian.org/
+   contributed by Isaac Gouy 
+*/
+function approximate(n: number): number {
+   let u = Array(n), v = Array(n)
+   for (let i=0; i<n; ++i) {
+      u[i] = 1.0     
+   }
+   for (let i=0; i<10; ++i) {      // spectral-norm does 10 power iterations, not n;
+      multiplyAtAv(n,u,v)          // n iterations overflow to Infinity -> NaN at large n
+      multiplyAtAv(n,v,u)
+   }
+   let vBv = 0.0, vv = 0.0
+   for (let i=0; i<10; ++i) {
+      vBv += u[i]*v[i]
+      vv  += v[i]*v[i]
+   }
+   return Math.sqrt(vBv/vv)
+}
+
+function a(i,j: number): number {
+   return 1.0 / ( (i+j) * ((i+j) +1)/2 + i+1 ) 
+}
+
+function multiplyAv(n: number, v: number[], av: number[]) {
+   for (let i=0; i<n; ++i) {
+      av[i] = 0.0
+      for (let j=0; j<n; ++j) {
+         av[i] += a(i,j) * v[j] 
+      }
+   }
+}
+
+function multiplyAtv(n: number, v: number[], atv: number[]) {
+   for (let i=0; i<n; ++i) {
+      atv[i] = 0.0
+      for (let j=0; j<n; ++j) {
+         atv[i] += a(j,i) * v[j] 
+      }
+   }
+}
+
+function multiplyAtAv(n: number, v: number[], atAv: number[]) {
+   let u = new Array(n) 
+   multiplyAv(n,v,u)
+   multiplyAtv(n,u,atAv)
+}
+
+
+console.log( approximate(+process.argv[2]).toFixed(9) )

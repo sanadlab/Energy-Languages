@@ -1,11 +1,18 @@
-compile:
-	/usr/bin/gcc -pipe -Wall -O3 -fomit-frame-pointer -march=native -funroll-loops -fopenmp revcomp.gcc-6.c -o revcomp.gcc-6.gcc_run 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./revcomp.gcc-6.gcc_run 0 < ../../revcomp-input25000000.txt" C reverse-complement
+# Converted from the raw upstream C Makefile to the perfarena harness.
+# ARG/VALIDATION_N/golden mirror the C++ cell; compile line from upstream C.
+LANG        = C
+TEST        = reverse-complement
+SOURCE      = revcomp.gcc-6.c
+OUTPUT      = reverse-complement.gcc_run
+ARG         = 0
+RUN_CMD     = ./$(OUTPUT) $(ARG)
 
-run:
-	./revcomp.gcc-6.gcc_run 0 < ../../revcomp-input25000000.txt
+CC          ?= gcc
 
-mem:
-	/usr/bin/time -v ./revcomp.gcc-6.gcc_run 0 < ../../revcomp-input25000000.txt
+COMPILE_CMD = $(CC) -pipe -Wall -O3 -fomit-frame-pointer -march=native -funroll-loops -fopenmp $(SOURCE) -o $(OUTPUT)
+
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/reverse-complement.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-10000.txt
+
+include ../../../perfarena.mk
