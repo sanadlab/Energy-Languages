@@ -49,7 +49,11 @@ export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 1
 # the file being absent (the `?=` fallbacks below then apply). We force TSC with
 # `override` so a stale `TSC` in the runner's environment cannot supply an old
 # tsc that rejects `--noCheck`; the VERSION stays configurable via TS_VERSION.
--include $(dir $(lastword $(MAKEFILE_LIST)))perfarena/toolchain-versions.mk
+# Path to the Energy-Languages root, relative to whichever cell includes this
+# file — correct at any depth (working cells <Lang>/clbg/<p>; reference test
+# cells one level deeper at <Lang>/clbg/test/<p>).
+_EL_ROOT := $(dir $(lastword $(MAKEFILE_LIST)))
+-include $(_EL_ROOT)perfarena/toolchain-versions.mk
 TS_VERSION ?= 5.9.3
 override TSC := npx --yes -p typescript@$(TS_VERSION) tsc
 
@@ -189,8 +193,8 @@ validate:
 	@# One shell block (so exactly ONE path runs). Multi-case CLBG oracle when
 	@# reference/clbg/outputs/<problem>/cases.txt exists (>=5 golden cases);
 	@# otherwise the single-case REFERENCE_OUTPUT diff (LC cells: /dev/null = PASS).
-	@if [ -f "../../../reference/clbg/outputs/$(TEST)/cases.txt" ]; then \
-	    if bash ../../../selection/clbg_validate.sh "$(RUN_CMD)" "$(ARG)" "$(TEST)" "$(BINARY_OUTPUT)"; then \
+	@if [ -f "$(_EL_ROOT)reference/clbg/outputs/$(TEST)/cases.txt" ]; then \
+	    if bash $(_EL_ROOT)selection/clbg_validate.sh "$(RUN_CMD)" "$(ARG)" "$(TEST)" "$(BINARY_OUTPUT)"; then \
 	        echo "validate: PASS" ; \
 	    else echo "validate: FAIL" >&2 ; exit 1 ; fi ; \
 	elif [ -z "$(REFERENCE_OUTPUT)" ]; then \

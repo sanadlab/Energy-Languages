@@ -61,5 +61,12 @@ int main(int argc, char **argv) {
       eliminate_digit(d);
    }
 
+   /* Flush a final partial row: pad the remaining digits to 10 columns and
+      print the count, matching the CLBG reference output (every other language
+      does this). Without it, an N that is not a multiple of 10 loses its last
+      "\t:N" line and fails validation. */
+   if (i % 10 != 0)
+      printf("%*s\t:%u\n", (int)(10 - i % 10), "", i);
+
    return 0;
 }
