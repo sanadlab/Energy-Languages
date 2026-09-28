@@ -43,6 +43,16 @@
 # so C# output is deterministic across hosts. Harmless for non-.NET languages.
 export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 1
 
+# ---- Toolchain versions (single source of truth) --------------------------
+# Pinned tool versions live in perfarena/toolchain-versions.mk, resolved
+# relative to THIS file so it works from any cell depth. `-include` tolerates
+# the file being absent (the `?=` fallbacks below then apply). We force TSC with
+# `override` so a stale `TSC` in the runner's environment cannot supply an old
+# tsc that rejects `--noCheck`; the VERSION stays configurable via TS_VERSION.
+-include $(dir $(lastword $(MAKEFILE_LIST)))perfarena/toolchain-versions.mk
+TS_VERSION ?= 5.9.3
+override TSC := npx --yes -p typescript@$(TS_VERSION) tsc
+
 # CLBG whole-program measurement uses discrete RUN COUNTS: N_WARMUP uncounted
 # runs then N_MEASURE counted runs of the whole program at the default ARG.
 # This is a DIFFERENT mechanism from the LeetCode per-op path, which loops the
@@ -195,8 +205,16 @@ validate:
 	    if [ "$(BINARY_OUTPUT)" = "1" ]; then cmp -s $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) ; \
 	    else diff -q $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) > /dev/null ; fi && echo "validate: PASS" || { \
 	        echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; \
-	        echo "--- first 20 lines of divergence ---" >&2 ; \
-	        diff $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | head -20 >&2 ; \
+	        if [ "$(BINARY_OUTPUT)" = "1" ]; then \
+	            echo "=== binary output differs: $$(cmp $(REFERENCE_OUTPUT) $(_VALIDATION_ACTUAL) 2>&1 | head -1) ===" >&2 ; \
+	            echo "--- expected ($(REFERENCE_OUTPUT), hex head) ---" >&2 ; xxd $(REFERENCE_OUTPUT) 2>/dev/null | head -12 >&2 ; \
+	            echo "--- produced (hex head) ---" >&2 ; xxd $(_VALIDATION_ACTUAL) 2>/dev/null | head -12 >&2 ; \
+	        else \
+	            diff -u --label "expected ($(REFERENCE_OUTPUT))" --label "produced" $(REFERENCE_OUTPUT) $(_VALIDATION_ACTUAL) 2>/dev/null | head -c 4000 >&2 ; echo >&2 ; \
+	            echo "PERFARENA-DIFF-CASE:N=$(VALIDATION_N)" >&2 ; \
+	            echo "PERFARENA-DIFF-EXPECTED-B64:$$(head -c 4000 $(REFERENCE_OUTPUT) 2>/dev/null | base64 | tr -d '\n')" >&2 ; \
+	            echo "PERFARENA-DIFF-PRODUCED-B64:$$(head -c 4000 $(_VALIDATION_ACTUAL) 2>/dev/null | base64 | tr -d '\n')" >&2 ; \
+	        fi ; \
 	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; exit 1 ; } ; \
 	    rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; \
 	fi

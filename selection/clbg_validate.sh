@@ -52,7 +52,8 @@ _num_eq() {
 }
 
 act="$(mktemp)"; err="$(mktemp)"
-i=0; pass=0; total=0; firstfail=""
+i=0; pass=0; total=0; firstfail=""; fail_detail=""
+fail_case=""; fail_exp_b64=""; fail_prod_b64=""
 while IFS= read -r cv; do
   [ -z "$cv" ] && continue
   i=$((i + 1)); total=$((total + 1))
@@ -64,7 +65,10 @@ while IFS= read -r cv; do
     eval "$cmd" > "$act" 2>"$err"; rc=$?
   fi
   if [ "$rc" -ne 0 ]; then
-    [ -z "$firstfail" ] && firstfail="case $i (=$cv) crashed rc=$rc: $(tail -1 "$err" 2>/dev/null)"
+    if [ -z "$firstfail" ]; then
+      firstfail="case $i (=$cv) crashed rc=$rc: $(tail -1 "$err" 2>/dev/null)"
+      fail_detail="$(printf '=== stderr (case %s, first 4000 bytes) ===\n%s' "$i" "$(head -c 4000 "$err" 2>/dev/null)")"
+    fi
     continue
   fi
   if [ "$BIN" = "1" ]; then
@@ -76,8 +80,23 @@ while IFS= read -r cv; do
   fi
   if [ $? -eq 0 ]; then
     pass=$((pass + 1))
-  else
-    [ -z "$firstfail" ] && firstfail="case $i (=$cv) output differs from $(basename "$ref")"
+  elif [ -z "$firstfail" ]; then
+    firstfail="case $i (=$cv) output differs from $(basename "$ref")"
+    # Capture a truncated expected-vs-produced diff so the platform and webapp
+    # can show WHY validation failed, not just that it did.
+    if [ "$BIN" = "1" ]; then
+      fail_detail="$(printf '=== binary output differs (case %s): %s ===\n--- expected %s (hex, head) ---\n%s\n--- produced (hex, head) ---\n%s' \
+        "$i" "$(cmp "$ref" "$act" 2>&1 | head -1)" "$(basename "$ref")" \
+        "$(xxd "$ref" 2>/dev/null | head -12)" "$(xxd "$act" 2>/dev/null | head -12)")"
+    else
+      fail_detail="$(diff -u --label "expected ($(basename "$ref"))" --label "produced" "$ref" "$act" 2>/dev/null | head -c 4000)"
+      # Machine-parseable expected/produced (base64, truncated) so the handler
+      # can populate the SPA's side-by-side panel. Text problems only; binary
+      # outputs keep the hex diff above.
+      fail_case="case $i (=$cv)"
+      fail_exp_b64="$(head -c 4000 "$ref" 2>/dev/null | base64 | tr -d '\n')"
+      fail_prod_b64="$(head -c 4000 "$act" 2>/dev/null | base64 | tr -d '\n')"
+    fi
   fi
 done < "$CASES"
 rm -f "$act" "$err"
@@ -85,4 +104,11 @@ rm -f "$act" "$err"
 if [ "$pass" = "$total" ] && [ "$total" -gt 0 ]; then
   echo "CLBG-VALIDATE $PROB PASS passed=$pass ncases=$total" >&2; exit 0
 fi
-echo "CLBG-VALIDATE $PROB FAIL passed=$pass ncases=$total; $firstfail" >&2; exit 1
+echo "CLBG-VALIDATE $PROB FAIL passed=$pass ncases=$total; $firstfail" >&2
+[ -n "$fail_detail" ] && printf '%s\n' "$fail_detail" >&2
+if [ -n "$fail_exp_b64" ]; then
+  printf 'PERFARENA-DIFF-CASE:%s\n' "$fail_case" >&2
+  printf 'PERFARENA-DIFF-EXPECTED-B64:%s\n' "$fail_exp_b64" >&2
+  printf 'PERFARENA-DIFF-PRODUCED-B64:%s\n' "$fail_prod_b64" >&2
+fi
+exit 1
