@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <cstring>
 #include <algorithm>
