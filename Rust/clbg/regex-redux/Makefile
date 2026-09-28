@@ -18,6 +18,6 @@ COMPILE_CMD = cargo build --release --manifest-path ../Cargo.toml --bin regex-re
 
 VALIDATION_N       = 0
 REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/regex-redux.txt
-STDIN_FILE         = ../../../reference/clbg/inputs/fasta-10000.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-500000.txt
 
 include ../../../perfarena.mk

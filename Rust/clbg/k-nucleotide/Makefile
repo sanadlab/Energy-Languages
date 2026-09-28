@@ -18,6 +18,6 @@ COMPILE_CMD = cargo build --release --manifest-path ../Cargo.toml --bin k-nucleo
 
 VALIDATION_N       = 0
 REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/k-nucleotide.txt
-STDIN_FILE         = ../../../reference/clbg/inputs/fasta-10000.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-2500000.txt
 
 include ../../../perfarena.mk

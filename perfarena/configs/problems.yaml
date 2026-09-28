@@ -132,7 +132,7 @@ problems:
     invocation_hint: "The program reads from stdin. Input is piped from the fasta output."
     algorithm_class: "hash-map aggregation, memory-bound"
     needs_stdin: true
-    stdin_input_file: "reference/inputs/fasta-10000.txt"
+    stdin_input_file: "reference/inputs/fasta-2500000.txt"
     validation_n: "0"
     reference_output: "reference/outputs/k-nucleotide.txt"
     binary_output: false
@@ -251,7 +251,7 @@ problems:
     invocation_hint: "The program reads from stdin. Input is piped from the fasta output."
     algorithm_class: "regex engine, string I/O"
     needs_stdin: true
-    stdin_input_file: "reference/inputs/fasta-10000.txt"
+    stdin_input_file: "reference/inputs/fasta-500000.txt"
     validation_n: "0"
     reference_output: "reference/outputs/regex-redux.txt"
     binary_output: false
@@ -272,7 +272,7 @@ problems:
     invocation_hint: "The program reads from stdin. Input is piped from the fasta output."
     algorithm_class: "linear-scan I/O with in-place transformation"
     needs_stdin: true
-    stdin_input_file: "reference/inputs/fasta-10000.txt"
+    stdin_input_file: "reference/inputs/fasta-25000000.txt"
     validation_n: "0"
     reference_output: "reference/outputs/reverse-complement.txt"
     binary_output: false

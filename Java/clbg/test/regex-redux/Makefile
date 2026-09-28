@@ -11,6 +11,6 @@ COMPILE_CMD = cp $(SOURCE) regexredux.java && $(JAVAC) -d . regexredux.java
 
 VALIDATION_N       = 0
 REFERENCE_OUTPUT   = ../../../../reference/clbg/outputs/regex-redux.txt
-STDIN_FILE         = ../../../../reference/clbg/inputs/fasta-10000.txt
+STDIN_FILE         = ../../../../reference/clbg/inputs/fasta-500000.txt
 
 include ../../../../perfarena.mk

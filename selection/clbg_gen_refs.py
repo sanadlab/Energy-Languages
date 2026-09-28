@@ -103,16 +103,18 @@ def main():
         _make(cell, "clean")
         print("  %-18s %d cases (N=%s)" % (problem, len(ns), ns))
 
-    # 3. stdin-based problems — generate from the memory-safe PYTHON solution
-    # (the C++ k-nucleotide bus-errors on small inputs; the benchmark is
-    # deterministic so Python produces the identical golden output).
+    # 3. stdin-based problems — generate from the TRUSTED C++ benchmarksgame
+    # solution. (The Python k-nucleotide reference is broken: it emits all-zero
+    # counts and drops the 1-mer/2-mer sections. The C++ reference is correct
+    # and does NOT crash on the small fasta sizes used here, so it is the right
+    # golden source. Relies on the `run:` target piping STDIN_FILE.)
     for problem, sizes in STDIN_CASES.items():
-        cell = os.path.join(PY, problem)
+        cell = os.path.join(CPP, problem)
         if not os.path.isdir(cell):
-            print("  SKIP %s (no Python cell)" % problem); continue
+            print("  SKIP %s (no C++ cell)" % problem); continue
         cc = _make(cell, "clean", "compile")
         if cc.returncode != 0:
-            print("  SKIP %s (Python compile failed)" % problem); continue
+            print("  SKIP %s (C++ compile failed)" % problem); continue
         cases, outs = [], []
         for size in sizes:
             inp = os.path.join(INP, "fasta-%d.txt" % size)
