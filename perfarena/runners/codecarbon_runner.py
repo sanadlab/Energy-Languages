@@ -34,9 +34,19 @@ from typing import Any
 import psutil
 
 try:
-    from codecarbon import EmissionsTracker
+    # OFFLINE tracker: it needs a country ISO but skips codecarbon's online
+    # IP-geolocation / carbon-intensity network lookup. That lookup hangs for
+    # many minutes on a host with restricted or flaky egress (seen on bicho: a
+    # silent ~20-minute stall before the first measured run, then fast runs once
+    # it falls back). We report measured energy (energy_consumed), never CO2, so
+    # the country only sets an unused carbon-intensity coefficient.
+    from codecarbon import OfflineEmissionsTracker as EmissionsTracker
 except ImportError:
     EmissionsTracker = None  # type: ignore[assignment,misc]
+
+# ISO country for the offline tracker; overridable, but irrelevant to the
+# measured energy we report (it only affects the unused CO2 estimate).
+_COUNTRY_ISO = os.environ.get("PERFARENA_COUNTRY_ISO", "USA")
 
 DEFAULT_WARMUP = 1
 DEFAULT_MEASURE = 7
@@ -138,9 +148,9 @@ def _measure_with_codecarbon(
 
     tracker = EmissionsTracker(
         project_name="perfarena-measure",
+        country_iso_code=_COUNTRY_ISO,
         log_level="error",
         save_to_file=False,
-        save_to_api=False,
         save_to_logger=False,
     )
 
@@ -200,20 +210,31 @@ def main(argv: list[str] | None = None) -> int:
     out = out_path.open("a")
 
     # --- Idle baseline ---
-    print(f"[codecarbon-runner] idle baseline ({idle_s}s)...", file=sys.stderr)
+    # Bracket the energy-tracker init as its own timed phase. It builds the
+    # RAPL / codecarbon backend and was historically the silent multi-minute
+    # step (codecarbon's online tracker did a geolocation network lookup here).
+    # The `init...` / `ready in Xs` pair makes any future stall attributable to
+    # this phase instead of a blank gap before the first run. flush=True so the
+    # lines stream to the parent BEFORE any slow init, not after it.
+    print("[codecarbon-runner] initializing energy tracker...",
+          file=sys.stderr, flush=True)
+    _t_init = time.monotonic()
     idle_tracker = None
     if EmissionsTracker is not None:
         try:
             idle_tracker = EmissionsTracker(
                 project_name="perfarena-idle",
+                country_iso_code=_COUNTRY_ISO,
                 log_level="error",
                 save_to_file=False,
-                save_to_api=False,
                 save_to_logger=False,
             )
             idle_tracker.start()
         except Exception:  # noqa: BLE001
             idle_tracker = None
+    print(f"[codecarbon-runner] energy tracker ready in "
+          f"{time.monotonic() - _t_init:.1f}s; idle baseline ({idle_s}s)...",
+          file=sys.stderr, flush=True)
 
     t0 = time.monotonic()
     time.sleep(idle_s)
