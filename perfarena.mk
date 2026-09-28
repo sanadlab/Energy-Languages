@@ -165,7 +165,7 @@ compile:
 	$(COMPILE_CMD)
 
 run:
-	$(RUN_CMD)
+	$(_FULL_RUN_CMD)
 
 measure:
 ifeq ($(shell uname -s),Darwin)
