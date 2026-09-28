@@ -9,6 +9,11 @@
 # via cmp when binary, line-exact via diff otherwise). Exit 0 iff ALL cases pass.
 set -o pipefail
 RUN_CMD="$1"; ARG="$2"; PROB="$3"; BIN="$4"
+# Per-case wall-clock cap. Validation cases are small, so a case that runs long
+# is a hanging or pathologically slow solution — kill it fast (clean per-case
+# fail) instead of letting it stall the whole validate until the handler's
+# multi-minute watchdog fires as an opaque TimeoutExpired.
+CASE_TO="${PERFARENA_VALIDATE_CASE_TIMEOUT_S:-20}"
 BASE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"        # Energy-Languages root
 DIR="$BASE/reference/clbg/outputs/$PROB"
 INDIR="$BASE/reference/clbg/inputs"
@@ -59,14 +64,18 @@ while IFS= read -r cv; do
   i=$((i + 1)); total=$((total + 1))
   ref="$DIR/$(printf '%02d' "$i").out"
   if [ "${cv#@}" != "$cv" ]; then                             # stdin case: `@<input>`
-    eval "$RUN_CMD" < "$INDIR/${cv#@}" > "$act" 2>"$err"; rc=$?
+    timeout "$CASE_TO" bash -c "$RUN_CMD" < "$INDIR/${cv#@}" > "$act" 2>"$err"; rc=$?
   else                                                        # arg case: substitute ARG -> N
     cmd="$(printf '%s' "$RUN_CMD" | sed "s/[[:space:]]$ARG\$/ $cv/; s/[[:space:]]$ARG[[:space:]]/ $cv /")"
-    eval "$cmd" > "$act" 2>"$err"; rc=$?
+    timeout "$CASE_TO" bash -c "$cmd" > "$act" 2>"$err"; rc=$?
   fi
   if [ "$rc" -ne 0 ]; then
     if [ -z "$firstfail" ]; then
-      firstfail="case $i (=$cv) crashed rc=$rc: $(tail -1 "$err" 2>/dev/null)"
+      if [ "$rc" = "124" ]; then
+        firstfail="case $i (=$cv) timed out after ${CASE_TO}s (hanging or too slow)"
+      else
+        firstfail="case $i (=$cv) crashed rc=$rc: $(tail -1 "$err" 2>/dev/null)"
+      fi
       fail_detail="$(printf '=== stderr (case %s, first 4000 bytes) ===\n%s' "$i" "$(head -c 4000 "$err" 2>/dev/null)")"
     fi
     continue

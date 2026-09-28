@@ -260,10 +260,12 @@ problems:
     name: "reverse-complement"
     description: >-
       Read FASTA-formatted DNA from stdin. For each sequence,
-      reverse it and complement each base (A<->T, C<->G,
-      with IUPAC ambiguity codes handled symmetrically), then
-      write the reverse-complemented sequence to stdout preserving
-      the original FASTA header and line-wrapping.
+      reverse it and complement each base, then write the
+      reverse-complemented sequence to stdout preserving the
+      original FASTA header and line-wrapping. Complement each
+      code with the standard IUPAC table: A<->T, C<->G, U->A,
+      R<->Y, K<->M, B<->V, D<->H, and S, W, N each map to
+      themselves.
     input_spec: "A FASTA-formatted DNA sequence on stdin."
     output_spec: "FASTA-formatted reverse-complemented sequences on stdout."
     default_argument: "0"
