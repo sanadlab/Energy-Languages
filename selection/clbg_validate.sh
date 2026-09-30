@@ -33,6 +33,21 @@ elif [ "$PROB" = "n-body" ] || [ "$PROB" = "spectral-norm" ]; then
   TOL="1e-6"
 fi
 
+# Output normalization for FORMAT-only differences. A correct solution can
+# differ from the golden only in letter case (reverse-complement outputs
+# uppercase), trailing whitespace, internal whitespace runs (pidigits pads the
+# last partial row to 10 columns), or line order (binary-trees prints the same
+# self-labeled lines in a different order). A per-problem `normalize` file lists
+# the safe transforms to apply to BOTH the reference and the produced output
+# before the diff. Tokens (space/newline separated): casefold, trim-trailing-ws,
+# collapse-ws, sort-lines. Empty keeps the exact diff. Normalization only
+# changes the PASS/FAIL decision; the failure diff below still shows the
+# original bytes so a real difference is not hidden.
+NORM=""
+if [ -f "$DIR/normalize" ]; then
+  NORM="$(tr '\n' ' ' < "$DIR/normalize")"
+fi
+
 # _num_eq <actual> <ref> <tol>: 0 iff the files match field-by-field, comparing
 # numeric fields within <tol> and non-numeric fields exactly.
 _num_eq() {
@@ -54,6 +69,23 @@ _num_eq() {
       }
       exit 0
     }' "$1" "$2"
+}
+
+# _apply_norm <file> <transforms>: print <file> with the listed transforms
+# applied. The stages always run in this fixed order so both sides transform
+# identically, and each stage is a pass-through when its token is absent:
+# casefold -> trim-trailing-ws -> collapse-ws -> sort-lines.
+_apply_norm() {
+  local f="$1" t=" $2 "
+  { case "$t" in *" casefold "*)         tr '[:upper:]' '[:lower:]' < "$f" ;; *) cat "$f" ;; esac; } \
+  | { case "$t" in *" trim-trailing-ws "*) sed 's/[[:space:]]*$//' ;; *) cat ;; esac; } \
+  | { case "$t" in *" collapse-ws "*)     sed 's/[[:space:]]\{1,\}/ /g; s/^ //; s/ $//' ;; *) cat ;; esac; } \
+  | { case "$t" in *" sort-lines "*)      LC_ALL=C sort ;; *) cat ;; esac; }
+}
+
+# _norm_eq <actual> <ref> <transforms>: 0 iff they match after normalization.
+_norm_eq() {
+  diff -q <(_apply_norm "$1" "$3") <(_apply_norm "$2" "$3") >/dev/null 2>&1
 }
 
 act="$(mktemp)"; err="$(mktemp)"
@@ -84,6 +116,8 @@ while IFS= read -r cv; do
     cmp -s "$act" "$ref"
   elif [ -n "$TOL" ]; then
     _num_eq "$act" "$ref" "$TOL"
+  elif [ -n "$NORM" ]; then
+    _norm_eq "$act" "$ref" "$NORM"
   else
     diff -q "$act" "$ref" >/dev/null 2>&1
   fi
