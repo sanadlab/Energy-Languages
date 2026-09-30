@@ -33,16 +33,19 @@ elif [ "$PROB" = "n-body" ] || [ "$PROB" = "spectral-norm" ]; then
   TOL="1e-6"
 fi
 
-# Output normalization for FORMAT-only differences. A correct solution can
-# differ from the golden only in letter case (reverse-complement outputs
-# uppercase), trailing whitespace, internal whitespace runs (pidigits pads the
-# last partial row to 10 columns), or line order (binary-trees prints the same
-# self-labeled lines in a different order). A per-problem `normalize` file lists
-# the safe transforms to apply to BOTH the reference and the produced output
-# before the diff. Tokens (space/newline separated): casefold, trim-trailing-ws,
-# collapse-ws, sort-lines. Empty keeps the exact diff. Normalization only
-# changes the PASS/FAIL decision; the failure diff below still shows the
-# original bytes so a real difference is not hidden.
+# Output normalization. A whitespace-only difference is never a wrong answer for a
+# text benchmark, so the comparison ALWAYS normalizes whitespace for every text
+# problem: it collapses runs of blanks to a single space, trims each line end
+# (which also neutralizes internal padding such as pidigits' last row), and
+# canonicalizes the end-of-file newline. Newlines are KEPT, so line order and
+# per-line field structure are still compared, and a real content difference still
+# differs. A per-problem `normalize` file adds the transforms that are NOT
+# universally safe, one per line: `casefold` (reverse-complement outputs uppercase)
+# and `sort-lines` (binary-trees prints the same self-labeled lines in a different
+# order). Normalization only changes the PASS/FAIL decision; the failure diff below
+# still shows the original bytes so a real difference is not hidden. Binary output
+# (mandelbrot, via cmp) and numeric-tolerance problems (n-body, spectral-norm) do
+# not take this path.
 NORM=""
 if [ -f "$DIR/normalize" ]; then
   NORM="$(tr '\n' ' ' < "$DIR/normalize")"
@@ -71,16 +74,18 @@ _num_eq() {
     }' "$1" "$2"
 }
 
-# _apply_norm <file> <transforms>: print <file> with the listed transforms
-# applied. The stages always run in this fixed order so both sides transform
-# identically, and each stage is a pass-through when its token is absent:
-# casefold -> trim-trailing-ws -> collapse-ws -> sort-lines.
+# _apply_norm <file> <transforms>: print <file> normalized for comparison. The
+# whitespace normalization (collapse runs of blanks to one space, trim each line
+# end) and the EOF-newline canonicalization (`awk '{print}'`, so a missing or extra
+# trailing newline compares equal) run for EVERY text problem. The case and order
+# transforms run only when their token is present. Fixed order so both sides
+# transform identically: casefold -> collapse+trim whitespace -> sort-lines -> EOF.
 _apply_norm() {
   local f="$1" t=" $2 "
-  { case "$t" in *" casefold "*)         tr '[:upper:]' '[:lower:]' < "$f" ;; *) cat "$f" ;; esac; } \
-  | { case "$t" in *" trim-trailing-ws "*) sed 's/[[:space:]]*$//' ;; *) cat ;; esac; } \
-  | { case "$t" in *" collapse-ws "*)     sed 's/[[:space:]]\{1,\}/ /g; s/^ //; s/ $//' ;; *) cat ;; esac; } \
-  | { case "$t" in *" sort-lines "*)      LC_ALL=C sort ;; *) cat ;; esac; }
+  { case "$t" in *" casefold "*) tr '[:upper:]' '[:lower:]' < "$f" ;; *) cat "$f" ;; esac; } \
+  | sed 's/[[:space:]]\{1,\}/ /g; s/^ //; s/ $//' \
+  | { case "$t" in *" sort-lines "*) LC_ALL=C sort ;; *) cat ;; esac; } \
+  | awk '{print}'
 }
 
 # _norm_eq <actual> <ref> <transforms>: 0 iff they match after normalization.
@@ -116,10 +121,8 @@ while IFS= read -r cv; do
     cmp -s "$act" "$ref"
   elif [ -n "$TOL" ]; then
     _num_eq "$act" "$ref" "$TOL"
-  elif [ -n "$NORM" ]; then
-    _norm_eq "$act" "$ref" "$NORM"
   else
-    diff -q "$act" "$ref" >/dev/null 2>&1
+    _norm_eq "$act" "$ref" "$NORM"
   fi
   if [ $? -eq 0 ]; then
     pass=$((pass + 1))
