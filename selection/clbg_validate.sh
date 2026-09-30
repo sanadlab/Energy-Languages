@@ -74,16 +74,18 @@ _num_eq() {
     }' "$1" "$2"
 }
 
-# _apply_norm <file> <transforms>: print <file> normalized for comparison. The
-# whitespace normalization (collapse runs of blanks to one space, trim each line
-# end) and the EOF-newline canonicalization (`awk '{print}'`, so a missing or extra
-# trailing newline compares equal) run for EVERY text problem. The case and order
-# transforms run only when their token is present. Fixed order so both sides
-# transform identically: casefold -> collapse+trim whitespace -> sort-lines -> EOF.
+# _apply_norm <file> <transforms>: print <file> normalized for comparison. For
+# EVERY text problem it collapses runs of blanks to one space, trims each line end,
+# drops blank lines (CLBG uses them only as section separators, never as data), and
+# canonicalizes the EOF newline (`awk '{print}'`, so a missing or extra trailing
+# newline compares equal). Non-blank lines and their order are preserved, so a real
+# content difference still differs. The case and order transforms run only when
+# their token is present. Fixed order so both sides transform identically:
+# casefold -> collapse/trim/drop-blank whitespace -> sort-lines -> EOF.
 _apply_norm() {
   local f="$1" t=" $2 "
   { case "$t" in *" casefold "*) tr '[:upper:]' '[:lower:]' < "$f" ;; *) cat "$f" ;; esac; } \
-  | sed 's/[[:space:]]\{1,\}/ /g; s/^ //; s/ $//' \
+  | sed 's/[[:space:]]\{1,\}/ /g; s/^ //; s/ $//; /^$/d' \
   | { case "$t" in *" sort-lines "*) LC_ALL=C sort ;; *) cat ;; esac; } \
   | awk '{print}'
 }
