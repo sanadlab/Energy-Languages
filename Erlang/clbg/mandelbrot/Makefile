@@ -1,15 +1,14 @@
-compile:
-	cp mandelbrot.hipe-2.hipe mandelbrot.erl
-	erlc +native +"{hipe, [o3]}" mandelbrot.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  mandelbrot main 16000" Erlang mandelbrot
+LANG    = Erlang
+TEST    = mandelbrot
+SOURCE  = mandelbrot.erl
+MOD     = mandelbrot
+OUTPUT  = mandelbrot.beam
 
-run:
-	erl -smp enable -noshell -run  mandelbrot main 16000
+ARG         = 3504
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v  erl -smp enable -noshell -run  mandelbrot main 16000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  erl -smp enable -noshell -run  mandelbrot main 16000
+VALIDATION_N     = 200
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/mandelbrot/java.pbm
+BINARY_OUTPUT    = 1
+include ../../../perfarena.mk

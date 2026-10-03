@@ -1,15 +1,13 @@
-compile:
-	cp fannkuchredux.hipe fannkuchredux.erl
-	erlc +native +"{hipe, [o3]}" fannkuchredux.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  fannkuchredux main 12" Erlang fannkuch-redux
+LANG    = Erlang
+TEST    = fannkuch-redux
+SOURCE  = fannkuchredux.erl
+MOD     = fannkuchredux
+OUTPUT  = fannkuchredux.beam
 
-run:
-	erl -smp enable -noshell -run  fannkuchredux main 12
+ARG         = 11
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v erl -smp enable -noshell -run  fannkuchredux main 12
-
-valgrind:
-	valgrind --tool=massif --stacks=yes erl -smp enable -noshell -run  fannkuchredux main 12
+VALIDATION_N     = 7
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/fannkuch-redux.txt
+include ../../../perfarena.mk

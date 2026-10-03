@@ -1,15 +1,14 @@
-compile:
-	cp knucleotide.hipe-3.hipe knucleotide.erl
-	erlc +native +"{hipe, [o3]}" knucleotide.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt" Erlang k-nucleotide
+LANG    = Erlang
+TEST    = k-nucleotide
+SOURCE  = knucleotide.erl
+MOD     = knucleotide
+OUTPUT  = knucleotide.beam
 
-run:
-	erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt
+ARG         = 0
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes erl -smp enable -noshell -run  knucleotide main 0 < knucleotide-input25000000.txt
+STDIN_FILE       = ../../../reference/clbg/inputs/fasta-2500000.txt
+VALIDATION_N     = 0
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/k-nucleotide.txt
+include ../../../perfarena.mk

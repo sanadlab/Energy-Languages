@@ -69,6 +69,15 @@ PROJ
   swift)      python3 "$SEL/harness_swift.py" validate ;;
   scala)      python3 "$SEL/harness_scala.py" validate ;;
   dart)       python3 "$SEL/harness_dart.py" validate ;;
+  elixir)     elixir "$SEL/validate_suite.exs" ;;
+  erlang)
+    work="$(mktemp -d)"
+    if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >/tmp/leetval_erlc.log 2>&1; then
+      erl -noshell -pa "$work" -eval 'perf_harness:validate()' -s init stop; rc=$?
+    else
+      echo "validate: erlc failed for erlang" >&2; cat /tmp/leetval_erlc.log >&2; rc=2
+    fi
+    rm -rf "$work"; exit $rc ;;
   rust)       python3 "$SEL/harness_rust.py" validate ;;
   *) echo "validate: unknown lang $LANG_ARG" >&2; exit 2 ;;
 esac

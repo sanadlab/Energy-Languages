@@ -1,14 +1,13 @@
-compile:
-	cp fasta.hipe-2.hipe fasta.erl
-	erlc +native +"{hipe, [o3]}" fasta.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  fasta main 25000000" Erlang fasta
+LANG    = Erlang
+TEST    = fasta
+SOURCE  = fasta.erl
+MOD     = fasta
+OUTPUT  = fasta.beam
 
-run:
-	erl -smp enable -noshell -run  fasta main 25000000
+ARG         = 12000000
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v erl -smp enable -noshell -run  fasta main 25000000
-valgrind:
-	valgrind --tool=massif --stacks=yes erl -smp enable -noshell -run  fasta main 25000000
+VALIDATION_N     = 1000
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/fasta.txt
+include ../../../perfarena.mk

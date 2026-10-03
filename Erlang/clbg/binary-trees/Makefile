@@ -1,15 +1,13 @@
-compile:
-	cp binarytrees.hipe-2.hipe binarytrees.erl
-	erlc +native +"{hipe, [o3]}" binarytrees.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  binarytrees main 21" Erlang binary-trees
+LANG    = Erlang
+TEST    = binary-trees
+SOURCE  = binarytrees.erl
+MOD     = binarytrees
+OUTPUT  = binarytrees.beam
 
-run:
-	erl -smp enable -noshell -run  binarytrees main 21
+ARG         = 18
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v  erl -smp enable -noshell -run  binarytrees main 21
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  erl -smp enable -noshell -run  binarytrees main 21
+VALIDATION_N     = 10
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/binary-trees.txt
+include ../../../perfarena.mk

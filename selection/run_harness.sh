@@ -23,6 +23,15 @@ case "$LANG_ARG" in
   scala)      python3 "$SEL/harness_scala.py" "$BUDGET" "$IDX" ;; # JVM scalac driver
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
   dart)       python3 "$SEL/harness_dart.py" "$BUDGET" "$IDX" ;; # dart run (JIT) driver
+  elixir)     elixir "$SEL/harness.exs" "$BUDGET" "$IDX" ;;       # BEAM, dynamic apply
+  erlang)
+    work="$(mktemp -d)"
+    if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >/dev/null 2>&1; then
+      erl -noshell -pa "$work" -eval "perf_harness:run(\"$BUDGET\", \"$IDX\")" -s init stop; rc=$?
+    else
+      echo "erlc failed for erlang" >&2; rc=2
+    fi
+    rm -rf "$work"; exit $rc ;;
   golang)     bash "$SEL/harness_go.sh" "$BUDGET" "$IDX" ;;
   java)
     cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .

@@ -1,15 +1,14 @@
-compile:
-	cp revcomp.hipe revcomp.erl
-	erlc +native +"{hipe, [o3]}" revcomp.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  revcomp main 0 < ../../revcomp-input25000000.txt" Erlang reverse-complement
+LANG    = Erlang
+TEST    = reverse-complement
+SOURCE  = revcomp.erl
+MOD     = revcomp
+OUTPUT  = revcomp.beam
 
-run:
-	erl -smp enable -noshell -run  revcomp main 0 < ../../revcomp-input25000000.txt
+ARG         = 0
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v erl -smp enable -noshell -run  revcomp main 0 < ../../revcomp-input25000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes erl -smp enable -noshell -run  revcomp main 0 < ../../revcomp-input25000000.txt
+STDIN_FILE       = ../../../reference/clbg/inputs/fasta-25000000.txt
+VALIDATION_N     = 0
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/reverse-complement.txt
+include ../../../perfarena.mk

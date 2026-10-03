@@ -1,15 +1,13 @@
-compile:
-	cp pidigits.hipe pidigits.erl
-	erlc +native +"{hipe, [o3]}" pidigits.erl
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run  pidigits main 10000" Erlang pidigits
+LANG    = Erlang
+TEST    = pidigits
+SOURCE  = pidigits.erl
+MOD     = pidigits
+OUTPUT  = pidigits.beam
 
-run:
-	erl -smp enable -noshell -run  pidigits main 10000
+ARG         = 10000
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v  erl -smp enable -noshell -run  pidigits main 10000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  erl -smp enable -noshell -run  pidigits main 10000
+VALIDATION_N     = 28
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/pidigits.txt
+include ../../../perfarena.mk

@@ -4,6 +4,8 @@ tmp.*
 .DS_Store
 .NETCore*
 *.class
+*.beam
+erl_crash.dump
 lshw
 sysinfo.*
 __pycache__/

@@ -1,15 +1,14 @@
-compile:
-	cp regexredux.hipe-6.hipe regexredux.erl
-	erlc +native +"{hipe, [o3]}" regexredux.erl
-xmeasure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "erl -smp enable -noshell -run -noinput -run regexredux main 0 < ../../regexredux-input50000.txt" Erlang regex-redux
+LANG    = Erlang
+TEST    = regex-redux
+SOURCE  = regexredux.erl
+MOD     = regexredux
+OUTPUT  = regexredux.beam
 
-run:
-	erl -smp enable -noshell -run -noinput -run regexredux main 0 < ../../regexredux-input50000.txt
+ARG         = 0
+RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+COMPILE_CMD = erlc $(SOURCE)
 
-mem:
-	/usr/bin/time -v  erl -smp enable -noshell -run -noinput -run regexredux main 0 < ../../regexredux-input50000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  erl -smp enable -noshell -run -noinput -run regexredux main 0 < ../../regexredux-input50000.txt
+STDIN_FILE       = ../../../reference/clbg/inputs/fasta-500000.txt
+VALIDATION_N     = 0
+REFERENCE_OUTPUT = ../../../reference/clbg/outputs/regex-redux.txt
+include ../../../perfarena.mk
