@@ -1,14 +1,14 @@
-compile:
+LANG    = Dart
+TEST    = spectral-norm
+SOURCE  = spectralnorm.dart
+OUTPUT  = spectral-norm.dart_run
+ARG         = 4000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  spectralnorm.dart 5500" Dart spectral-norm
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  spectralnorm.dart 5500
+VALIDATION_N       = 100
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/spectral-norm.txt
 
-mem:
-	/usr/bin/time -v /usr/bin/dart  spectralnorm.dart 5500
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/bin/dart  spectralnorm.dart 5500
+include ../../../perfarena.mk

@@ -10,8 +10,8 @@ import 'dart:io';
 void main() {
   var src   = "CGATMKRYVBHD";
   var dst   = "GCTAKMYRBVDH";
-  var tbl   = new List<int>(256);
-  var seq   = new List<int>();
+  var tbl   = new List<int>.filled(256, 0);
+  var seq   = <int>[];
   
   // Set up lookup table
   for (int i = 0; i < tbl.length; i++)
@@ -22,8 +22,8 @@ void main() {
     tbl[src.toLowerCase().codeUnitAt(i)]  = dst.codeUnitAt(i);
   }
 
-  var buffer = new List<int>(60);
-  List<int> list = new List<int>();
+  var buffer = new List<int>.filled(60, 0);
+  List<int> list = <int>[];
   bool commentLine = false;
   StringBuffer sbuf = new StringBuffer();
    

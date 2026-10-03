@@ -8,7 +8,7 @@
 */
 
 fannkuch(n) {
-  var p = new List<int>(n), q = new List<int>(n), s = new List<int>(n);
+  var p = new List<int>.filled(n, 0), q = new List<int>.filled(n, 0), s = new List<int>.filled(n, 0);
   int sign = 1, maxflips = 0, sum = 0, m = n-1;
   for(int i=0; i<n; i++){ p[i] = i; q[i] = i; s[i] = i; }
   do {

@@ -1,14 +1,14 @@
-compile:
+LANG    = Dart
+TEST    = fannkuch-redux
+SOURCE  = fannkuchredux.dart-2.dart
+OUTPUT  = fannkuch-redux.dart_run
+ARG         = 11
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  fannkuchredux.dart-2.dart 12" Dart fannkuch-redux
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  fannkuchredux.dart-2.dart 12
+VALIDATION_N       = 7
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fannkuch-redux.txt
 
-mem:
-	/usr/bin/time -v /usr/bin/dart  fannkuchredux.dart-2.dart 12
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/bin/dart  fannkuchredux.dart-2.dart 12
+include ../../../perfarena.mk

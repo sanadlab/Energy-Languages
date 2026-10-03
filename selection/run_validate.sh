@@ -68,6 +68,7 @@ PROJ
   c)          python3 "$SEL/harness_c.py" validate ;;
   swift)      python3 "$SEL/harness_swift.py" validate ;;
   scala)      python3 "$SEL/harness_scala.py" validate ;;
+  dart)       python3 "$SEL/harness_dart.py" validate ;;
   rust)       python3 "$SEL/harness_rust.py" validate ;;
   *) echo "validate: unknown lang $LANG_ARG" >&2; exit 2 ;;
 esac

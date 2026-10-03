@@ -1,14 +1,14 @@
-compile:
+LANG    = Dart
+TEST    = binary-trees
+SOURCE  = binarytrees.dart
+OUTPUT  = binary-trees.dart_run
+ARG         = 18
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  binarytrees.dart 21" Dart binary-trees
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  binarytrees.dart 21
+VALIDATION_N       = 10
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/binary-trees.txt
 
-mem:
-	/usr/bin/time -v  /usr/bin/dart  binarytrees.dart 21
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/bin/dart  binarytrees.dart 21
+include ../../../perfarena.mk

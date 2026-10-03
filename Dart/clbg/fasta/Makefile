@@ -1,14 +1,14 @@
-compile:
+LANG    = Dart
+TEST    = fasta
+SOURCE  = fasta.dart
+OUTPUT  = fasta.dart_run
+ARG         = 12000000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  fasta.dart 25000000" Dart fasta
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  fasta.dart 25000000
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fasta.txt
 
-mem:
-	/usr/bin/time -v  /usr/bin/dart  fasta.dart 25000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/bin/dart  fasta.dart 25000000
+include ../../../perfarena.mk

@@ -1,14 +1,15 @@
-compile:
+LANG    = Dart
+TEST    = regex-redux
+SOURCE  = regexredux.dart-2.dart
+OUTPUT  = regex-redux.dart_run
+ARG         = 0
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  regexredux.dart-2.dart 0 < ../../regexredux-input5000000.txt" Dart regex-redux
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  regexredux.dart-2.dart 0 < ../../regexredux-input5000000.txt
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/regex-redux.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-500000.txt
 
-mem:
-	/usr/bin/time -v  /usr/bin/dart  regexredux.dart-2.dart 0 < ../../regexredux-input5000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/bin/dart  regexredux.dart-2.dart 0 < ../../regexredux-input5000000.txt
+include ../../../perfarena.mk

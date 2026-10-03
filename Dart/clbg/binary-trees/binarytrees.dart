@@ -32,7 +32,7 @@ void main(args){
 
 
 class TreeNode{
-  TreeNode left, right;
+  TreeNode? left, right;
 
   TreeNode([this.left, this.right]);
 
@@ -50,6 +50,6 @@ class TreeNode{
     if (left == null){
       return 1;
     }
-    return 1 + left.itemCheck() + right.itemCheck();
+    return 1 + left!.itemCheck() + right!.itemCheck();
   }
 }

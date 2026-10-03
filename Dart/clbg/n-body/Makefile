@@ -1,14 +1,14 @@
-compile:
+LANG    = Dart
+TEST    = n-body
+SOURCE  = nbody.dart-3.dart
+OUTPUT  = n-body.dart_run
+ARG         = 15000000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  nbody.dart-3.dart 50000000" Dart n-body
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  nbody.dart-3.dart 50000000
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/n-body.txt
 
-mem:
-	/usr/bin/time -v /usr/bin/dart  nbody.dart-3.dart 50000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/bin/dart  nbody.dart-3.dart 50000000
+include ../../../perfarena.mk

@@ -1,14 +1,15 @@
-compile:
+LANG    = Dart
+TEST    = mandelbrot
+SOURCE  = mandelbrot.dart
+OUTPUT  = mandelbrot.dart_run
+ARG         = 3504
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/bin/dart  mandelbrot.dart 16000" Dart mandelbrot
+DART ?= dart
+COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
-run:
-	/usr/bin/dart  mandelbrot.dart 16000
+VALIDATION_N       = 200
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/dart.pbm
+BINARY_OUTPUT      = 1
 
-mem:
-	/usr/bin/time -v /usr/bin/dart  mandelbrot.dart 16000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/bin/dart  mandelbrot.dart 16000
+include ../../../perfarena.mk

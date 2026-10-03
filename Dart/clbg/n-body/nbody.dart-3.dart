@@ -52,11 +52,11 @@ class Body {
 class NBodySystem {
   var bodies;
 
-  static const double solarmass = 4 * Math.PI * Math.PI;
+  static const double solarmass = 4 * Math.pi * Math.pi;
   static const double daysPeryear = 365.24;
 
   NBodySystem() {
-    bodies = new List<Body>();
+    bodies = <Body>[];
     bodies.addAll([
       // Sun
 

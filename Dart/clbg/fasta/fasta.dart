@@ -46,9 +46,9 @@ const int BUFFER_SIZE = (LINE_LENGTH + 1)*1024;
 const double oneOverIM = (1.0/ IM);
 
 class Frequency {
-  Uint8List chars;
-  Float64List probs;
-  int last;
+  late Uint8List chars;
+  late Float64List probs;
+  int last = 0;
 
   double random(double max) {
     last = (last * IA + IC) % IM;

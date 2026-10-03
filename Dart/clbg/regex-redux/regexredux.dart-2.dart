@@ -12,7 +12,7 @@ import 'dart:convert';
 
 void main() {
   var text = new StringBuffer();
-  var src = stdin.transform(UTF8.decoder).transform(new LineSplitter());
+  var src = stdin.transform(utf8.decoder).transform(new LineSplitter());
 
   src.listen((line) {
     if (line != null) {

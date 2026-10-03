@@ -22,6 +22,7 @@ case "$LANG_ARG" in
   swift)      python3 "$SEL/harness_swift.py" "$BUDGET" "$IDX" ;; # native swiftc driver
   scala)      python3 "$SEL/harness_scala.py" "$BUDGET" "$IDX" ;; # JVM scalac driver
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
+  dart)       python3 "$SEL/harness_dart.py" "$BUDGET" "$IDX" ;; # dart run (JIT) driver
   golang)     bash "$SEL/harness_go.sh" "$BUDGET" "$IDX" ;;
   java)
     cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .

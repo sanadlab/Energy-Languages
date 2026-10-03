@@ -7,49 +7,16 @@
 */
 
 import 'dart:io';
-import 'dart:isolate';
-import 'dart:async';
 import 'dart:typed_data';
 
 void main(args) {
   int n = args.length > 0 ? int.parse(args[0]) : 2000;
 
-  var threads = Platform.numberOfProcessors;
-  var segmentFutures = new List(threads);
-  int lineLen = (n - 1) ~/ 8 + 1;
-  var lines = new List<Uint8List>(n);
-
-  var segmentSize = new List.filled(threads, n ~/ threads);
-  segmentSize[0] += n % threads;
-
-  int from = 0;
-  for (int i = 0; i < threads; i++) {
-    var len = segmentSize[i];
-    var response = new ReceivePort();
-    int localFrom = from;
-    Future<Isolate> remote = Isolate.spawn(calculateSegment, response.sendPort);
-    segmentFutures[i] = remote.then((_) => response.first).then((sendPort) {
-      ReceivePort response = new ReceivePort();
-      sendPort.send({
-        'n': n,
-        'from': localFrom,
-        'len': len,
-        'port': response.sendPort
-      });
-      return response.first;
-    });
-    from += len;
-  }
-
   stdout.write('P4\n$n $n\n');
 
-  Future.wait(segmentFutures).then((segments) {
-    for (var segment in segments) {
-      for (var line in segment) {
-        stdout.add(line);
-      }
-    }
-  });
+  for (int y = 0; y < n; y++) {
+    stdout.add(calculateLine(n, y));
+  }
 }
 
 Uint8List calculateLine (int n, int y) {
@@ -82,22 +49,4 @@ Uint8List calculateLine (int n, int y) {
   line[xbyte] = bits;
 
   return line;
-}
-
-void calculateSegment (SendPort initialReplyTo) {
-  var port = new ReceivePort();
-  initialReplyTo.send(port.sendPort);
-  port.listen((msg) {
-    int n = msg['n'];
-    int from = msg['from'];
-    int len = msg['len'];
-    SendPort replyTo = msg['port'];
-
-    var lines = new List<Uint8List>(len);
-    for (int i = 0; i < len; i++) {
-      lines[i] = calculateLine(n, from + i);
-    }
-    replyTo.send(lines);
-    port.close();
-  });
 }
