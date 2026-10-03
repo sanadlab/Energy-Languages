@@ -1,76 +1,93 @@
-import java.util.*;
-import java.util.stream.*;
-import java.math.*;
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * The Computer Language Benchmarks Game
+ * http://benchmarksgame.alioth.debian.org/
+ *
+ * based on Jarkko Miettinen's Java program
+ * contributed by Tristan Dupont
+ * *reset*
+ */
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-class binarytrees {
-    private static final class Node {
-        final Node left;
-        final Node right;
+public class binarytrees {
 
-        Node(Node left, Node right) {
+    private static final int MIN_DEPTH = 4;
+    private static final ExecutorService EXECUTOR_SERVICE = 
+        Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+    public static void main(final String[] args) throws Exception {
+        int n = 0;
+        if (0 < args.length) {
+            n = Integer.parseInt(args[0]);
+        }
+
+        final int maxDepth = n < (MIN_DEPTH + 2) ? MIN_DEPTH + 2 : n;
+        final int stretchDepth = maxDepth + 1;
+
+        System.out.println("stretch tree of depth " + stretchDepth + "\t check: " 
+           + bottomUpTree( stretchDepth).itemCheck());
+
+        final TreeNode longLivedTree = bottomUpTree(maxDepth);
+
+        final String[] results = new String[(maxDepth - MIN_DEPTH) / 2 + 1];
+
+        for (int d = MIN_DEPTH; d <= maxDepth; d += 2) {
+            final int depth = d;
+            EXECUTOR_SERVICE.execute(() -> {
+                int check = 0;
+
+                final int iterations = 1 << (maxDepth - depth + MIN_DEPTH);
+                for (int i = 1; i <= iterations; ++i) {
+                    final TreeNode treeNode1 = bottomUpTree(depth);
+                    check += treeNode1.itemCheck();
+                }
+                results[(depth - MIN_DEPTH) / 2] = 
+                   iterations + "\t trees of depth " + depth + "\t check: " + check;
+            });
+        }
+
+        EXECUTOR_SERVICE.shutdown();
+        EXECUTOR_SERVICE.awaitTermination(120L, TimeUnit.SECONDS);
+
+        for (final String str : results) {
+            System.out.println(str);
+        }
+
+        System.out.println("long lived tree of depth " + maxDepth + 
+            "\t check: " + longLivedTree.itemCheck());
+    }
+
+    private static TreeNode bottomUpTree(final int depth) {
+        if (0 < depth) {
+            return new TreeNode(bottomUpTree(depth - 1), bottomUpTree(depth - 1));
+        }
+        return new TreeNode();
+    }
+
+    private static final class TreeNode {
+
+        private final TreeNode left;
+        private final TreeNode right;
+
+        private TreeNode(final TreeNode left, final TreeNode right) {
             this.left = left;
             this.right = right;
         }
 
-        long check() {
-            return left == null ? 1L : 1L + left.check() + right.check();
+        private TreeNode() {
+            this(null, null);
         }
-    }
 
-    private static Node buildTree(int depth) {
-        if (depth == 0) {
-            return new Node(null, null);
-        }
-        return new Node(buildTree(depth - 1), buildTree(depth - 1));
-    }
-
-    private static long stretchCheck(int depth) {
-        return buildTree(depth).check();
-    }
-
-    public static void main(String[] args) throws Exception {
-        final int n = Integer.parseInt(args[0]);
-
-        System.out.println("stretch tree of depth " + (n + 1)
-                + "\t check: " + stretchCheck(n + 1));
-
-        final Node longLivedTree = buildTree(n);
-        final int groupCount = n >= 4 ? (n - 4) / 2 + 1 : 0;
-
-        if (groupCount > 0) {
-            int threads = Math.min(groupCount,
-                    Runtime.getRuntime().availableProcessors());
-            ExecutorService executor = Executors.newFixedThreadPool(threads);
-            List<Future<String>> results = new ArrayList<>(groupCount);
-
-            try {
-                for (int d = 4; d <= n; d += 2) {
-                    final int depth = d;
-                    results.add(executor.submit(() -> {
-                        long iterations = 1L << (n - depth + 4);
-                        long sum = 0;
-                        for (long i = 0; i < iterations; i++) {
-                            sum += buildTree(depth).check();
-                        }
-                        return iterations + "\t trees of depth " + depth
-                                + "\t check: " + sum;
-                    }));
-                }
-
-                for (Future<String> result : results) {
-                    System.out.println(result.get());
-                }
-            } finally {
-                executor.shutdown();
+        private int itemCheck() {
+            // if necessary deallocate here
+            if (null == left) {
+                return 1;
             }
+            return 1 + left.itemCheck() + right.itemCheck();
         }
 
-        System.out.println("long lived tree of depth " + n
-                + "\t check: " + longLivedTree.check());
     }
+
 }

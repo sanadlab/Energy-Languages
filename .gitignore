@@ -43,3 +43,5 @@ bin/
 reference/clbg/inputs/fasta-25000000.txt
 reference/clbg/inputs/fasta-2500000.txt
 reference/clbg/inputs/fasta-500000.txt
+*.jar
+*.tasty

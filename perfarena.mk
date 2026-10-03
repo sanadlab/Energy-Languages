@@ -43,6 +43,15 @@
 # so C# output is deterministic across hosts. Harmless for non-.NET languages.
 export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = 1
 
+# Node colorizes a bare value passed to console.log (e.g. `console.log(label, n)`
+# renders n as yellow `\e[33m..\e[39m`) via util.inspect whenever colors are on.
+# Newer Node (v24+) turns colors on even for a piped stdout, so a correct JS
+# program's output picked up ANSI escapes and failed the byte diff (seen on
+# regex-redux). FORCE_COLOR=0 disables that auto-coloring; it does not strip
+# escapes a program writes itself, so a genuinely-wrong answer still fails.
+# Harmless for non-Node languages.
+export FORCE_COLOR = 0
+
 # ---- Toolchain versions (single source of truth) --------------------------
 # Pinned tool versions live in perfarena/toolchain-versions.mk, resolved
 # relative to THIS file so it works from any cell depth. `-include` tolerates

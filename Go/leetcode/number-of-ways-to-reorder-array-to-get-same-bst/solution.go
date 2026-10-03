@@ -20,7 +20,7 @@ func numOfWays(nums []int) int {
 		for i := 1; i < m; i++ {
 			if arr[i] < root {
 				left = append(left, arr[i])
-			} else {
+			} else if arr[i] > root {
 				right = append(right, arr[i])
 			}
 		}

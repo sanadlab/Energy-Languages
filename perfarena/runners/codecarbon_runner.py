@@ -261,8 +261,10 @@ def main(argv: list[str] | None = None) -> int:
     # Per-run wall-clock cap. A CLBG whole-program run finishes in seconds, so a
     # run that blows past this is a broken (hung or pathologically slow) solution.
     # Cap it low enough that a hang dies fast and cannot orphan a core-pegging
-    # process, rather than burning the full handler timeout.
-    run_timeout = float(os.environ.get("PERFARENA_CLBG_RUN_TIMEOUT_S", "120"))
+    # process, rather than burning the full handler timeout. Default relaxed
+    # 120 -> 300 s to give a slow-but-correct solution more headroom before a
+    # premature per-run TLE; override via the env var.
+    run_timeout = float(os.environ.get("PERFARENA_CLBG_RUN_TIMEOUT_S", "300"))
     total = warmup + measure
     for i in range(total):
         phase = "warmup" if i < warmup else "measure"

@@ -1,23 +1,24 @@
 package solution
 
 func countVowelSubstrings(word string) int {
-    result := 0
-    state := 0 // Bitmask to track presence of vowels: a=1, e=2, i=4, o=8, u=16
-    
-    for _, char := range word {
-        switch char {
-            case 'a': state |= 1
-            case 'e': state |= 2
-            case 'i': state |= 4
-            case 'o': state |= 8
-            case 'u': state |= 16
-            default: state = 0 // Reset if non-vowel is encountered
+    isVowel := func(c byte) bool {
+        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
+    }
+
+    count := 0
+    n := len(word)
+    for i := 0; i < n; i++ {
+        if !isVowel(word[i]) {
+            continue
         }
-        
-        if state == 31 { // All vowels are present
-            result++
+        seen := map[byte]bool{}
+        for j := i; j < n && isVowel(word[j]); j++ {
+            seen[word[j]] = true
+            if len(seen) == 5 {
+                count++
+            }
         }
     }
-    
-    return result
+
+    return count
 }
