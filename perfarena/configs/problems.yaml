@@ -21,7 +21,11 @@ problems:
       management. Build one "stretch" tree of depth N+1, one
       long-lived tree of depth N, and for each depth d in 4, 6, ...,
       N build 2^(N-d+4) short-lived trees of depth d. Print the
-      node-count checksums for each group.
+      node-count checksums for each group. You MUST actually
+      construct and then free the trees (allocate real nodes); it is
+      NOT allowed to compute the checksums analytically or in closed
+      form without building the trees — this benchmark measures real
+      allocation and deallocation, not arithmetic.
     input_spec: "A single non-negative integer N read as a command-line argument."
     output_spec: |
       stretch tree of depth N+1\t check: <count>
