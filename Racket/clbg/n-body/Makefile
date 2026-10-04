@@ -1,15 +1,12 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make nbody.racket-2.racket
+LANG        = Racket
+TEST        = n-body
+SOURCE      = nbody.rkt
+OUTPUT      = compiled/nbody_rkt.zo
+ARG         = 15000000
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/nbody.racket-2_racket.zo 50000000" Racket n-body
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/n-body.txt
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/nbody.racket-2_racket.zo 50000000
-
-mem:
-	/usr/bin/time -v  /usr/local/src/racket-6.8/bin/racket ./compiled/nbody.racket-2_racket.zo 50000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/local/src/racket-6.8/bin/racket ./compiled/nbody.racket-2_racket.zo 50000000
+include ../../../perfarena.mk

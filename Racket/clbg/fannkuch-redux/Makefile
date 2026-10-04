@@ -1,15 +1,12 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make fannkuchredux.racket-3.racket
+LANG        = Racket
+TEST        = fannkuch-redux
+SOURCE      = fannkuchredux.rkt
+OUTPUT      = compiled/fannkuchredux_rkt.zo
+ARG         = 11
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/fannkuchredux.racket-3_racket.zo 12" Racket fannkuch-redux
+VALIDATION_N       = 7
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fannkuch-redux.txt
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/fannkuchredux.racket-3_racket.zo 12
-
-mem:
-	/usr/bin/time -v /usr/local/src/racket-6.8/bin/racket ./compiled/fannkuchredux.racket-3_racket.zo 12
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/local/src/racket-6.8/bin/racket ./compiled/fannkuchredux.racket-3_racket.zo 12
+include ../../../perfarena.mk

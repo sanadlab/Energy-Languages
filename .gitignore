@@ -6,6 +6,8 @@ tmp.*
 *.class
 *.beam
 erl_crash.dump
+compiled/
+*.zo
 lshw
 sysinfo.*
 __pycache__/

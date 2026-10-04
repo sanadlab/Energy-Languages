@@ -1,15 +1,13 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make mandelbrot.racket-3.racket
+LANG        = Racket
+TEST        = mandelbrot
+SOURCE      = mandelbrot.rkt
+OUTPUT      = compiled/mandelbrot_rkt.zo
+ARG         = 3504
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/mandelbrot.racket-3_racket.zo 16000" Racket mandelbrot
+VALIDATION_N       = 200
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/java.pbm
+BINARY_OUTPUT      = 1
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/mandelbrot.racket-3_racket.zo 16000
-
-mem:
-	/usr/bin/time -v /usr/local/src/racket-6.8/bin/racket ./compiled/mandelbrot.racket-3_racket.zo 16000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/local/src/racket-6.8/bin/racket ./compiled/mandelbrot.racket-3_racket.zo 16000
+include ../../../perfarena.mk

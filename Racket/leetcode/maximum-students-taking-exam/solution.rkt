@@ -1,0 +1,43 @@
+#lang racket
+(require "../../../selection/nodes.rkt")
+
+(define (popcount x)
+  (let loop ([x x] [c 0])
+    (if (= x 0) c (loop (arithmetic-shift x -1) (+ c (bitwise-and x 1))))))
+
+(define/contract (max-students seats)
+  (-> (listof (listof string?)) exact-integer?)
+  (define rows (list->vector (map list->vector seats)))
+  (define m (vector-length rows))
+  (cond
+    [(= m 0) 0]
+    [else
+     (define n (vector-length (vector-ref rows 0)))
+     (define avail (make-vector m 0))
+     (for ([i (in-range m)])
+       (define row (vector-ref rows i))
+       (define rn (vector-length row))
+       (for ([j (in-range n)])
+         (when (and (< j rn) (string=? (vector-ref row j) "."))
+           (vector-set! avail i (bitwise-ior (vector-ref avail i) (arithmetic-shift 1 j))))))
+     (define full (arithmetic-shift 1 n))
+     (define best (make-vector full -1))
+     (vector-set! best 0 0)
+     (for ([i (in-range m)])
+       (define ndp (make-vector full -1))
+       (for ([mask (in-range full)])
+         (when (and (= (bitwise-and mask (vector-ref avail i)) mask)
+                    (= (bitwise-and mask (arithmetic-shift mask 1)) 0))
+           (define pc (popcount mask))
+           (for ([pmask (in-range full)])
+             (when (and (>= (vector-ref best pmask) 0)
+                        (= (bitwise-and mask (arithmetic-shift pmask 1)) 0)
+                        (= (bitwise-and mask (arithmetic-shift pmask -1)) 0))
+               (define val (+ (vector-ref best pmask) pc))
+               (when (> val (vector-ref ndp mask))
+                 (vector-set! ndp mask val))))))
+       (set! best ndp))
+     (for/fold ([mx (vector-ref best 0)]) ([v (in-vector best)])
+       (max mx v))]))
+
+(provide (all-defined-out))

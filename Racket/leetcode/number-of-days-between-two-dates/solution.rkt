@@ -1,0 +1,22 @@
+#lang racket
+(require "../../../selection/nodes.rkt")
+
+(define/contract (days-between-dates date1 date2)
+  (-> string? string? exact-integer?)
+  (define (days-from-civil y m d)
+    (let ([y (if (<= m 2) (- y 1) y)])
+      (define era (quotient y 400))
+      (define yoe (- y (* era 400)))
+      (define doy (+ (quotient (+ (* 153 (+ m (if (> m 2) -3 9))) 2) 5) d -1))
+      (define doe (+ (* yoe 365) (quotient yoe 4) (- (quotient yoe 100)) doy))
+      (+ (* era 146097) doe -719468)))
+  (define (parse s)
+    (define parts (string-split s "-"))
+    (define v (for/list ([i (in-range 3)])
+                (if (< i (length parts))
+                    (or (string->number (list-ref parts i)) 0)
+                    0)))
+    (days-from-civil (list-ref v 0) (list-ref v 1) (list-ref v 2)))
+  (abs (- (parse date1) (parse date2))))
+
+(provide (all-defined-out))

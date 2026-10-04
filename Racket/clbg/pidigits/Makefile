@@ -1,15 +1,12 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make pidigits.racket-2.racket
+LANG        = Racket
+TEST        = pidigits
+SOURCE      = pidigits.rkt
+OUTPUT      = compiled/pidigits_rkt.zo
+ARG         = 10000
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/pidigits.racket-2_racket.zo 10000" Racket pidigits
+VALIDATION_N       = 28
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/pidigits.txt
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/pidigits.racket-2_racket.zo 10000
-
-mem:
-	/usr/bin/time -v /usr/local/src/racket-6.8/bin/racket ./compiled/pidigits.racket-2_racket.zo 10000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/local/src/racket-6.8/bin/racket ./compiled/pidigits.racket-2_racket.zo 10000
+include ../../../perfarena.mk

@@ -24,6 +24,7 @@ case "$LANG_ARG" in
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
   dart)       python3 "$SEL/harness_dart.py" "$BUDGET" "$IDX" ;; # dart run (JIT) driver
   elixir)     elixir "$SEL/harness.exs" "$BUDGET" "$IDX" ;;       # BEAM, dynamic apply
+  racket)     racket "$SEL/harness.rkt" "$BUDGET" "$IDX" ;;       # Racket VM, dynamic-require
   erlang)
     work="$(mktemp -d)"
     if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >/dev/null 2>&1; then

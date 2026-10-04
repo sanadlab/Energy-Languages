@@ -1,15 +1,12 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make fasta.racket-3.racket
+LANG        = Racket
+TEST        = fasta
+SOURCE      = fasta.rkt
+OUTPUT      = compiled/fasta_rkt.zo
+ARG         = 12000000
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/fasta.racket-3_racket.zo 25000000" Racket fasta
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fasta.txt
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/fasta.racket-3_racket.zo 25000000
-
-mem:
-	/usr/bin/time -v /usr/local/src/racket-6.8/bin/racket ./compiled/fasta.racket-3_racket.zo 25000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes /usr/local/src/racket-6.8/bin/racket ./compiled/fasta.racket-3_racket.zo 25000000
+include ../../../perfarena.mk

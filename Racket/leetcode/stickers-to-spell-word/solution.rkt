@@ -1,0 +1,37 @@
+#lang racket
+(require "../../../selection/nodes.rkt")
+
+(define/contract (min-stickers stickers target)
+  (-> (listof string?) string? exact-integer?)
+  (define n (string-length target))
+  (define full (- (arithmetic-shift 1 n) 1))
+  (define INF 1000000)
+  (define dp (make-vector (arithmetic-shift 1 n) INF))
+  (vector-set! dp 0 0)
+  (define tvec (list->vector (map (lambda (ch) (- (char->integer ch) 97)) (string->list target))))
+  (define cnt
+    (for/list ([s (in-list stickers)])
+      (define c (make-vector 26 0))
+      (for ([ch (in-string s)])
+        (define idx (- (char->integer ch) 97))
+        (vector-set! c idx (+ (vector-ref c idx) 1)))
+      c))
+  (for ([state (in-range (arithmetic-shift 1 n))])
+    (unless (= (vector-ref dp state) INF)
+      (for ([c (in-list cnt)])
+        (define avail (vector-copy c))
+        (define nxt
+          (for/fold ([nxt state]) ([i (in-range n)])
+            (if (zero? (bitwise-and state (arithmetic-shift 1 i)))
+                (let ([idx (vector-ref tvec i)])
+                  (if (> (vector-ref avail idx) 0)
+                      (begin
+                        (vector-set! avail idx (- (vector-ref avail idx) 1))
+                        (bitwise-ior nxt (arithmetic-shift 1 i)))
+                      nxt))
+                nxt)))
+        (when (< (+ (vector-ref dp state) 1) (vector-ref dp nxt))
+          (vector-set! dp nxt (+ (vector-ref dp state) 1))))))
+  (if (= (vector-ref dp full) INF) -1 (vector-ref dp full)))
+
+(provide (all-defined-out))

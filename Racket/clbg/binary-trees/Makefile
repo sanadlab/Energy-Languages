@@ -1,15 +1,12 @@
-compile:
-	/usr/local/src/racket-6.8/bin/raco make binarytrees.racket-3.racket
-	
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "/usr/local/src/racket-6.8/bin/racket ./compiled/binarytrees.racket-3_racket.zo 21" Racket binary-trees
+LANG        = Racket
+TEST        = binary-trees
+SOURCE      = binarytrees.rkt
+OUTPUT      = compiled/binarytrees_rkt.zo
+ARG         = 18
+RUN_CMD     = racket $(SOURCE) $(ARG)
+COMPILE_CMD = raco make $(SOURCE)
 
-run:
-	/usr/local/src/racket-6.8/bin/racket ./compiled/binarytrees.racket-3_racket.zo 21
+VALIDATION_N       = 10
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/binary-trees.txt
 
-mem:
-	/usr/bin/time -v  /usr/local/src/racket-6.8/bin/racket ./compiled/binarytrees.racket-3_racket.zo 21
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  /usr/local/src/racket-6.8/bin/racket ./compiled/binarytrees.racket-3_racket.zo 21
+include ../../../perfarena.mk

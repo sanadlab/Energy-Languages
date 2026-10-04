@@ -1,0 +1,35 @@
+#lang racket
+(require "../../../selection/nodes.rkt")
+
+(define/contract (max-compatibility-sum students mentors)
+  (-> (listof (listof exact-integer?)) (listof (listof exact-integer?)) exact-integer?)
+  (define m (length students))
+  (cond
+    [(= m 0) 0]
+    [else
+     (define n (length (car students)))
+     (define sv (list->vector (map list->vector students)))
+     (define mv (list->vector (map list->vector mentors)))
+     (define (popcount x)
+       (let loop ([x x] [c 0])
+         (if (= x 0) c (loop (arithmetic-shift x -1) (+ c (bitwise-and x 1))))))
+     (define score (make-vector (* m m) 0))
+     (for ([i (in-range m)])
+       (for ([j (in-range m)])
+         (vector-set! score (+ (* i m) j)
+           (for/sum ([k (in-range n)])
+             (if (= (vector-ref (vector-ref sv i) k) (vector-ref (vector-ref mv j) k)) 1 0)))))
+     (define sz (arithmetic-shift 1 m))
+     (define dp (make-vector sz 0))
+     (for ([mask (in-range sz)])
+       (define i (popcount mask))
+       (unless (>= i m)
+         (for ([j (in-range m)])
+           (unless (bitwise-bit-set? mask j)
+             (define nm (bitwise-ior mask (arithmetic-shift 1 j)))
+             (define val (+ (vector-ref dp mask) (vector-ref score (+ (* i m) j))))
+             (when (> val (vector-ref dp nm))
+               (vector-set! dp nm val))))))
+     (vector-ref dp (sub1 sz))]))
+
+(provide (all-defined-out))

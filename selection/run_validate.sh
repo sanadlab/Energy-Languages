@@ -70,6 +70,7 @@ PROJ
   scala)      python3 "$SEL/harness_scala.py" validate ;;
   dart)       python3 "$SEL/harness_dart.py" validate ;;
   elixir)     elixir "$SEL/validate_suite.exs" ;;
+  racket)     racket "$SEL/validate_suite.rkt" ;;
   erlang)
     work="$(mktemp -d)"
     if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >/tmp/leetval_erlc.log 2>&1; then
