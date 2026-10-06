@@ -8,7 +8,7 @@ RUN_CMD     = $(PYTHON) -OO $(OUTPUT) $(ARG)
 COMPILE_CMD = cp $(SOURCE) $(OUTPUT)
 
 VALIDATION_N       = 200
-REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot.pbm
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/python3.pbm
 BINARY_OUTPUT      = 1
 
 include ../../../perfarena.mk
