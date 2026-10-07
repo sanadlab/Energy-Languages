@@ -9,7 +9,8 @@ DART ?= dart
 COMPILE_CMD = $(DART) compile exe $(SOURCE) -o $(OUTPUT)
 
 VALIDATION_N       = 200
-REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/dart.pbm
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot.pbm
 BINARY_OUTPUT      = 1
+BINARY_TOLERANCE_BYTES = 16
 
 include ../../../perfarena.mk

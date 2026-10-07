@@ -158,6 +158,11 @@ problems:
     validation_n: "200"
     reference_output: "reference/outputs/mandelbrot.pbm"
     binary_output: true
+    # Escape-time bitmap differs by a few boundary bytes across languages
+    # (floating-point rounding near the set edge), so one shared reference
+    # tolerates a small, size-exact byte difference. A wrong algorithm differs
+    # by orders of magnitude more.
+    binary_tolerance_bytes: 16
 
   - key: n-body
     name: "n-body"

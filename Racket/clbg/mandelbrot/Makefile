@@ -7,7 +7,8 @@ RUN_CMD     = racket $(SOURCE) $(ARG)
 COMPILE_CMD = raco make $(SOURCE)
 
 VALIDATION_N       = 200
-REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/java.pbm
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot.pbm
 BINARY_OUTPUT      = 1
+BINARY_TOLERANCE_BYTES = 16
 
 include ../../../perfarena.mk

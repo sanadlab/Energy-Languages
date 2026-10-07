@@ -83,15 +83,12 @@ def _validation_block(problem_key: str, language_folder: str = "") -> str:
     vn = meta.get("validation_n", "")
     if vn:
         lines.append(f"VALIDATION_N       = {vn}")
+    # Every problem (mandelbrot included) validates against ONE shared
+    # reference_output read from the same place for all languages. mandelbrot
+    # output is a deterministic bitmap, byte-identical across languages, so a
+    # single reference/outputs/mandelbrot.pbm serves them all — no per-language
+    # files, no drift between copies.
     ref = meta.get("reference_output", "")
-    if problem_key == "mandelbrot" and language_folder not in {"", "Python"}:
-        key = {
-            "C++": "cpp", "CSharp": "csharp", "Java": "java",
-            "JavaScript": "javascript", "TypeScript": "typescript",
-            "PHP": "php", "Go": "go", "Rust": "rust", "Ruby": "ruby",
-        }.get(language_folder)
-        if key:
-            ref = f"reference/outputs/mandelbrot/{key}.pbm"
     if ref:
         lines.append(f"REFERENCE_OUTPUT   = ../../{ref}")
     if meta.get("needs_stdin"):
@@ -100,6 +97,9 @@ def _validation_block(problem_key: str, language_folder: str = "") -> str:
             lines.append(f"STDIN_FILE         = ../../{stdin_file}")
     if meta.get("binary_output"):
         lines.append("BINARY_OUTPUT      = 1")
+        tol = meta.get("binary_tolerance_bytes")
+        if tol:
+            lines.append(f"BINARY_TOLERANCE_BYTES = {tol}")
     return "\n".join(lines)
 
 

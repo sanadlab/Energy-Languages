@@ -12,7 +12,8 @@ CC          ?= gcc
 COMPILE_CMD = $(CC) -pipe -Wall -O3 -fomit-frame-pointer -march=native -mno-fma -fno-finite-math-only -mfpmath=sse -msse2 -fopenmp $(SOURCE) -o $(OUTPUT)
 
 VALIDATION_N       = 200
-REFERENCE_OUTPUT   = ../../../../reference/clbg/outputs/mandelbrot/cpp.pbm
+REFERENCE_OUTPUT   = ../../../../reference/clbg/outputs/mandelbrot.pbm
 BINARY_OUTPUT      = 1
+BINARY_TOLERANCE_BYTES = 16
 
 include ../../../../perfarena.mk

@@ -17,7 +17,8 @@ endif
 COMPILE_CMD = cargo build --release --manifest-path ../Cargo.toml --bin mandelbrot && cp ../target/release/mandelbrot $(OUTPUT)
 
 VALIDATION_N       = 200
-REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot/rust.pbm
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot.pbm
 BINARY_OUTPUT      = 1
+BINARY_TOLERANCE_BYTES = 16
 
 include ../../../perfarena.mk

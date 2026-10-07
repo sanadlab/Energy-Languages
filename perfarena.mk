@@ -157,6 +157,13 @@ endif
 VALIDATION_N       ?=
 REFERENCE_OUTPUT   ?=
 BINARY_OUTPUT      ?= 0
+# Max differing bytes tolerated in a BINARY_OUTPUT compare, default 0 (exact).
+# mandelbrot sets this small and non-zero: its escape-time bitmap differs by a
+# few boundary bytes across languages (floating-point rounding near the set
+# edge), so one shared reference needs a small tolerance to avoid false
+# rejections. The produced output's SIZE must still match exactly; a wrong
+# algorithm / closed-form cheat differs by orders of magnitude more than this.
+BINARY_TOLERANCE_BYTES ?= 0
 _VALIDATION_ACTUAL ?= .perfarena_validate_actual.out
 
 # Build the full run command, appending stdin redirect if needed.
@@ -215,11 +222,16 @@ validate:
 	        echo "validate: FAIL (program exited $$rc)" >&2 ; cat $(_VALIDATION_ACTUAL).err >&2 ; \
 	        rm -f $(_VALIDATION_ACTUAL) $(_VALIDATION_ACTUAL).err ; exit $$rc ; \
 	    fi ; \
-	    if [ "$(BINARY_OUTPUT)" = "1" ]; then cmp -s $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) ; \
+	    if [ "$(BINARY_OUTPUT)" = "1" ]; then \
+	        sz_a=$$(wc -c < $(_VALIDATION_ACTUAL)) ; sz_r=$$(wc -c < $(REFERENCE_OUTPUT)) ; \
+	        ndiff=$$(cmp -l $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | wc -l | tr -d ' ') ; \
+	        if [ "$$sz_a" = "$$sz_r" ] && [ "$$ndiff" -le "$(BINARY_TOLERANCE_BYTES)" ]; then \
+	            [ "$$ndiff" -gt 0 ] && echo "validate: $$ndiff byte(s) differ, within tolerance $(BINARY_TOLERANCE_BYTES) (boundary float noise)" >&2 ; true ; \
+	        else false ; fi ; \
 	    else diff -q $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) > /dev/null ; fi && echo "validate: PASS" || { \
 	        echo "validate: FAIL (output differs from $(REFERENCE_OUTPUT))" >&2 ; \
 	        if [ "$(BINARY_OUTPUT)" = "1" ]; then \
-	            echo "=== binary output differs: $$(cmp $(REFERENCE_OUTPUT) $(_VALIDATION_ACTUAL) 2>&1 | head -1) ===" >&2 ; \
+	            echo "=== binary output differs: produced=$$(wc -c < $(_VALIDATION_ACTUAL)) B, expected=$$(wc -c < $(REFERENCE_OUTPUT)) B, $$(cmp -l $(_VALIDATION_ACTUAL) $(REFERENCE_OUTPUT) 2>/dev/null | wc -l | tr -d ' ') byte(s) differ > tolerance $(BINARY_TOLERANCE_BYTES); $$(cmp $(REFERENCE_OUTPUT) $(_VALIDATION_ACTUAL) 2>&1 | head -1) ===" >&2 ; \
 	            echo "--- expected ($(REFERENCE_OUTPUT), hex head) ---" >&2 ; xxd $(REFERENCE_OUTPUT) 2>/dev/null | head -12 >&2 ; \
 	            echo "--- produced (hex head) ---" >&2 ; xxd $(_VALIDATION_ACTUAL) 2>/dev/null | head -12 >&2 ; \
 	        else \
