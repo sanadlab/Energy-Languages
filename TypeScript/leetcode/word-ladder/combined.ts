@@ -1,35 +1,47 @@
 function ladderLength(beginWord: string, endWord: string, wordList: string[]): number {
-    const dict = new Set(wordList);
-    if (!dict.has(endWord)) return 0;
-    let queue: string[] = [beginWord];
-    const visited = new Set<string>([beginWord]);
-    let level = 1;
-    while (queue.length) {
-        const next: string[] = [];
-        for (const word of queue) {
-            if (word === endWord) return level;
-            const arr = word.split("");
-            for (let i = 0; i < arr.length; i++) {
-                const old = arr[i];
-                for (let c = 97; c <= 122; c++) {
-                    const ch = String.fromCharCode(c);
-                    if (ch === old) continue;
-                    arr[i] = ch;
-                    const cand = arr.join("");
-                    if (dict.has(cand) && !visited.has(cand)) {
-                        visited.add(cand);
-                        next.push(cand);
+    const unvisited = new Set<string>(wordList);
+    if (!unvisited.has(endWord)) return 0;
+
+    let front = new Set<string>([beginWord]);
+    let back = new Set<string>([endWord]);
+    let length = 1;
+
+    unvisited.delete(beginWord);
+    unvisited.delete(endWord);
+
+    while (front.size > 0 && back.size > 0) {
+        if (front.size > back.size) {
+            [front, back] = [back, front];
+        }
+
+        const next = new Set<string>();
+
+        for (const word of front) {
+            for (let i = 0; i < word.length; i++) {
+                const prefix = word.slice(0, i);
+                const suffix = word.slice(i + 1);
+                const original = word.charCodeAt(i);
+
+                for (let code = 97; code <= 122; code++) {
+                    if (code === original) continue;
+
+                    const candidate = prefix + String.fromCharCode(code) + suffix;
+
+                    if (back.has(candidate)) return length + 1;
+
+                    if (unvisited.delete(candidate)) {
+                        next.add(candidate);
                     }
                 }
-                arr[i] = old;
             }
         }
-        queue = next;
-        level++;
+
+        front = next;
+        length++;
     }
+
     return 0;
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

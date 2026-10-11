@@ -23,6 +23,8 @@ leetcode-energy/**/energy_*.json
 .kt_built
 META-INF/
 .cs_built
+.perf_build/
+.peak_rss
 out/
 obj/
 bin/

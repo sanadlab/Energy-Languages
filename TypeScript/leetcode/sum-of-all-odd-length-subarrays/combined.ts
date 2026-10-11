@@ -1,13 +1,13 @@
 function sumOddLengthSubarrays(arr: number[]): number {
     const n = arr.length;
-    let total = 0;
+    let sum = 0;
     for (let i = 0; i < n; i++) {
-        const count = Math.floor(((i + 1) * (n - i) + 1) / 2);
-        total += count * arr[i];
+        const total = (i + 1) * (n - i);
+        const odd = Math.ceil(total / 2);
+        sum += odd * arr[i];
     }
-    return total;
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+    return sum;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

@@ -1,16 +1,24 @@
 function countCollisions(directions: string): number {
-    const n = directions.length;
-    let i = 0;
-    while (i < n && directions[i] === 'L') i++;
-    let j = n - 1;
-    while (j >= 0 && directions[j] === 'R') j--;
-    let count = 0;
-    for (let k = i; k <= j; k++) {
-        if (directions[k] !== 'S') count++;
+    let left = 0;
+    let right = directions.length - 1;
+
+    while (left <= right && directions[left] === 'L') {
+        left++;
     }
-    return count;
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    while (left <= right && directions[right] === 'R') {
+        right--;
+    }
+
+    let collisions = 0;
+    for (let i = left; i <= right; i++) {
+        if (directions[i] !== 'S') {
+            collisions++;
+        }
+    }
+
+    return collisions;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

@@ -11,6 +11,80 @@ set -o pipefail
 LANG_ARG="$1"; BUDGET="${2:-1.0}"; IDX="${3:-0}"
 SEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# PERFARENA_HARNESS_MODE selects what this call does:
+#   all   (default) build if needed, then run — the energy/time path.
+#   build compile the solution and its driver into .perf_build/ (or out/ for
+#         C#) and exit; runs nothing. A no-op for interpreted languages.
+#   run   run the PREBUILT program and nothing else, via `exec`, so the
+#         process this script started IS the measured program.
+#   argv  print the command that run mode would exec (NUL-separated) and
+#         exit, so the memory pass can start the program DIRECTLY: Linux keeps
+#         a process's peak RSS across exec, so starting it through bash would
+#         report bash's own ~3 MB for a solution that uses less. A TypeScript
+#         run additionally needs PERFARENA_TS_PREBUILT=1 in its environment.
+# Languages without a build/run split fall through to `all` in run mode and
+# exit 3 in argv mode (no direct command).
+MODE="${PERFARENA_HARNESS_MODE:-all}"
+
+launch() {   # run mode: become the program; argv mode: print its command line
+  if [ "$MODE" = argv ]; then printf '%s\0' "$@"; exit 0; fi
+  exec "$@"
+}
+
+cs_build() {   # C#: build once per solution (content-hash keyed) into out/
+  cp "$SEL/Harness.cs" ./Harness.cs
+  cat > bench.csproj <<'PROJ'
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>
+<OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+<ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+<AssemblyName>bench</AssemblyName><EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+</PropertyGroup><ItemGroup><Compile Include="solution.cs"/><Compile Include="Harness.cs"/></ItemGroup></Project>
+PROJ
+  local h rc=0
+  h="$(cksum solution.cs 2>/dev/null | cut -d' ' -f1)"
+  if [ ! -f .cs_built ] || [ "$(cat .cs_built 2>/dev/null)" != "$h" ] || [ ! -f out/bench.dll ]; then
+    dotnet build bench.csproj -c Release -o out --nologo -v quiet >/dev/null 2>&1 && printf '%s' "$h" > .cs_built
+    rc=$?
+  fi
+  rm -f Harness.cs bench.csproj; rm -rf obj bin
+  return $rc
+}
+
+if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
+  case "$LANG_ARG" in
+    python3|javascript|php)
+      [ "$MODE" = build ] && exit 0
+      case "$LANG_ARG" in
+        python3)    launch python3 test_suite.py "$BUDGET" "$IDX" ;;
+        javascript) launch node "$SEL/harness.js" "$BUDGET" "$IDX" ;;
+        php)        launch php -d memory_limit=2G "$SEL/harness.php" "$BUDGET" "$IDX" ;;
+      esac ;;
+    typescript)
+      [ "$MODE" = build ] && exec node "$SEL/harness_ts.js" --build
+      export PERFARENA_TS_PREBUILT=1
+      launch node "$SEL/harness_ts.js" "$BUDGET" "$IDX" ;;
+    cpp)
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_cpp.py" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt C++ driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
+    java)
+      if [ "$MODE" = build ]; then
+        rm -rf .perf_build && mkdir -p .perf_build \
+          && javac -d .perf_build "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" solution.java >/dev/null 2>&1
+        exit $?
+      fi
+      [ -f .perf_build/Harness.class ] || { echo "run mode: no prebuilt Java classes; run the build mode first" >&2; exit 2; }
+      launch java -cp .perf_build Harness "$BUDGET" "$IDX" ;;
+    csharp)
+      if [ "$MODE" = build ]; then cs_build; exit $?; fi
+      [ -f out/bench.dll ] || { echo "run mode: no prebuilt C# assembly; run the build mode first" >&2; exit 2; }
+      launch dotnet out/bench.dll "$BUDGET" "$IDX" ;;
+    *)
+      [ "$MODE" = build ] && exit 0
+      [ "$MODE" = argv ] && exit 3 ;;   # no split: run mode uses the combined path below
+  esac
+fi
+
 case "$LANG_ARG" in
   python3)    python3 test_suite.py "$BUDGET" "$IDX" ;;            # cell already has the loop harness
   javascript) node "$SEL/harness.js" "$BUDGET" "$IDX" ;;

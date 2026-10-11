@@ -20,8 +20,11 @@ function loadTS() {
   try { return require('/usr/local/lib/node_modules/typescript'); } catch (e) {}
   throw new Error('TypeScript compiler (transpileModule) not found');
 }
-const ts = loadTS();
+// Loaded lazily: a run on a prebuilt solution (PERFARENA_TS_PREBUILT=1) never
+// loads the compiler, so the memory pass does not measure it.
+let ts = null;
 function transpile(src) {
+  if (!ts) ts = loadTS();
   return ts.transpileModule(src, {
     compilerOptions: {
       // ES2019, NOT ES2020: `??` and `?.` are ES2020 syntax, so an ES2020
@@ -72,6 +75,14 @@ function canon(r){
 function fold(acc, r){ let h=0; const s=canon(r); for(let i=0;i<s.length;i++) h=(h*31 + s.charCodeAt(i))|0; return (acc*1000003 + h)|0; }
 
 const cell = process.cwd();
+// `node harness_ts.js --build` transpiles solution.ts once into .perf_build/
+// for run_harness.sh build mode, and exits without running anything.
+const PREBUILT = path.join(cell, '.perf_build', 'solution.js');
+if (process.argv[2] === '--build') {
+  fs.mkdirSync(path.dirname(PREBUILT), { recursive: true });
+  fs.writeFileSync(PREBUILT, transpile(fs.readFileSync(path.join(cell, 'solution.ts'), 'utf8')));
+  process.exit(0);
+}
 const slug = path.basename(cell);
 const ref  = path.join(cell, '..', '..', '..', 'reference', 'leetcode');
 const out  = JSON.parse(fs.readFileSync(path.join(ref,'outputs',slug+'.json'),'utf8'));
@@ -84,7 +95,13 @@ const input = kase.input;
 // (function / class / const / let / var) live in ONE Function body scope; a
 // trailing `return <name>` inside that same body can therefore read any of them
 // regardless of strict mode (this is why we don't rely on sloppy-eval leakage).
-const jsSrc = transpile(fs.readFileSync(path.join(cell,'solution.ts'),'utf8'));
+let jsSrc;
+if (process.env.PERFARENA_TS_PREBUILT === '1') {
+  if (!fs.existsSync(PREBUILT)) { process.stderr.write('run mode: no prebuilt TypeScript; run the build mode first\n'); process.exit(2); }
+  jsSrc = fs.readFileSync(PREBUILT, 'utf8');
+} else {
+  jsSrc = transpile(fs.readFileSync(path.join(cell,'solution.ts'),'utf8'));
+}
 function grab(name){
   return (new Function(jsSrc + '\n;return (typeof ' + name + " === 'undefined') ? undefined : " + name + ';'))();
 }

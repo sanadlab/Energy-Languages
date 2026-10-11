@@ -1,30 +1,50 @@
 function removeInvalidParentheses(s: string): string[] {
-    const valid = (st: string): boolean => {
-        let cnt = 0;
-        for (const ch of st) {
-            if (ch === '(') cnt++;
-            else if (ch === ')') { cnt--; if (cnt < 0) return false; }
-        }
-        return cnt === 0;
-    };
-    let level = new Set<string>([s]);
-    while (level.size > 0) {
-        const valids: string[] = [];
-        for (const st of level) if (valid(st)) valids.push(st);
-        if (valids.length > 0) return valids;
-        const nxt = new Set<string>();
-        for (const st of level) {
-            for (let i = 0; i < st.length; i++) {
-                if (st[i] === '(' || st[i] === ')') {
-                    nxt.add(st.slice(0, i) + st.slice(i + 1));
+    const result: string[] = [];
+
+    function search(
+        current: string,
+        scanStart: number,
+        removeStart: number,
+        open: string,
+        close: string
+    ): void {
+        let balance = 0;
+
+        for (let i = scanStart; i < current.length; i++) {
+            if (current[i] === open) balance++;
+            else if (current[i] === close) balance--;
+
+            if (balance >= 0) continue;
+
+            for (let j = removeStart; j <= i; j++) {
+                if (
+                    current[j] === close &&
+                    (j === removeStart || current[j - 1] !== close)
+                ) {
+                    search(
+                        current.slice(0, j) + current.slice(j + 1),
+                        i,
+                        j,
+                        open,
+                        close
+                    );
                 }
             }
+            return;
         }
-        level = nxt;
+
+        const reversed = current.split("").reverse().join("");
+
+        if (open === "(") {
+            search(reversed, 0, 0, ")", "(");
+        } else {
+            result.push(reversed);
+        }
     }
-    return [""];
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    search(s, 0, 0, "(", ")");
+    return result;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

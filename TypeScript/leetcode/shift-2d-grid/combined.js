@@ -1,23 +1,19 @@
 "use strict";
 function shiftGrid(grid, k) {
     const m = grid.length;
-    const n = m > 0 ? grid[0].length : 0;
+    const n = grid[0].length;
     const total = m * n;
-    if (total === 0)
-        return grid;
     k %= total;
-    const flat = [];
-    for (let i = 0; i < m; i++)
-        for (let j = 0; j < n; j++)
-            flat.push(grid[i][j]);
-    const res = Array.from({ length: m }, () => new Array(n).fill(0));
-    for (let idx = 0; idx < total; idx++) {
-        const np = (idx + k) % total;
-        res[Math.floor(np / n)][np % n] = flat[idx];
+    const result = Array.from({ length: m }, () => new Array(n));
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            const destination = (i * n + j + k) % total;
+            result[Math.floor(destination / n)][destination % n] = grid[i][j];
+        }
     }
-    return res;
+    return result;
 }
-// LC-energy test suite (TypeScript) — hardcoded single case.
+; // LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

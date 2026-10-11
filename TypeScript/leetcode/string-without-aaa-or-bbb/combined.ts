@@ -1,21 +1,25 @@
 function strWithout3a3b(a: number, b: number): string {
-    const res: string[] = [];
+    const result: string[] = [];
+
     while (a > 0 || b > 0) {
-        let writeA: boolean;
-        const n = res.length;
-        if (n >= 2 && res[n-1] === res[n-2]) writeA = res[n-1] === 'b';
-        else writeA = a >= b;
-        if (writeA) {
-            if (a === 0) break;
-            res.push('a'); a--;
+        const n = result.length;
+        let useA = a >= b;
+
+        if (n >= 2 && result[n - 1] === result[n - 2]) {
+            useA = result[n - 1] === "b";
+        }
+
+        if (useA) {
+            result.push("a");
+            a--;
         } else {
-            if (b === 0) break;
-            res.push('b'); b--;
+            result.push("b");
+            b--;
         }
     }
-    return res.join('');
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    return result.join("");
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

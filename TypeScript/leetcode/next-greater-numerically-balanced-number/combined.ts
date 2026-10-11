@@ -1,16 +1,44 @@
 function nextBeautifulNumber(n: number): number {
-    for (let x = n + 1; ; x++) {
-        const cnt = new Array(10).fill(0);
-        let t = x;
-        while (t > 0) { cnt[t % 10]++; t = Math.floor(t / 10); }
-        let ok = true;
-        for (let d = 0; d < 10; d++) {
-            if (cnt[d] !== 0 && cnt[d] !== d) { ok = false; break; }
+    // This balanced number is greater than every allowed input.
+    let answer = 1224444;
+    const minLength = String(n).length;
+    const counts = new Array<number>(8).fill(0);
+
+    const generate = (value: number, remaining: number): void => {
+        if (value >= answer) return;
+
+        if (remaining === 0) {
+            if (value > n) answer = value;
+            return;
         }
-        if (ok) return x;
+
+        for (let digit = 1; digit <= 7; digit++) {
+            if (counts[digit] === 0) continue;
+
+            counts[digit]--;
+            generate(value * 10 + digit, remaining - 1);
+            counts[digit]++;
+        }
+    };
+
+    // Each selected digit d must occur exactly d times.
+    for (let mask = 1; mask < (1 << 7); mask++) {
+        counts.fill(0);
+        let length = 0;
+
+        for (let digit = 1; digit <= 7; digit++) {
+            if ((mask & (1 << (digit - 1))) !== 0) {
+                counts[digit] = digit;
+                length += digit;
+            }
+        }
+
+        if (length < minLength || length > 7) continue;
+        generate(0, length);
     }
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    return answer;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

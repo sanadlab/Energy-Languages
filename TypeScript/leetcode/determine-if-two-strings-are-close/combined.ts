@@ -1,20 +1,27 @@
 function closeStrings(word1: string, word2: string): boolean {
     if (word1.length !== word2.length) return false;
-    const c1: number[] = new Array(26).fill(0);
-    const c2: number[] = new Array(26).fill(0);
-    for (const ch of word1) c1[ch.charCodeAt(0) - 97]++;
-    for (const ch of word2) c2[ch.charCodeAt(0) - 97]++;
-    for (let i = 0; i < 26; i++) {
-        if ((c1[i] === 0) !== (c2[i] === 0)) return false;
+
+    const count1: number[] = new Array(26).fill(0);
+    const count2: number[] = new Array(26).fill(0);
+
+    for (let i = 0; i < word1.length; i++) {
+        count1[word1.charCodeAt(i) - 97]++;
+        count2[word2.charCodeAt(i) - 97]++;
     }
-    c1.sort((a, b) => a - b);
-    c2.sort((a, b) => a - b);
+
     for (let i = 0; i < 26; i++) {
-        if (c1[i] !== c2[i]) return false;
+        if ((count1[i] === 0) !== (count2[i] === 0)) return false;
     }
+
+    count1.sort((a, b) => a - b);
+    count2.sort((a, b) => a - b);
+
+    for (let i = 0; i < 26; i++) {
+        if (count1[i] !== count2[i]) return false;
+    }
+
     return true;
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

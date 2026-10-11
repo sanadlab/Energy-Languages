@@ -901,7 +901,9 @@ def build_and_validate(slug, keep=False):
     return rr.returncode
 
 
-def build_and_run(slug, budget, idx, keep=False):
+def compile_driver(slug, cpp, binp, keep=False):
+    """Generate the loop driver for `slug` into `cpp` and compile it to `binp`.
+    -> (status, message, source); status "ok" when the binary exists."""
     info = analyze(slug)
     kind = info["kind"]
     if kind == "plain":
@@ -912,9 +914,6 @@ def build_and_run(slug, budget, idx, keep=False):
         src = gen_driver_design(slug)
     else:
         return kind, info.get("reason", ""), None
-    tmp = tempfile.mkdtemp(prefix="hz_cpp_")
-    cpp = os.path.join(tmp, "driver.cpp")
-    binp = os.path.join(tmp, "driver")
     open(cpp, "w").write(src)
     cc = subprocess.run(["g++", *compile_flags(["-O2", "-std=c++17"]), cpp, "-o", binp],
                         capture_output=True, text=True)
@@ -932,6 +931,22 @@ def build_and_run(slug, budget, idx, keep=False):
             nonempty = [l.strip() for l in (cc.stderr or "").splitlines() if l.strip()]
             msg = nonempty[-1] if nonempty else ""
         return "compile_error", msg, None
+    return "ok", "", src
+
+
+def build_and_run(slug, budget, idx, keep=False):
+    tmp = tempfile.mkdtemp(prefix="hz_cpp_")
+    cpp = os.path.join(tmp, "driver.cpp")
+    binp = os.path.join(tmp, "driver")
+    status, msg, src = compile_driver(slug, cpp, binp, keep)
+    if status != "ok":
+        if not keep:
+            for f in (cpp, binp):
+                try: os.remove(f)
+                except OSError: pass
+            try: os.rmdir(tmp)
+            except OSError: pass
+        return status, msg, None
     celldir = os.path.join(ROOT, "C++", "leetcode", slug)
     rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True,
                         text=True, cwd=celldir, timeout=max(30, budget * 4 + 20))
@@ -949,6 +964,18 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "validate":
         slug = os.path.basename(os.getcwd())
         sys.exit(build_and_validate(slug))
+    if len(sys.argv) > 1 and sys.argv[1] == "build":
+        # Prebuild the driver into <cell>/.perf_build/driver for run_harness.sh
+        # run mode, so a measured run never includes the compiler.
+        slug = os.path.basename(os.getcwd())
+        out = os.path.join(os.getcwd(), ".perf_build")
+        os.makedirs(out, exist_ok=True)
+        status, msg, _ = compile_driver(slug, os.path.join(out, "driver.cpp"),
+                                        os.path.join(out, "driver"))
+        if status != "ok":
+            print("TODO/%s %s: %s" % (status, slug, msg), file=sys.stderr)
+            sys.exit(1)
+        sys.exit(0)
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx    = int(sys.argv[2]) if len(sys.argv) > 2 else 0
     slug   = os.path.basename(os.getcwd())

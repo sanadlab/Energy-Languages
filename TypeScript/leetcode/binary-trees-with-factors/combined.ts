@@ -1,25 +1,43 @@
 function numFactoredBinaryTrees(arr: number[]): number {
+    const MOD = 1_000_000_007;
+    const BASE = 32_768;
+
+    const multiplyModulo = (a: number, b: number): number => {
+        const low = b % BASE;
+        const high = Math.floor(b / BASE);
+
+        return (
+            (a * low) % MOD +
+            ((a * high) % MOD) * BASE
+        ) % MOD;
+    };
+
     arr.sort((a, b) => a - b);
-    const MOD = 1000000007n;
-    const dp = new Map<number, bigint>();
-    let ans = 0n;
+
+    const dp = new Array<number>(arr.length).fill(1);
+    const indexByValue = new Map<number, number>();
+    let answer = 0;
+
     for (let i = 0; i < arr.length; i++) {
-        let cnt = 1n;
         for (let j = 0; j < i; j++) {
-            if (arr[i] % arr[j] === 0) {
-                const b = arr[i] / arr[j];
-                const bv = dp.get(b);
-                if (bv !== undefined) {
-                    cnt = (cnt + (dp.get(arr[j]) as bigint) * bv) % MOD;
-                }
+            if (arr[i] % arr[j] !== 0) continue;
+
+            const otherFactor = arr[i] / arr[j];
+            const k = indexByValue.get(otherFactor);
+
+            if (k !== undefined) {
+                dp[i] += multiplyModulo(dp[j], dp[k]);
+                if (dp[i] >= MOD) dp[i] -= MOD;
             }
         }
-        dp.set(arr[i], cnt);
-        ans = (ans + cnt) % MOD;
+
+        indexByValue.set(arr[i], i);
+        answer += dp[i];
+        if (answer >= MOD) answer -= MOD;
     }
-    return Number(ans);
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    return answer;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

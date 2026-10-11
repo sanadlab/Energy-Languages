@@ -1,35 +1,35 @@
 "use strict";
 function ambiguousCoordinates(s) {
-    const digits = s.substring(1, s.length - 1);
-    const n = digits.length;
-    const res = [];
-    const make = (d) => {
-        const out = [];
-        const m = d.length;
-        if (m === 1) {
-            out.push(d);
-            return out;
+    const digits = s.slice(1, -1);
+    const result = [];
+    function representations(part) {
+        const options = [];
+        if (part.length === 1 || part[0] !== "0") {
+            options.push(part);
         }
-        if (d[0] !== '0')
-            out.push(d);
-        for (let i = 1; i < m; i++) {
-            const l = d.substring(0, i);
-            const r = d.substring(i);
-            if ((l === '0' || l[0] !== '0') && r[r.length - 1] !== '0')
-                out.push(l + '.' + r);
+        if (part[part.length - 1] === "0") {
+            return options;
         }
-        return out;
-    };
-    for (let i = 1; i < n; i++) {
-        const left = make(digits.substring(0, i));
-        const right = make(digits.substring(i));
-        for (const a of left)
-            for (const b of right)
-                res.push('(' + a + ', ' + b + ')');
+        for (let i = 1; i < part.length; i++) {
+            if (i > 1 && part[0] === "0") {
+                break;
+            }
+            options.push(part.slice(0, i) + "." + part.slice(i));
+        }
+        return options;
     }
-    return res;
+    for (let split = 1; split < digits.length; split++) {
+        const left = representations(digits.slice(0, split));
+        const right = representations(digits.slice(split));
+        for (const x of left) {
+            for (const y of right) {
+                result.push(`(${x}, ${y})`);
+            }
+        }
+    }
+    return result;
 }
-// LC-energy test suite (TypeScript) — hardcoded single case.
+; // LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

@@ -1,34 +1,55 @@
 function maxStudents(seats: string[][]): number {
     const m = seats.length;
-    if (m === 0) return 0;
     const n = seats[0].length;
-    const avail = new Array(m).fill(0);
-    for (let i = 0; i < m; i++)
-        for (let j = 0; j < n && j < seats[i].length; j++)
-            if (seats[i][j] === '.') avail[i] |= (1 << j);
-    const full = 1 << n;
-    const popcount = (x: number): number => { let c = 0; while (x) { x &= x - 1; c++; } return c; };
-    let best = new Array(full).fill(-1);
-    best[0] = 0;
-    for (let i = 0; i < m; i++) {
-        const ndp = new Array(full).fill(-1);
-        for (let mask = 0; mask < full; mask++) {
-            if ((mask & avail[i]) !== mask) continue;
-            if ((mask & (mask << 1)) !== 0) continue;
-            const pc = popcount(mask);
-            for (let pmask = 0; pmask < full; pmask++) {
-                if (best[pmask] < 0) continue;
-                if ((mask & (pmask << 1)) !== 0) continue;
-                if ((mask & (pmask >> 1)) !== 0) continue;
-                const val = best[pmask] + pc;
-                if (val > ndp[mask]) ndp[mask] = val;
+    const limit = 1 << n;
+
+    const counts = new Uint8Array(limit);
+    const validMasks: number[] = [];
+
+    for (let mask = 0; mask < limit; mask++) {
+        counts[mask] = counts[mask >> 1] + (mask & 1);
+        if ((mask & (mask << 1)) === 0) {
+            validMasks.push(mask);
+        }
+    }
+
+    let dp = new Int32Array(limit).fill(-1);
+    dp[0] = 0;
+
+    for (let row = 0; row < m; row++) {
+        let available = 0;
+        for (let col = 0; col < n; col++) {
+            if (seats[row][col] === ".") {
+                available |= 1 << col;
             }
         }
-        best = ndp;
+
+        const next = new Int32Array(limit).fill(-1);
+
+        for (const mask of validMasks) {
+            if ((mask & available) !== mask) continue;
+
+            for (const previous of validMasks) {
+                if (dp[previous] === -1) continue;
+                if ((mask & (previous << 1)) !== 0) continue;
+                if ((mask & (previous >> 1)) !== 0) continue;
+
+                next[mask] = Math.max(
+                    next[mask],
+                    dp[previous] + counts[mask]
+                );
+            }
+        }
+
+        dp = next;
     }
-    return Math.max(...best);
-}
-// LC-energy test suite (TypeScript) — hardcoded single case.
+
+    let answer = 0;
+    for (const mask of validMasks) {
+        answer = Math.max(answer, dp[mask]);
+    }
+    return answer;
+};// LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result: any;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

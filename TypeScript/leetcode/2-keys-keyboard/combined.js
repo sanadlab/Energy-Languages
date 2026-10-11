@@ -1,15 +1,18 @@
 "use strict";
 function minSteps(n) {
-    let res = 0;
-    for (let d = 2; d <= n; d++) {
-        while (n % d === 0) {
-            res += d;
-            n = n / d;
+    let operations = 0;
+    for (let factor = 2; factor * factor <= n; factor++) {
+        while (n % factor === 0) {
+            operations += factor;
+            n /= factor;
         }
     }
-    return res;
+    if (n > 1) {
+        operations += n;
+    }
+    return operations;
 }
-// LC-energy test suite (TypeScript) — hardcoded single case.
+; // LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

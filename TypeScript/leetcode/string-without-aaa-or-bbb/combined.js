@@ -1,29 +1,24 @@
 "use strict";
 function strWithout3a3b(a, b) {
-    const res = [];
+    const result = [];
     while (a > 0 || b > 0) {
-        let writeA;
-        const n = res.length;
-        if (n >= 2 && res[n - 1] === res[n - 2])
-            writeA = res[n - 1] === 'b';
-        else
-            writeA = a >= b;
-        if (writeA) {
-            if (a === 0)
-                break;
-            res.push('a');
+        const n = result.length;
+        let useA = a >= b;
+        if (n >= 2 && result[n - 1] === result[n - 2]) {
+            useA = result[n - 1] === "b";
+        }
+        if (useA) {
+            result.push("a");
             a--;
         }
         else {
-            if (b === 0)
-                break;
-            res.push('b');
+            result.push("b");
             b--;
         }
     }
-    return res.join('');
+    return result.join("");
 }
-// LC-energy test suite (TypeScript) — hardcoded single case.
+; // LC-energy test suite (TypeScript) — hardcoded single case.
 let _lc_test_result;
 // Shape-agnostic call: LC accepted solutions are sometimes a
 // `class Solution` and sometimes a bare top-level function. eval

@@ -13,29 +13,38 @@
  * }
  */
 function isCousins(root, x, y) {
-    if (!root)
+    if (root === null)
         return false;
-    // We will store [parent, depth] for x and y
-    let xInfo = null;
-    let yInfo = null;
-    function dfs(node, parent, depth) {
-        if (!node)
-            return;
-        if (node.val === x)
-            xInfo = [parent, depth];
-        if (node.val === y)
-            yInfo = [parent, depth];
-        if (xInfo && yInfo)
-            return; // both found, no need to continue
-        dfs(node.left, node, depth + 1);
-        dfs(node.right, node, depth + 1);
+    const queue = [[root, null]];
+    let head = 0;
+    while (head < queue.length) {
+        const levelEnd = queue.length;
+        let foundX = false;
+        let foundY = false;
+        let parentX = null;
+        let parentY = null;
+        while (head < levelEnd) {
+            const [node, parent] = queue[head++];
+            if (node.val === x) {
+                foundX = true;
+                parentX = parent;
+            }
+            if (node.val === y) {
+                foundY = true;
+                parentY = parent;
+            }
+            if (node.left !== null)
+                queue.push([node.left, node]);
+            if (node.right !== null)
+                queue.push([node.right, node]);
+        }
+        if (foundX || foundY) {
+            return foundX && foundY && parentX !== parentY;
+        }
     }
-    dfs(root, null, 0);
-    if (!xInfo || !yInfo)
-        return false;
-    // Cousins if same depth but different parents
-    return xInfo[1] === yInfo[1] && xInfo[0] !== yInfo[0];
-} // LC-energy test suite (TypeScript) — cousins-in-binary-tree.
+    return false;
+}
+; // LC-energy test suite (TypeScript) — cousins-in-binary-tree.
 // Concatenated after solution.ts by the Makefile.
 class TreeNode {
     constructor(val, left, right) {
