@@ -329,7 +329,9 @@ def _rewrite_csharp(cell: Path, original: str) -> str | None:
         f"SOURCE  = {source}\n"
         f"OUTPUT  = {output}\n"
         f"ARG     = {arg}\n"
-        f"RUN_CMD = dotnet run --configuration Release -- $(ARG)\n"
+        # Run the built assembly: `dotnet run` would run MSBuild's build check
+        # inside every measured run.
+        f"RUN_CMD = dotnet $(firstword $(wildcard bin/Release/*/$(basename $(wildcard *.csproj)).dll)) $(ARG)\n"
         f"\n"
         f"COMPILE_CMD = dotnet build --configuration Release --nologo\n"
     )

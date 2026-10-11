@@ -22,6 +22,11 @@ case "$LANG_ARG" in
   ruby)       ruby "$SEL/validate_suite.rb" ;;
   php)        php "$SEL/validate_suite.php" ;;
   java)
+    # PERFARENA_PREBUILT=1: the handler just built this exact code for the
+    # measurement (run_harness.sh build mode), so validate with that build.
+    if [ "${PERFARENA_PREBUILT:-0}" = 1 ] && [ -f .perf_build/Harness.class ]; then
+      java -cp .perf_build Harness validate; exit $?
+    fi
     cp "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" .
     if javac Harness.java TreeNode.java ListNode.java solution.java >/tmp/leetval_javac.log 2>&1; then
       java Harness validate; rc=$?
@@ -49,6 +54,9 @@ case "$LANG_ARG" in
     VALIDATE_SOLUTION_FILE="$work/solution.js" node "$SEL/validate_suite.js"; rc=$?
     rm -rf "$work"; exit $rc ;;
   csharp)
+    if [ "${PERFARENA_PREBUILT:-0}" = 1 ] && [ -f out/bench.dll ]; then   # see java
+      dotnet out/bench.dll validate; exit $?
+    fi
     cp "$SEL/Harness.cs" ./Harness.cs
     cat > bench.csproj <<'PROJ'
 <Project Sdk="Microsoft.NET.Sdk"><PropertyGroup>

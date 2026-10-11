@@ -12,18 +12,20 @@ LANG_ARG="$1"; BUDGET="${2:-1.0}"; IDX="${3:-0}"
 SEL="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # PERFARENA_HARNESS_MODE selects what this call does:
-#   all   (default) build if needed, then run — the energy/time path.
+#   all   (default) build if needed, then run. No measurement uses it, because
+#         its run would include compilation.
 #   build compile the solution and its driver into .perf_build/ (or out/ for
-#         C#) and exit; runs nothing. A no-op for interpreted languages.
+#         C#) and exit; runs nothing. A no-op for interpreted languages. The
+#         handler runs it ONCE before measuring any metric.
 #   run   run the PREBUILT program and nothing else, via `exec`, so the
 #         process this script started IS the measured program.
 #   argv  print the command that run mode would exec (NUL-separated) and
-#         exit, so the memory pass can start the program DIRECTLY: Linux keeps
+#         exit, so every measurement starts the prebuilt program DIRECTLY: Linux keeps
 #         a process's peak RSS across exec, so starting it through bash would
 #         report bash's own ~3 MB for a solution that uses less. A TypeScript
 #         run additionally needs PERFARENA_TS_PREBUILT=1 in its environment.
-# Languages without a build/run split fall through to `all` in run mode and
-# exit 3 in argv mode (no direct command).
+# Languages without a build/run split exit 3 in build, run, and argv mode, so
+# PerfArena does not measure them.
 MODE="${PERFARENA_HARNESS_MODE:-all}"
 
 launch() {   # run mode: become the program; argv mode: print its command line
@@ -52,12 +54,13 @@ PROJ
 
 if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
   case "$LANG_ARG" in
-    python3|javascript|php)
+    python3|javascript|php|ruby)
       [ "$MODE" = build ] && exit 0
       case "$LANG_ARG" in
         python3)    launch python3 test_suite.py "$BUDGET" "$IDX" ;;
         javascript) launch node "$SEL/harness.js" "$BUDGET" "$IDX" ;;
         php)        launch php -d memory_limit=2G "$SEL/harness.php" "$BUDGET" "$IDX" ;;
+        ruby)       launch ruby "$SEL/harness.rb" "$BUDGET" "$IDX" ;;
       esac ;;
     typescript)
       [ "$MODE" = build ] && exec node "$SEL/harness_ts.js" --build
@@ -80,8 +83,8 @@ if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
       [ -f out/bench.dll ] || { echo "run mode: no prebuilt C# assembly; run the build mode first" >&2; exit 2; }
       launch dotnet out/bench.dll "$BUDGET" "$IDX" ;;
     *)
-      [ "$MODE" = build ] && exit 0
-      [ "$MODE" = argv ] && exit 3 ;;   # no split: run mode uses the combined path below
+      echo "no build/run split for $LANG_ARG: not measured, because its run would include compilation" >&2
+      exit 3 ;;
   esac
 fi
 

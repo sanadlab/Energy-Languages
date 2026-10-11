@@ -25,6 +25,7 @@ META-INF/
 .cs_built
 .perf_build/
 .peak_rss
+.perfarena_build_*.json
 out/
 obj/
 bin/
