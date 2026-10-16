@@ -31,7 +31,7 @@ class Solution {
         for ($i = 1; $i < $n; $i++) {
             $l = substr($d, 0, $i);
             $r = substr($d, $i);
-            if (($l == "0" || $l[0] != '0') && $r[strlen($r) - 1] != '0') {
+            if (($l === "0" || $l[0] != '0') && $r[strlen($r) - 1] != '0') {
                 $out[] = "$l.$r";
             }
         }

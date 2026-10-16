@@ -1,55 +1,54 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 impl Solution {
     pub fn earliest_and_latest(n: i32, first_player: i32, second_player: i32) -> Vec<i32> {
-        if first_player == second_player {
-            return vec![1, 1];
-        }
-        let (mut fp, mut sp) = (first_player, second_player);
-        if fp > sp {
-            std::mem::swap(&mut fp, &mut sp);
-        }
-        fn dp(n: i32, mut f: i32, mut s: i32, memo: &mut HashMap<i32, (i32, i32)>) -> (i32, i32) {
-            if f + s == n + 1 {
+        // Exact recursion over the positions of the two players: each round, every
+        // other match may go either way, so enumerate how many winners finish ahead
+        // of each player (only those counts matter for the next round).
+        fn dp(m: i32, f: i32, s: i32, memo: &mut HashMap<i32, (i32, i32)>) -> (i32, i32) {
+            let (f, s) = if f > s { (s, f) } else { (f, s) };
+            if f + s == m + 1 {
                 return (1, 1);
             }
-            if f + s > n + 1 {
-                let t = f;
-                f = n + 1 - s;
-                s = n + 1 - t;
-            }
-            let key = (n * 100 + f) * 100 + s;
+            let key = m * 10000 + f * 100 + s;
             if let Some(&v) = memo.get(&key) {
                 return v;
             }
-            let half = (n + 1) / 2;
-            let inf = 1 << 30;
-            let (mut earliest, mut latest) = (inf, -inf);
-            if s <= half {
-                for i in 0..f {
-                    for j in 0..(s - f) {
-                        let (a, b) = dp(half, i + 1, i + j + 2, memo);
-                        earliest = earliest.min(a);
-                        latest = latest.max(b);
+            let step = |states: &HashSet<i32>, opts: &[i32]| -> HashSet<i32> {
+                let mut next = HashSet::new();
+                for &st in states.iter() {
+                    let (bf, bs) = (st / 100, st % 100);
+                    for &w in opts {
+                        next.insert((bf + (w < f) as i32) * 100 + bs + (w < s) as i32);
                     }
                 }
-            } else {
-                let sp2 = n + 1 - s;
-                let mid = n / 2;
-                for i in 0..f {
-                    for j in 0..(sp2 - f) {
-                        let (a, b) = dp(half, i + 1, i + (mid - sp2) + j + 2, memo);
-                        earliest = earliest.min(a);
-                        latest = latest.max(b);
-                    }
-                }
+                next
+            };
+            let mut states: HashSet<i32> = HashSet::from([0]); // bf * 100 + bs
+            for p in 1..=m / 2 {
+                let q = m + 1 - p;
+                states = if p == f || q == f {
+                    step(&states, &[f])
+                } else if p == s || q == s {
+                    step(&states, &[s])
+                } else {
+                    step(&states, &[p, q])
+                };
             }
-            let res = (earliest + 1, latest + 1);
-            memo.insert(key, res);
-            res
+            if m % 2 == 1 {
+                states = step(&states, &[(m + 1) / 2]);
+            }
+            let (mut earliest, mut latest) = (i32::MAX, i32::MIN);
+            for &st in states.iter() {
+                let (e, l) = dp((m + 1) / 2, st / 100 + 1, st % 100 + 1, memo);
+                earliest = earliest.min(e + 1);
+                latest = latest.max(l + 1);
+            }
+            memo.insert(key, (earliest, latest));
+            (earliest, latest)
         }
-        let mut memo: HashMap<i32, (i32, i32)> = HashMap::new();
-        let r = dp(n, fp, sp, &mut memo);
-        vec![r.0, r.1]
+        let mut memo = HashMap::new();
+        let (e, l) = dp(n, first_player, second_player, &mut memo);
+        vec![e, l]
     }
 }

@@ -9,6 +9,8 @@ def ladder_length(begin_word, end_word, word_list)
   all_combo_dict = Hash.new { |h, k| h[k] = [] }
 
   word_list.each do |word|
+    next unless word.length == word_len  # a ladder only uses words of the same length
+
     (0...word_len).each do |i|
       pattern = word[0...i] + '*' + word[i+1..-1]
       all_combo_dict[pattern] << word
