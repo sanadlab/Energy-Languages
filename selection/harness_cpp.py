@@ -277,6 +277,14 @@ __PRE_INCLUDE__
 #include "__SOLUTION__"      // provides: class Solution (and, for some cells, TreeNode/ListNode)
 
 namespace hz {
+// ---------- optimization barrier ----------
+// The measured loop calls the solution again and again on the same input. With
+// a pure solution and an unchanged input, -O2 may compute the call once and
+// reuse the result, so the loop would time only itself. opaque() makes the
+// compiler assume that the value may have changed, so every call runs (the
+// technique of Google Benchmark's DoNotOptimize). It sits outside the solution,
+// so the solution keeps every optimization of a single call.
+template <class T> inline void opaque(T& v) { asm volatile("" : : "g"(&v) : "memory"); }
 // ---------- minimal JSON parser (numbers kept as raw text -> lossless) ----------
 struct JVal {
     enum T { NUL, BOOL, NUM, STR, ARR, OBJ } t = NUL;
@@ -503,6 +511,7 @@ int main(int argc, char** argv) {
 
     auto do_replay = [&](std::vector<std::string>* results) -> long long {
         long long h = 0;
+        hz::opaque(doc);
 __CONSTRUCT__
         for (size_t i = 1; i < OPS.size(); i++) {
             const std::string& op = OPS[i].str;
@@ -680,7 +689,7 @@ def gen_driver(slug, info):
         fn = MARSHAL[t]
         lines.append("    auto base%d = hz::%s(E[%d].second);" % (i, fn, i))
         callargs.append("a%d" % i)
-    copies = " ".join("auto a%d = base%d;" % (i, i) for i in range(len(callargs)))
+    copies = " ".join("auto a%d = base%d; hz::opaque(a%d);" % (i, i, i) for i in range(len(callargs)))
     build = "\n".join(lines) + "\n\n"
     build += "    auto do_call = [&]() {\n"
     build += "        Solution sol;\n"
@@ -706,6 +715,7 @@ def gen_driver_treelist(slug, info):
         if 'TreeNode' in raw: frees.append("        hz::freeTree(a%d);" % i)
         elif 'ListNode' in raw: frees.append("        hz::freeList(a%d);" % i)
     call = "sol.%s(%s)" % (info["method"], ", ".join(callargs))
+    lines += ["        hz::opaque(%s);" % a for a in callargs]
 
     body = ["    auto do_call = [&]() {", "        Solution sol;"] + lines
     if 'ListNode' in ret:               # result is a node -> serialise sublist -> int array
