@@ -10,6 +10,9 @@ const path = require('path');
 
 function TreeNode(v){ this.val=v; this.left=null; this.right=null; }
 function ListNode(v){ this.val=v; this.next=null; }
+// expose so a solution that constructs nodes at run time still resolves them
+globalThis.TreeNode = TreeNode;
+globalThis.ListNode = ListNode;
 function buildTree(a){
   if(!a || !a.length || a[0]==null) return null;
   const root=new TreeNode(a[0]); const q=[root]; let i=1;
@@ -32,8 +35,10 @@ function treeToArr(r){ const a=[]; const q=[r]; while(q.length){ const n=q.shift
 function listToArr(h){ const a=[]; while(h){ a.push(h.val); h=h.next; } return a; }
 function canon(r){
   if(r===undefined || r===null) return "null";          // void design methods return undefined
-  if(r instanceof ListNode) return JSON.stringify(listToArr(r));
-  if(r instanceof TreeNode) return JSON.stringify(treeToArr(r));
+  // By shape, not instanceof: a solution may define its own ListNode/TreeNode.
+  // Tree first: a tree node may also carry a `next` pointer (e.g. LeetCode 116).
+  if(typeof r==='object' && 'val' in r && 'left' in r && 'right' in r) return JSON.stringify(treeToArr(r));
+  if(typeof r==='object' && 'val' in r && 'next' in r) return JSON.stringify(listToArr(r));
   try { const s = JSON.stringify(r); return s === undefined ? "null" : s; } catch(e){ return String(r); }
 }
 // V8's native JSON.stringify + a simple int charloop is faster than a pure-JS
@@ -50,8 +55,13 @@ const idx    = parseInt(process.argv[3]);
 const kase = out.expected[idx];
 const input = kase.input;
 
-// bring the solution's top-level defs into this scope
-eval(fs.readFileSync(path.join(cell,'solution.js'),'utf8'));
+// Load the solution into its own function scope and take one top-level name
+// from it, as harness_ts.js does. A direct `eval` here made every global lookup
+// inside the solution dynamic and slowed the measured calls by several times.
+const jsSrc = fs.readFileSync(path.join(cell,'solution.js'),'utf8');
+function grab(name){
+  return (new Function(jsSrc + '\n;return (typeof ' + name + " === 'undefined') ? undefined : " + name + ';'))();
+}
 
 function now(){ return process.hrtime.bigint(); }
 function secs(a,b){ return Number(b-a)/1e9; }
@@ -60,7 +70,7 @@ let acc=0, iters=0, beacon;
 if('ops' in input && 'args' in input){
   // design-class replay: ops[0] = class name, args[0] = ctor args, then method calls
   const ops=input.ops, args=input.args;
-  const Cls = eval(ops[0]);
+  const Cls = grab(ops[0]);
   const replay = () => { const inst = new Cls(...clone(args[0])); let a=0;
     for(let i=1;i<ops.length;i++) a=fold(a, inst[ops[i]](...clone(args[i]))); return a; };
   // stateful replay -> args cloned each pass (kept); batch the clock read.
@@ -77,8 +87,9 @@ if('ops' in input && 'args' in input){
   // build args (tree/list by conventional key name; else pass through)
   const base = Object.keys(input).map(k =>
       k==='root' ? buildTree(input[k]) : k==='head' ? buildList(input[k]) : input[k]);
-  const hasSol = (typeof Solution !== 'undefined');
-  const call = (a) => hasSol ? new Solution()[method](...a) : eval(method)(...a);
+  const SolCls = grab('Solution');            // defined only if solution has `class Solution`
+  const fn = SolCls ? null : grab(method);    // otherwise the top-level function
+  const call = (a) => SolCls ? new SolCls()[method](...a) : fn(...a);
   // (1) detect mutation once; skip the per-iteration clone when the solution
   //     leaves its input untouched (the common case). `base` is a throwaway
   //     probe copy; `pristine` is the clean reference reused when non-mutating.
