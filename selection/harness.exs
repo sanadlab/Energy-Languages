@@ -11,7 +11,8 @@
 # Design (stateful) problems hold state in the process dictionary, LeetCode's
 # Elixir convention; init_ is called (and the dict cleared) before each replay.
 
-Code.require_file("elixir_hns.exs", __DIR__)
+# run mode puts the prebuilt .perf_build/ (HNS, nodes, solution) on the code path
+unless Code.ensure_loaded?(HNS), do: Code.require_file("elixir_hns.exs", __DIR__)
 
 defmodule Harness do
   def main do
@@ -27,15 +28,17 @@ defmodule Harness do
     name = HNS.obj_get(kase, "name")
     input = HNS.obj_get(kase, "input")
 
-    Code.compiler_options(ignore_module_conflict: true)
-    Code.require_file("solution.ex", cell)
+    unless File.dir?(Path.join(cell, ".perf_build")) do
+      Code.compiler_options(ignore_module_conflict: true)
+      Code.require_file("solution.ex", cell)
+    end
 
     warm = budget * 0.3
     randomized = slug == "random-pick-index"
 
     {one, beacon_str} =
       if HNS.design?(input) do
-        {design_closure(input), "design"}
+        {design_closure(input, HNS.obj_get(kase, "output")), "design"}
       else
         camel = HNS.obj_get(HNS.parse_ordered(File.read!(Path.join([ref, "workloads", slug <> ".json"]))), "entry_point")
                 |> to_string() |> String.split(".") |> List.last()
@@ -61,21 +64,26 @@ defmodule Harness do
     IO.puts(:stderr, "CASE=#{name} ITERS=#{iters} ACC=#{acc} MEAS_S=#{fmt(meas)} BEACON=#{beacon_str}")
   end
 
-  # A design replay: clear state, init_, then fold every op result. Returns an
-  # integer (a per-replay checksum) so the measure loop never canonicalizes a
-  # large result list. Uses zip (NOT Enum.at) to stay O(ops).
-  defp design_closure(input) do
+  # A design replay: init_, then fold every op result. Returns an integer (a
+  # per-replay checksum) so the measure loop never folds a large result list.
+  # Every op's function is resolved once, before timing, and an op whose
+  # expected output is null (a void op; its return value is the solution's
+  # choice) folds null, as in the other languages.
+  defp design_closure(input, expected) do
     [op0 | rest_ops] = HNS.obj_get(input, "ops")
     [a0 | rest_args] = HNS.obj_get(input, "args")
     mod = Module.concat([op0])
-    pairs = Enum.zip(rest_ops, rest_args)
+    calls =
+      Enum.zip([rest_ops, rest_args, tl(expected)])
+      |> Enum.map(fn {op, a, e} -> {HNS.resolve(mod, op, length(a)), a, e == nil} end)
     fn ->
       # init_ resets the solution's own process-dictionary state (LeetCode
       # convention); do NOT clear the whole dict — that erases the Elixir
       # runtime's own bookkeeping keys.
       apply(mod, :init_, a0)
-      Enum.reduce(pairs, 0, fn {op, a}, acc ->
-        HNS.fold(acc, apply(mod, HNS.resolve(mod, op, length(a)), a))
+      Enum.reduce(calls, 0, fn {f, a, void}, acc ->
+        r = apply(mod, f, a)
+        HNS.fold(acc, if(void, do: nil, else: r))
       end)
     end
   end

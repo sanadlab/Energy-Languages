@@ -84,7 +84,7 @@ run(BudgetStr, IdxStr) ->
     Warm = Budget * 0.3,
     {One, Beacon} =
         case design(Input) of
-            true -> {design_closure(Input), "design"};
+            true -> {design_closure(Input, obj_get(Case, <<"output">>)), "design"};
             false ->
                 Wl = parse_ordered(readf(filename:join([Ref, "workloads", Slug ++ ".json"]))),
                 Camel = lists:last(string:split(binary_to_list(obj_get(Wl, <<"entry_point">>)), ".", all)),
@@ -105,13 +105,21 @@ run(BudgetStr, IdxStr) ->
               [Name, Iters, Acc, fmt(Meas), Beacon]),
     halt(0).
 
-design_closure(Input) ->
+%% Every op's function is resolved once, before timing, and an op whose expected
+%% output is null (a void op; its return value is the solution's choice) folds
+%% null, as in the other languages.
+design_closure(Input, Expected) ->
     [Op0 | RestOps] = obj_get(Input, <<"ops">>),
     [A0 | RestArgs] = obj_get(Input, <<"args">>),
-    Pairs = lists:zip(RestOps, RestArgs),
+    Init = design_func(Op0, init),
+    Calls = [{design_func(Op0, Op), A, E == null}
+             || {Op, A, E} <- lists:zip3(RestOps, RestArgs, tl(Expected))],
     fun() ->
-        apply(solution, design_func(Op0, init), A0),
-        lists:foldl(fun({Op, A}, Acc) -> fold(Acc, apply(solution, design_func(Op0, Op), A)) end, 0, Pairs)
+        apply(solution, Init, A0),
+        lists:foldl(fun({F, A, Void}, Acc) ->
+                            R = apply(solution, F, A),
+                            fold(Acc, case Void of true -> null; false -> R end)
+                    end, 0, Calls)
     end.
 
 mono() -> erlang:monotonic_time(microsecond).
@@ -338,9 +346,16 @@ json_string(B0) ->
     E4 = binary:replace(E3, <<"\t">>, <<"\\t">>, [global]),
     <<"\"", E4/binary, "\"">>.
 
-strhash(B) -> lists:foldl(fun(Byte, H) -> (H * 31 + Byte) band 16#FFFFFFFF end, 0, binary_to_list(B)).
+%% The structural hash (erlang:phash2) of the result as plain data: nodes as
+%% their LeetCode lists, the same term that the Elixir harness folds for the
+%% same result. Much cheaper than hashing the canon string.
+norm(nil) -> null;
+norm(#tree_node{} = T) -> norm(tree_to_list(T));
+norm(#list_node{} = L) -> norm(list_to_list(L));
+norm(V) when is_list(V) -> [norm(E) || E <- V];
+norm(V) -> V.
 
-fold(Acc, R) -> (Acc * 1000003 + strhash(canon(R))) band ?MASK64.
+fold(Acc, R) -> (Acc * 1000003 + erlang:phash2(norm(R))) band ?MASK64.
 
 %% ----------------------------------------------------------------- compare helpers
 seq_ok(A, E) when is_list(A), is_list(E), length(A) == length(E) ->

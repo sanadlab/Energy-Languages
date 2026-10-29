@@ -212,11 +212,16 @@ defmodule HNS do
   end
 
   # ---- checksum fold ----------------------------------------------------------
-  def strhash(s) do
-    s |> :binary.bin_to_list() |> Enum.reduce(0, fn b, h -> band(h * 31 + b, 0xFFFFFFFF) end)
-  end
+  # The structural hash (:erlang.phash2) of the result as plain data: nodes as
+  # their LeetCode lists and nil as :null, the same term that the Erlang harness
+  # folds for the same result. Much cheaper than hashing the canon string.
+  def norm(nil), do: :null
+  def norm(%TreeNode{} = t), do: norm(tree_to_list(t))
+  def norm(%ListNode{} = l), do: norm(list_to_list(l))
+  def norm(v) when is_list(v), do: Enum.map(v, &norm/1)
+  def norm(v), do: v
 
-  def fold(acc, r), do: band(acc * 1_000_003 + strhash(canon(r)), @mask64)
+  def fold(acc, r), do: band(acc * 1_000_003 + :erlang.phash2(norm(r)), @mask64)
 
   # ---- build positional args from an ordered input object ---------------------
   # root -> tree, head -> list, everything else passes through unchanged.

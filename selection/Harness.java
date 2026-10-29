@@ -163,30 +163,42 @@ public class Harness {
         if(r instanceof long[]) return Arrays.toString((long[])r);
         if(r instanceof double[]) return Arrays.toString((double[])r);
         if(r instanceof boolean[]) return Arrays.toString((boolean[])r);
+        // char[] needs its own case: without it, String.valueOf gives the array's
+        // identity, so the mutation check missed changes to char[] and char[][].
+        if(r instanceof char[]) return Arrays.toString((char[])r);
         if(r instanceof int[][]) return Arrays.deepToString((int[][])r);
         if(r instanceof Object[]) return Arrays.deepToString((Object[])r);
         return String.valueOf(r);
     }
 
+    // A design case prepared once, before timing: the constructor and the method
+    // of every operation resolved, and every argument marshalled. A replay then
+    // only clones the arguments (a solution may keep or change them), builds the
+    // object, and invokes the operations, as the Node harnesses do.
+    static final class Design { Constructor<?> ctor; Object[] ctorArgs; Method[] ms; Object[][] opArgs; }
     @SuppressWarnings("unchecked")
-    static long replay(Class<?> dc, List<Object> ops, List<Object> args) throws Exception {
+    static Design prepare(Class<?> dc, List<Object> ops, List<Object> args){
+        Design d=new Design();
         List<Object> ctorArgs=(List<Object>)args.get(0);
-        Constructor<?> ctor=null;
-        for(Constructor<?> ct: dc.getDeclaredConstructors()) if(ct.getParameterCount()==ctorArgs.size()){ ctor=ct; break; }
-        ctor.setAccessible(true);
-        Type[] cpt=ctor.getGenericParameterTypes(); Object[] ca=new Object[cpt.length];
-        for(int i=0;i<ca.length;i++) ca[i]=marshal(cpt[i], ctorArgs.get(i));
-        Object inst=ctor.newInstance(ca);
-        long acc=0;
+        for(Constructor<?> ct: dc.getDeclaredConstructors()) if(ct.getParameterCount()==ctorArgs.size()){ d.ctor=ct; break; }
+        d.ctor.setAccessible(true);
+        Type[] cpt=d.ctor.getGenericParameterTypes(); d.ctorArgs=new Object[cpt.length];
+        for(int i=0;i<cpt.length;i++) d.ctorArgs[i]=marshal(cpt[i], ctorArgs.get(i));
+        Method[] declared=dc.getDeclaredMethods();
+        d.ms=new Method[ops.size()]; d.opArgs=new Object[ops.size()][];
         for(int i=1;i<ops.size();i++){
             String opn=(String)ops.get(i); List<Object> oal=(List<Object>)args.get(i);
-            Method m=null;
-            for(Method mm: dc.getDeclaredMethods()) if(mm.getName().equals(opn) && mm.getParameterCount()==oal.size()){ m=mm; break; }
-            m.setAccessible(true);
-            Type[] mpt=m.getGenericParameterTypes(); Object[] oa=new Object[mpt.length];
-            for(int j=0;j<oa.length;j++) oa[j]=marshal(mpt[j], oal.get(j));
-            acc=acc*1000003 + canon(m.invoke(inst, oa)).hashCode();
+            for(Method mm: declared) if(mm.getName().equals(opn) && mm.getParameterCount()==oal.size()){ d.ms[i]=mm; break; }
+            d.ms[i].setAccessible(true);
+            Type[] mpt=d.ms[i].getGenericParameterTypes(); d.opArgs[i]=new Object[mpt.length];
+            for(int j=0;j<mpt.length;j++) d.opArgs[i][j]=marshal(mpt[j], oal.get(j));
         }
+        return d;
+    }
+    static long replay(Design d) throws Exception {
+        Object inst=d.ctor.newInstance(cloneAll(d.ctorArgs));
+        long acc=0;
+        for(int i=1;i<d.ms.length;i++) acc=acc*1000003 + canon(d.ms[i].invoke(inst, cloneAll(d.opArgs[i]))).hashCode();
         return acc;
     }
 
@@ -315,14 +327,15 @@ public class Harness {
             Class<?> dc;
             try { dc=Class.forName(String.valueOf(ops.get(0))); }
             catch(ClassNotFoundException e){ dc=Class.forName("Solution"); }  // solution named the class differently
-            replay(dc, ops, dargs);
+            Design d=prepare(dc, ops, dargs);
+            replay(d);
             long warmIters=0, wt=0; t0=System.nanoTime();
-            while((wt=System.nanoTime()-t0) < (long)(warm*1e9)){ replay(dc, ops, dargs); warmIters++; }
+            while((wt=System.nanoTime()-t0) < (long)(warm*1e9)){ replay(d); warmIters++; }
             double perIter=(double)wt/Math.max(warmIters,1)/1e9;
             long batch=(long)(0.002/perIter); if(batch<1) batch=1; if(batch>4096) batch=4096;
             tm=System.nanoTime(); long budgetNs=(long)((budget-warm)*1e9);
             while(System.nanoTime()-tm < budgetNs){
-                for(long bi=0; bi<batch; bi++) acc=acc*1000003 + replay(dc,ops,dargs);
+                for(long bi=0; bi<batch; bi++) acc=acc*1000003 + replay(d);
                 iters+=batch;
             }
             double meas=(System.nanoTime()-tm)/1e9;

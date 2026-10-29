@@ -70,6 +70,10 @@ if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
       [ "$MODE" = build ] && exec python3 "$SEL/harness_cpp.py" build
       [ -x .perf_build/driver ] || { echo "run mode: no prebuilt C++ driver; run the build mode first" >&2; exit 2; }
       launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
+    c)
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_c.py" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt C driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
     java)
       if [ "$MODE" = build ]; then
         rm -rf .perf_build && mkdir -p .perf_build \
@@ -78,6 +82,42 @@ if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
       fi
       [ -f .perf_build/Harness.class ] || { echo "run mode: no prebuilt Java classes; run the build mode first" >&2; exit 2; }
       launch java -cp .perf_build Harness "$BUDGET" "$IDX" ;;
+    kotlin)
+      # Same harness, JVM, and settings as Java: the run starts `java`, not the
+      # `kotlin` launcher (which sets its own heap and may pick another JDK).
+      # The solution's jar carries the Kotlin runtime (-include-runtime), so
+      # the run does not depend on where kotlinc is installed.
+      if [ "$MODE" = build ]; then
+        rm -rf .perf_build && mkdir -p .perf_build \
+          && javac -d .perf_build "$SEL/Harness.java" "$SEL/TreeNode.java" "$SEL/ListNode.java" >/dev/null 2>&1 \
+          && kotlinc solution.kt -cp .perf_build -include-runtime -d .perf_build/solution.jar >/dev/null 2>&1
+        exit $?
+      fi
+      [ -f .perf_build/Harness.class ] && [ -f .perf_build/solution.jar ] \
+        || { echo "run mode: no prebuilt Kotlin classes; run the build mode first" >&2; exit 2; }
+      launch java -cp .perf_build:.perf_build/solution.jar Harness "$BUDGET" "$IDX" ;;
+    elixir)
+      # the solution and the harness helpers compiled once; plain BEAM defaults, as for Erlang
+      if [ "$MODE" = build ]; then
+        rm -rf .perf_build && mkdir -p .perf_build \
+          && elixirc -o .perf_build "$SEL/elixir_hns.exs" solution.ex >/dev/null 2>&1
+        exit $?
+      fi
+      [ -d .perf_build ] || { echo "run mode: no prebuilt Elixir modules; run the build mode first" >&2; exit 2; }
+      launch elixir -pa .perf_build "$SEL/harness.exs" "$BUDGET" "$IDX" ;;
+    erlang)
+      if [ "$MODE" = build ]; then
+        rm -rf .perf_build && mkdir -p .perf_build \
+          && erlc -I "$SEL" -o .perf_build "$SEL/perf_harness.erl" solution.erl >/dev/null 2>&1
+        exit $?
+      fi
+      [ -f .perf_build/perf_harness.beam ] || { echo "run mode: no prebuilt Erlang modules; run the build mode first" >&2; exit 2; }
+      launch erl -noshell -pa .perf_build -eval "perf_harness:run(\"$BUDGET\", \"$IDX\")" -s init stop ;;
+    scala)
+      # plain `java` with the Scala library on the class path, as for Java
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_scala.py" build
+      [ -f .perf_build/cp ] || { echo "run mode: no prebuilt Scala classes; run the build mode first" >&2; exit 2; }
+      launch java -cp "$(cat .perf_build/cp)" Main "$BUDGET" "$IDX" ;;
     csharp)
       if [ "$MODE" = build ]; then cs_build; exit $?; fi
       [ -f out/bench.dll ] || { echo "run mode: no prebuilt C# assembly; run the build mode first" >&2; exit 2; }

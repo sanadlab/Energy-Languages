@@ -660,6 +660,7 @@ static TreeNode* to_tree(const JVal& j) {
     return root;
 }
 static void freeTree(TreeNode* n) { if (!n) return; freeTree(n->left); freeTree(n->right); delete n; }
+static std::vector<int> treeVals_level(TreeNode* r) { std::vector<int> o; std::queue<TreeNode*> q; if (r) q.push(r); while(!q.empty()){ TreeNode* n=q.front(); q.pop(); o.push_back(n->val); if(n->left)q.push(n->left); if(n->right)q.push(n->right);} return o; }
 '''
 
 HZ_LIST = r'''
@@ -721,6 +722,11 @@ def gen_driver_treelist(slug, info):
     if 'ListNode' in ret:               # result is a node -> serialise sublist -> int array
         body.append("        ListNode* _r = %s;" % call)
         body.append("        std::vector<int> _res = hz::listVals(_r);")
+        body += frees
+        body.append("        return _res;")
+    elif 'TreeNode' in ret:             # serialise before freeing the input tree (as C does);
+        body.append("        TreeNode* _r = %s;" % call)     # folding the pointer gave 1
+        body.append("        std::vector<int> _res = hz::treeVals_level(_r);")
         body += frees
         body.append("        return _res;")
     else:                               # scalar result (bool/int/...); free the built structure

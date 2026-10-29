@@ -278,6 +278,45 @@ object H {
       } else JNum(r).r.toLong.toString
     case JArr(a) => "[" + a.map(canonJSON).mkString(",") + "]"; case _ => "null" }
   def canonJSONmset(j: J): String = j match { case JArr(a) => "[" + a.map(canonJSON).sorted.mkString(",") + "]"; case _ => canonJSON(j) }
+  // ---- as the Java harness (Harness.java): its result string canon(), whose
+  // hashCode is folded, so a Scala result folds to the same hash as the same
+  // Java result; its clone of an argument; and its snapshot of the arguments ----
+  def fmtD(d: Double): String =
+    if (!d.isInfinite && !d.isNaN && d == Math.rint(d) && Math.abs(d) < 9.007199254740992e15) d.toLong.toString
+    else java.lang.String.valueOf(d)
+  def jcanon(x: Any): String = x match {
+    case null => "null"
+    case n: ListNode => { val b = new StringBuilder("["); var c = n
+      while (c != null) { if (b.length > 1) b ++= ", "; b ++= c.x.toString; c = c.next }; b ++= "]"; b.toString }
+    case t: TreeNode => { val out = scala.collection.mutable.ArrayBuffer[String](); val q = new java.util.LinkedList[TreeNode](); q.add(t)
+      while (!q.isEmpty) { val n = q.poll(); if (n == null) out += "null" else { out += n.value.toString; q.add(n.left); q.add(n.right) } }
+      var e = out.length; while (e > 0 && out(e - 1) == "null") e -= 1; "[" + out.take(e).mkString(", ") + "]" }
+    case d: Double => fmtD(d)
+    case a: Array[Double] => "[" + a.map(fmtD).mkString(", ") + "]"
+    case l: scala.collection.Seq[_] => "[" + l.map(jcanon).mkString(", ") + "]"
+    case a: Array[Int] => java.util.Arrays.toString(a)
+    case a: Array[Long] => java.util.Arrays.toString(a)
+    case a: Array[Boolean] => java.util.Arrays.toString(a)
+    case a: Array[Char] => java.util.Arrays.toString(a)
+    case a: Array[AnyRef] => java.util.Arrays.deepToString(a)
+    case other => java.lang.String.valueOf(other)
+  }
+  def cl(x: Any): Any = x match {
+    case a: Array[Int] => a.clone()
+    case a: Array[Long] => a.clone()
+    case a: Array[Double] => a.clone()
+    case a: Array[Boolean] => a.clone()
+    case a: Array[Char] => a.clone()
+    case a: Array[AnyRef] => { val b = a.clone(); var i = 0; while (i < b.length) { b(i) = cl(b(i)).asInstanceOf[AnyRef]; i += 1 }; b }
+    case t: TreeNode => cloneTree(t)
+    case n: ListNode => cloneList(n)
+    case other => other
+  }
+  def cloneTree(n: TreeNode): TreeNode = if (n == null) null else new TreeNode(n.value, cloneTree(n.left), cloneTree(n.right))
+  def cloneList(n0: ListNode): ListNode = { if (n0 == null) return null
+    val h = new ListNode(n0.x); var c = h; var n = n0.next
+    while (n != null) { c.next = new ListNode(n.x); c = c.next; n = n.next }; h }
+  def snap(args: Array[Any]): String = args.map(jcanon).mkString("\u0001")
   def nowS(): Double = System.nanoTime().toDouble / 1e9
   def fmtF(d: Double): String = String.format("%.6f", java.lang.Double.valueOf(d))
   def loadDoc(path: String): J = new JP(new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(path)), "UTF-8")).value()
@@ -350,10 +389,19 @@ object Main {
 
 
 def gen_measure(slug, info):
+    """As the Java harness measures: the arguments are parsed once, before
+    timing; one call on them shows whether the solution changes its input, and
+    only then does each call get a fresh copy; one receiver (the `object
+    Solution`, or one `new Solution`) serves every call; each result folds as
+    the hash of Java's canon string."""
     outs = os.path.join(REF, "outputs", slug + ".json")
-    args = _marshal_call(info["stypes"], lambda i: "E(%d)._2" % i)
-    call = "%s.%s(%s)" % (_sol_receiver(slug), info["method"], ", ".join(args))
-    beacon = _canon_result(info["retn"], call)
+    st = info["stypes"]
+    parse = "\n".join("    val b%d: %s = H.%s(E(%d)._2)" % (i, t, _SMAR[t], i) for i, t in enumerate(st))
+    bases = ", ".join("b%d" % i for i in range(len(st)))
+    on_base = ", ".join("b%d" % i for i in range(len(st)))
+    on_copy = ", ".join("H.cl(pristine(%d)).asInstanceOf[%s]" % (i, t) for i, t in enumerate(st))
+    recv = "new Solution" if _sol_receiver(slug) == "(new Solution)" else "Solution"
+    m = info["method"]
     body = r'''
 object Main {
   def main(argv: Array[String]): Unit = {
@@ -363,7 +411,13 @@ object Main {
     val kase = cases(idx)
     val name = H.field(kase, "name") match { case H.JStr(s) => s; case _ => "case" }
     val E = H.entries(H.field(kase, "input")); val _ = E
-    def doCall(): String = __BEACON__
+__PARSE__
+    val recv = __RECV__
+    val pristine: Array[Any] = Array[Any](__BASES__).map(H.cl)
+    val snap0 = H.snap(Array[Any](__BASES__))
+    val beaconV: Any = recv.__M__(__ON_BASE__)
+    val mutates = H.snap(Array[Any](__BASES__)) != snap0
+    def doCall(): Any = if (mutates) recv.__M__(__ON_COPY__) else recv.__M__(__ON_BASE__)
     var acc: Long = 0; var iters: Long = 0
     val warm = budget * 0.3
     val t0 = H.nowS(); var wi = 0L
@@ -371,15 +425,15 @@ object Main {
     val per = if (wi > 0) (H.nowS() - t0) / wi.toDouble else warm
     var batch = 4096L; if (per > 0) { val bb = (0.002 / per).toLong; batch = if (bb < 1) 1 else if (bb > 4096) 4096 else bb }
     val tm = H.nowS()
-    while (H.nowS() - tm < budget - warm) { var b = 0L; while (b < batch) { val s = doCall(); var k = 0; while (k < s.length) { acc = acc * 1000003 + s.charAt(k).toLong; k += 1 }; b += 1 }; iters += batch }
+    while (H.nowS() - tm < budget - warm) { var b = 0L; while (b < batch) { acc = acc * 1000003 + H.jcanon(doCall()).hashCode.toLong; b += 1 }; iters += batch }
     val meas = H.nowS() - tm
-    val beacon = doCall()
-    H.eprint(s"CASE=$name ITERS=$iters ACC=$acc MEAS_S=${H.fmtF(meas)} BEACON=$beacon\n")
+    H.eprint(s"CASE=$name ITERS=$iters ACC=$acc MEAS_S=${H.fmtF(meas)} BEACON=${H.jcanon(beaconV).take(80)}\n")
   }
 }
 '''
-    body = body.replace("__OUTS__", outs).replace("__BEACON__", beacon)
-    # fmtF helper for %.6f
+    body = (body.replace("__OUTS__", outs).replace("__PARSE__", parse).replace("__RECV__", recv)
+                .replace("__BASES__", bases).replace("__ON_BASE__", on_base)
+                .replace("__ON_COPY__", on_copy).replace("__M__", m))
     return PRELUDE + body
 
 
@@ -459,8 +513,24 @@ __DISPATCH__
 
 
 def gen_measure_design(slug, info):
+    """As the Java harness replays a design case: the operation codes and the
+    marshalled arguments are prepared once, before timing; each replay clones
+    the arguments, builds the object, and folds every operation's result as the
+    hash of Java's canon string ("null" for a void operation)."""
     outs = os.path.join(REF, "outputs", slug + ".json")
     className, cnorm, methods = info["design"]
+    ctypes = [_scala_type(n) for n in cnorm]
+    ctor_a = ", ".join("H.%s(H.items(ARG(0))(%d))" % (_SMAR[t], i) for i, t in enumerate(ctypes))
+    ctor_call = ", ".join("H.cl(ctorA(%d)).asInstanceOf[%s]" % (i, t) for i, t in enumerate(ctypes))
+    prep, cases = [], []
+    for code, (op, retn, mnorm) in enumerate(methods):
+        mt = [_scala_type(n) for n in mnorm]
+        marsh = ", ".join("H.%s(aa(%d))" % (_SMAR[t], i) for i, t in enumerate(mt))
+        prep.append('        case H.JStr("%s") => code(pi) = %d; opA(pi) = Array[Any](%s)' % (op, code, marsh))
+        call = "obj.%s(%s)" % (op, ", ".join("H.cl(a(%d)).asInstanceOf[%s]" % (i, t) for i, t in enumerate(mt)))
+        fold = ("%s; h = h * 1000003 + NULLH" % call if retn == "void"
+                else "val rv = %s; h = h * 1000003 + H.jcanon(rv).hashCode.toLong" % call)
+        cases.append("          case %d => { %s }" % (code, fold))
     body = r'''
 object Main {
   def main(argv: Array[String]): Unit = {
@@ -471,15 +541,29 @@ object Main {
     val name = H.field(kase, "name") match { case H.JStr(s) => s; case _ => "case" }
     val OPS = H.items(H.field(H.field(kase, "input"), "ops"))
     val ARG = H.items(H.field(H.field(kase, "input"), "args"))
-    val AR = ARG
+    val nOps = OPS.length
+    val ctorA: Array[Any] = Array[Any](__CTOR_A__)
+    val code = new Array[Int](nOps); val opA = new Array[Array[Any]](nOps)
+    var pi = 1
+    while (pi < nOps) {
+      val aa = H.items(ARG(pi)); val _ = aa
+      OPS(pi) match {
+__PREP__
+        case _ => code(pi) = -1; opA(pi) = Array[Any]()
+      }
+      pi += 1
+    }
+    val NULLH: Long = "null".hashCode.toLong
     def replay(): Long = {
       var h: Long = 0
-      __CONSTRUCT__
+      val obj = new __CLS__(__CTOR_CALL__)
       var i = 1
-      while (i < OPS.length) {
-        val op = OPS(i) match { case H.JStr(s) => s; case _ => "" }
-        val aa = H.items(ARG(i)); val _ = aa
-__DISPATCH__
+      while (i < nOps) {
+        val a = opA(i); val _ = a
+        code(i) match {
+__CASES__
+          case _ =>
+        }
         i += 1
       }
       h
@@ -487,7 +571,7 @@ __DISPATCH__
     var acc: Long = 0; var iters: Long = 0
     val warm = budget * 0.3
     val t0 = H.nowS(); var wi = 0L
-    while (H.nowS() - t0 < warm) { acc += replay(); wi += 1 }
+    while (H.nowS() - t0 < warm) { replay(); wi += 1 }
     val per = if (wi > 0) (H.nowS() - t0) / wi.toDouble else warm
     var batch = 4096L; if (per > 0) { val bb = (0.002 / per).toLong; batch = if (bb < 1) 1 else if (bb > 4096) 4096 else bb }
     val tm = H.nowS()
@@ -497,9 +581,9 @@ __DISPATCH__
   }
 }
 '''
-    body = (body.replace("__OUTS__", outs)
-                .replace("__CONSTRUCT__", _design_construct(className, cnorm))
-                .replace("__DISPATCH__", _design_dispatch(className, methods, fold=True)))
+    body = (body.replace("__OUTS__", outs).replace("__CTOR_A__", ctor_a)
+                .replace("__PREP__", "\n".join(prep)).replace("__CLS__", className)
+                .replace("__CTOR_CALL__", ctor_call).replace("__CASES__", "\n".join(cases)))
     return PRELUDE + body
 
 
@@ -593,6 +677,24 @@ def build_and_run(slug, budget, idx):
 def main():
     if len(sys.argv) > 1 and sys.argv[1] == "validate":
         sys.exit(build_and_validate(os.path.basename(os.getcwd())))
+    if len(sys.argv) > 1 and sys.argv[1] == "build":
+        # Prebuild the classes into <cell>/.perf_build/out and the class path into
+        # .perf_build/cp for run_harness.sh run mode, which starts plain `java`,
+        # as for Java, so a measured run never includes scalac.
+        slug = os.path.basename(os.getcwd())
+        outd, _info, tmp = _build(slug, "measure")
+        if outd is None:
+            print("TODO/compile_error %s: %s" % (slug, tmp), file=sys.stderr)
+            sys.exit(1)
+        libs = _scala_libs()
+        if not libs:
+            print("TODO/setup %s: scala library jars not found" % slug, file=sys.stderr)
+            sys.exit(1)
+        dest = os.path.join(os.getcwd(), ".perf_build")
+        _shutil.rmtree(dest, ignore_errors=True)
+        _shutil.copytree(outd, os.path.join(dest, "out"))
+        open(os.path.join(dest, "cp"), "w").write(os.pathsep.join([os.path.join(dest, "out")] + libs))
+        sys.exit(0)
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx = int(sys.argv[2]) if len(sys.argv) > 2 else 0
     status, msg, _ = build_and_run(os.path.basename(os.getcwd()), budget, idx)
