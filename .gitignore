@@ -40,6 +40,9 @@ bin/
 *.so
 *.dll
 *.exe
+# cargo build output (Rust CLBG binaries, the LeetCode Rust crates)
+Rust/clbg/target/
+selection/rust_lc_deps/target/
 # whole-program measurement output (the energy runner APPENDS to these)
 *.jsonl
 
