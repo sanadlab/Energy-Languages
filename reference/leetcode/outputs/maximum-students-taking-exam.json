@@ -1,5 +1,5 @@
 {
-  "workload_hash": "8757f9a4b7f6f6931f48ea0281a6d948279c6eb0cd3623d8d0c63c49180fe185",
+  "workload_hash": "cbc9133d71b51c0a11452c866a28e12f0ca2bf1e33650e69986d937a51886b7f",
   "problem": "maximum-students-taking-exam",
   "expected": [
     {
@@ -76,34 +76,6 @@
         ]
       },
       "output": 4
-    },
-    {
-      "name": "case_3",
-      "input": {
-        "seats": [
-          [
-            ".",
-            ".#"
-          ],
-          [
-            "#",
-            "#"
-          ],
-          [
-            "#",
-            "."
-          ],
-          [
-            "#",
-            "#"
-          ],
-          [
-            ".",
-            "#"
-          ]
-        ]
-      },
-      "output": 3
     },
     {
       "name": "case_4",

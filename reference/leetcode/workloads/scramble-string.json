@@ -38,10 +38,6 @@
       "output": "True"
     },
     {
-      "input": "s1 = \"eebaacbcbcadaaedceaaacadccd\", s2 = \"eadcaacabaddaceacbceaabe\"",
-      "output": "False"
-    },
-    {
       "input": "s1 = \"ab\", s2 = \"ba\"",
       "output": "True"
     },
@@ -122,10 +118,6 @@
       "output": "True"
     },
     {
-      "input": "s1 = \"introduction\", s2 = \"oitrnuduinc\"",
-      "output": "False"
-    },
-    {
       "input": "s1 = \"abcdabcd\", s2 = \"ddddcccc\"",
       "output": "False"
     },
@@ -136,10 +128,6 @@
     {
       "input": "s1 = \"abcdxyz\", s2 = \"yzabcdx\"",
       "output": "True"
-    },
-    {
-      "input": "s1 = \"abcdefghij\", s2 = \"efghijklabdc\"",
-      "output": "False"
     },
     {
       "input": "s1 = \"recursion\", s2 = \"rursiicno\"",
@@ -176,10 +164,6 @@
     {
       "input": "s1 = \"abababab\", s2 = \"babababa\"",
       "output": "True"
-    },
-    {
-      "input": "s1 = \"backtracking\", s2 = \"tcgakknbirn\"",
-      "output": "False"
     },
     {
       "input": "s1 = \"abcdefgh\", s2 = \"ghfedcba\"",
@@ -238,10 +222,6 @@
       "output": "True"
     },
     {
-      "input": "s1 = \"recursion\", s2 = \"suoncire\"",
-      "output": "False"
-    },
-    {
       "input": "s1 = \"abcdefghij\", s2 = \"abcdjihgfe\"",
       "output": "True"
     },
@@ -270,20 +250,8 @@
       "output": "False"
     },
     {
-      "input": "s1 = \"scrambledstring\", s2 = \"stgimrebldstring\"",
-      "output": "False"
-    },
-    {
-      "input": "s1 = \"abcdefghij\", s2 = \"ijklmnopqr\", s2 = \"mnopqrjkl\"",
-      "output": "False"
-    },
-    {
       "input": "s1 = \"abcdefghijk\", s2 = \"efghijkabcd\"",
       "output": "True"
-    },
-    {
-      "input": "s1 = \"abracadabra\", s2 = \"carrabbadaba\"",
-      "output": "False"
     },
     {
       "input": "s1 = \"abcdefghij\", s2 = \"ihgfedcbaa\"",
@@ -398,23 +366,11 @@
       "output": "False"
     },
     {
-      "input": "s1 = \"thisisatest\", s2 = \"tsaistestihis\"",
-      "output": "True"
-    },
-    {
       "input": "s1 = \"abcdefghij\", s2 = \"fghebacijd\"",
       "output": "False"
     },
     {
-      "input": "s1 = \"abcdefghij\", s2 = \"ijklabcdefgh\"",
-      "output": "False"
-    },
-    {
       "input": "s1 = \"scramble\", s2 = \"ercmsbal\"",
-      "output": "False"
-    },
-    {
-      "input": "s1 = \"scramblestring\", s2 = \"gterinmbscrl\"",
       "output": "False"
     },
     {
@@ -430,10 +386,6 @@
       "output": "True"
     },
     {
-      "input": "s1 = \"abcdefghij\", s2 = \"abcdefghijab\"",
-      "output": "True"
-    },
-    {
       "input": "s1 = \"recursion\", s2 = \"insrucero\"",
       "output": "False"
     }
@@ -446,6 +398,6 @@
   "source_dataset": "leetcode_energy_93_curated.jsonl",
   "source_dataset_sha256": "1b56e4a02bb35712ba41e0189b2cee937d15eec90a00bd9e6e2b1cb96764ea50",
   "starter_code": "class Solution:\n    def isScramble(self, s1: str, s2: str) -> bool:\n        ",
-  "test": "def _same_unordered(actual, expected):\n    return sorted(actual) == sorted(expected)\n\ndef _valid_di_string(actual, pattern):\n    if not isinstance(actual, list) or sorted(actual) != list(range(len(pattern) + 1)):\n        return False\n    return all(\n        (char == \"I\" and actual[index] < actual[index + 1])\n        or (char == \"D\" and actual[index] > actual[index + 1])\n        for index, char in enumerate(pattern)\n    )\n\ndef _valid_restore(actual, adjacent_pairs):\n    if not isinstance(actual, list) or len(actual) != len(adjacent_pairs) + 1:\n        return False\n    expected = Counter(frozenset(pair) for pair in adjacent_pairs)\n    produced = Counter(\n        frozenset((actual[index], actual[index + 1]))\n        for index in range(len(actual) - 1)\n    )\n    return produced == expected\n\ndef _valid_no_triples(actual, a, b):\n    return (\n        isinstance(actual, str)\n        and len(actual) == a + b\n        and actual.count(\"a\") == a\n        and actual.count(\"b\") == b\n        and \"aaa\" not in actual\n        and \"bbb\" not in actual\n    )\n\ndef check(candidate):\n    assert candidate(s1='abcdefghij', s2='ihgfedcbaj') == True\n    assert candidate(s1='noon', s2='onon') == True\n    assert candidate(s1='abc', s2='cab') == True\n    assert candidate(s1='abcdefghijklmnop', s2='ponmlkjihgfedcba') == True\n    assert candidate(s1='abcde', s2='caebd') == False\n    assert candidate(s1='abcdefghijk', s2='abcdefghijk') == True\n    assert candidate(s1='abc', s2='bca') == True\n    assert candidate(s1='abcdefgh', s2='hgfedcba') == True\n    assert candidate(s1='abcdefghij', s2='ijabcdefgh') == True\n    assert candidate(s1='eebaacbcbcadaaedceaaacadccd', s2='eadcaacabaddaceacbceaabe') == False\n    assert candidate(s1='ab', s2='ba') == True\n    assert candidate(s1='abcdefghij', s2='jihgfedcba') == True\n    assert candidate(s1='aabbcc', s2='abcabc') == True\n    assert candidate(s1='aabbcc', s2='ccbbaa') == True\n    assert candidate(s1='great', s2='rgeat') == True\n    assert candidate(s1='abcd', s2='abcd') == True\n    assert candidate(s1='abcd', s2='bdac') == False\n    assert candidate(s1='hello', s2='lohel') == True\n    assert candidate(s1='abcd', s2='dcba') == True\n    assert candidate(s1='aabb', s2='baba') == True\n    assert candidate(s1='abcdefgh', s2='efghabcd') == True\n    assert candidate(s1='eebaacb', s2='aceebbb') == False\n    assert candidate(s1='xstjzkfpqczbdy', s2='bdyxzcqpzkjfst') == True\n    assert candidate(s1='hello', s2='olelh') == True\n    assert candidate(s1='xyzz', s2='zzyx') == True\n    assert candidate(s1='xyz', s2='zyx') == True\n    assert candidate(s1='abcdefg', s2='efgabcd') == True\n    assert candidate(s1='abcdefghijk', s2='kabcdefghij') == True\n    assert candidate(s1='a', s2='a') == True\n    assert candidate(s1='algorithm', s2='logarithm') == True\n    assert candidate(s1='introduction', s2='oitrnuduinc') == False\n    assert candidate(s1='abcdabcd', s2='ddddcccc') == False\n    assert candidate(s1='abcdexyz', s2='zyxdecba') == True\n    assert candidate(s1='abcdxyz', s2='yzabcdx') == True\n    assert candidate(s1='abcdefghij', s2='efghijklabdc') == False\n    assert candidate(s1='recursion', s2='rursiicno') == False\n    assert candidate(s1='abcdefghij', s2='jihgfecdba') == True\n    assert candidate(s1='abcdefgh', s2='abcdghfe') == True\n    assert candidate(s1='abcdefghij', s2='abijhgfedc') == True\n    assert candidate(s1='xylophone', s2='eponhloxy') == True\n    assert candidate(s1='abcdefg', s2='gfedcba') == True\n    assert candidate(s1='scramble', s2='elmacrbs') == True\n    assert candidate(s1='interview', s2='wetneivrt') == False\n    assert candidate(s1='abababab', s2='babababa') == True\n    assert candidate(s1='backtracking', s2='tcgakknbirn') == False\n    assert candidate(s1='abcdefgh', s2='ghfedcba') == True\n    assert candidate(s1='abcdexyz', s2='xyzexbcd') == False\n    assert candidate(s1='abcdefgh', s2='cdabefgh') == True\n    assert candidate(s1='qwertyuiop', s2='yuiopqwert') == True\n    assert candidate(s1='intention', s2='tennotiin') == True\n    assert candidate(s1='abcdefghij', s2='jihgfedabc') == True\n    assert candidate(s1='abcd', s2='cdab') == True\n    assert candidate(s1='scramble', s2='melbrcsa') == True\n    assert candidate(s1='abcdexyz', s2='xyzabcde') == True\n    assert candidate(s1='algorithm', s2='rhtaglmoi') == False\n    assert candidate(s1='optimization', s2='tivioonpmzas') == False\n    assert candidate(s1='interview', s2='ewrotnive') == False\n    assert candidate(s1='programming', s2='gnimmargorp') == True\n    assert candidate(s1='abcdefghij', s2='efghabcdij') == True\n    assert candidate(s1='recursion', s2='suoncire') == False\n    assert candidate(s1='abcdefghij', s2='abcdjihgfe') == True\n    assert candidate(s1='abcdefghij', s2='fedcbaighj') == True\n    assert candidate(s1='waterbottle', s2='elbottlewat') == False\n    assert candidate(s1='abcdefghij', s2='ghfedcbaab') == False\n    assert candidate(s1='scramble', s2='leacrbms') == True\n    assert candidate(s1='scramble', s2='rscmable') == True\n    assert candidate(s1='algorithm', s2='rhtlgmaoi') == False\n    assert candidate(s1='scrambledstring', s2='stgimrebldstring') == False\n    assert candidate(s1='abcdefghij', s2='mnopqrjkl') == False\n    assert candidate(s1='abcdefghijk', s2='efghijkabcd') == True\n    assert candidate(s1='abracadabra', s2='carrabbadaba') == False\n    assert candidate(s1='abcdefghij', s2='ihgfedcbaa') == False\n    assert candidate(s1='abcdefghij', s2='hgfedcbaij') == True\n    assert candidate(s1='abcdefghij', s2='abcdghfjie') == True\n    assert candidate(s1='abcdefghij', s2='abcdefghij') == True\n    assert candidate(s1='abcdefghij', s2='ihgfjedcba') == True\n    assert candidate(s1='abcdefghij', s2='ijklabefgh') == False\n    assert candidate(s1='abcdefghij', s2='ghijefabcd') == True\n    assert candidate(s1='abcdefghij', s2='ihgfjklmno') == False\n    assert candidate(s1='interview', s2='reterivne') == False\n    assert candidate(s1='python', s2='nohtyp') == True\n    assert candidate(s1='abcdefghij', s2='bcdefghiaj') == True\n    assert candidate(s1='abcdefghij', s2='cdabefghij') == True\n    assert candidate(s1='abcdabcd', s2='dcbacabd') == True\n    assert candidate(s1='scramble', s2='blecrmas') == True\n    assert candidate(s1='abcdefghij', s2='cbadefghij') == True\n    assert candidate(s1='optimization', s2='nizationopti') == False\n    assert candidate(s1='intvw', s2='nvtiw') == True\n    assert candidate(s1='abcdefghij', s2='cdefghijab') == True\n    assert candidate(s1='intervw', s2='wvnreit') == False\n    assert candidate(s1='abcdefghij', s2='efghijabcd') == True\n    assert candidate(s1='optimization', s2='nizaitpmosio') == False\n    assert candidate(s1='algorithm', s2='rhtgmialo') == False\n    assert candidate(s1='interview', s2='terviewin') == True\n    assert candidate(s1='abcdabcd', s2='abcdabcd') == True\n    assert candidate(s1='abcdefghij', s2='jabcdefghi') == True\n    assert candidate(s1='abcdefghijk', s2='kjiabcdefgh') == True\n    assert candidate(s1='abab', s2='baba') == True\n    assert candidate(s1='scramble', s2='melcarbs') == False\n    assert candidate(s1='thisisatest', s2='tsaistestihis') == True\n    assert candidate(s1='abcdefghij', s2='fghebacijd') == False\n    assert candidate(s1='abcdefghij', s2='ijklabcdefgh') == False\n    assert candidate(s1='scramble', s2='ercmsbal') == False\n    assert candidate(s1='scramblestring', s2='gterinmbscrl') == False\n    assert candidate(s1='abcdefghij', s2='cbadefghji') == True\n    assert candidate(s1='introduction', s2='ntrioduicton') == True\n    assert candidate(s1='abcdefghij', s2='abjihgfedc') == True\n    assert candidate(s1='abcdefghij', s2='abcdefghijab') == True\n    assert candidate(s1='recursion', s2='insrucero') == False\n",
-  "workload_hash": "b9efd62d2f21aff65a35bc6d6e7da83e4ceec96d00840dc1ce546236c94fb68a"
+  "test": "def _same_unordered(actual, expected):\n    return sorted(actual) == sorted(expected)\n\ndef _valid_di_string(actual, pattern):\n    if not isinstance(actual, list) or sorted(actual) != list(range(len(pattern) + 1)):\n        return False\n    return all(\n        (char == \"I\" and actual[index] < actual[index + 1])\n        or (char == \"D\" and actual[index] > actual[index + 1])\n        for index, char in enumerate(pattern)\n    )\n\ndef _valid_restore(actual, adjacent_pairs):\n    if not isinstance(actual, list) or len(actual) != len(adjacent_pairs) + 1:\n        return False\n    expected = Counter(frozenset(pair) for pair in adjacent_pairs)\n    produced = Counter(\n        frozenset((actual[index], actual[index + 1]))\n        for index in range(len(actual) - 1)\n    )\n    return produced == expected\n\ndef _valid_no_triples(actual, a, b):\n    return (\n        isinstance(actual, str)\n        and len(actual) == a + b\n        and actual.count(\"a\") == a\n        and actual.count(\"b\") == b\n        and \"aaa\" not in actual\n        and \"bbb\" not in actual\n    )\n\ndef check(candidate):\n    assert candidate(s1='abcdefghij', s2='ihgfedcbaj') == True\n    assert candidate(s1='noon', s2='onon') == True\n    assert candidate(s1='abc', s2='cab') == True\n    assert candidate(s1='abcdefghijklmnop', s2='ponmlkjihgfedcba') == True\n    assert candidate(s1='abcde', s2='caebd') == False\n    assert candidate(s1='abcdefghijk', s2='abcdefghijk') == True\n    assert candidate(s1='abc', s2='bca') == True\n    assert candidate(s1='abcdefgh', s2='hgfedcba') == True\n    assert candidate(s1='abcdefghij', s2='ijabcdefgh') == True\n    assert candidate(s1='ab', s2='ba') == True\n    assert candidate(s1='abcdefghij', s2='jihgfedcba') == True\n    assert candidate(s1='aabbcc', s2='abcabc') == True\n    assert candidate(s1='aabbcc', s2='ccbbaa') == True\n    assert candidate(s1='great', s2='rgeat') == True\n    assert candidate(s1='abcd', s2='abcd') == True\n    assert candidate(s1='abcd', s2='bdac') == False\n    assert candidate(s1='hello', s2='lohel') == True\n    assert candidate(s1='abcd', s2='dcba') == True\n    assert candidate(s1='aabb', s2='baba') == True\n    assert candidate(s1='abcdefgh', s2='efghabcd') == True\n    assert candidate(s1='eebaacb', s2='aceebbb') == False\n    assert candidate(s1='xstjzkfpqczbdy', s2='bdyxzcqpzkjfst') == True\n    assert candidate(s1='hello', s2='olelh') == True\n    assert candidate(s1='xyzz', s2='zzyx') == True\n    assert candidate(s1='xyz', s2='zyx') == True\n    assert candidate(s1='abcdefg', s2='efgabcd') == True\n    assert candidate(s1='abcdefghijk', s2='kabcdefghij') == True\n    assert candidate(s1='a', s2='a') == True\n    assert candidate(s1='algorithm', s2='logarithm') == True\n    assert candidate(s1='abcdabcd', s2='ddddcccc') == False\n    assert candidate(s1='abcdexyz', s2='zyxdecba') == True\n    assert candidate(s1='abcdxyz', s2='yzabcdx') == True\n    assert candidate(s1='recursion', s2='rursiicno') == False\n    assert candidate(s1='abcdefghij', s2='jihgfecdba') == True\n    assert candidate(s1='abcdefgh', s2='abcdghfe') == True\n    assert candidate(s1='abcdefghij', s2='abijhgfedc') == True\n    assert candidate(s1='xylophone', s2='eponhloxy') == True\n    assert candidate(s1='abcdefg', s2='gfedcba') == True\n    assert candidate(s1='scramble', s2='elmacrbs') == True\n    assert candidate(s1='interview', s2='wetneivrt') == False\n    assert candidate(s1='abababab', s2='babababa') == True\n    assert candidate(s1='abcdefgh', s2='ghfedcba') == True\n    assert candidate(s1='abcdexyz', s2='xyzexbcd') == False\n    assert candidate(s1='abcdefgh', s2='cdabefgh') == True\n    assert candidate(s1='qwertyuiop', s2='yuiopqwert') == True\n    assert candidate(s1='intention', s2='tennotiin') == True\n    assert candidate(s1='abcdefghij', s2='jihgfedabc') == True\n    assert candidate(s1='abcd', s2='cdab') == True\n    assert candidate(s1='scramble', s2='melbrcsa') == True\n    assert candidate(s1='abcdexyz', s2='xyzabcde') == True\n    assert candidate(s1='algorithm', s2='rhtaglmoi') == False\n    assert candidate(s1='optimization', s2='tivioonpmzas') == False\n    assert candidate(s1='interview', s2='ewrotnive') == False\n    assert candidate(s1='programming', s2='gnimmargorp') == True\n    assert candidate(s1='abcdefghij', s2='efghabcdij') == True\n    assert candidate(s1='abcdefghij', s2='abcdjihgfe') == True\n    assert candidate(s1='abcdefghij', s2='fedcbaighj') == True\n    assert candidate(s1='waterbottle', s2='elbottlewat') == False\n    assert candidate(s1='abcdefghij', s2='ghfedcbaab') == False\n    assert candidate(s1='scramble', s2='leacrbms') == True\n    assert candidate(s1='scramble', s2='rscmable') == True\n    assert candidate(s1='algorithm', s2='rhtlgmaoi') == False\n    assert candidate(s1='abcdefghijk', s2='efghijkabcd') == True\n    assert candidate(s1='abcdefghij', s2='ihgfedcbaa') == False\n    assert candidate(s1='abcdefghij', s2='hgfedcbaij') == True\n    assert candidate(s1='abcdefghij', s2='abcdghfjie') == True\n    assert candidate(s1='abcdefghij', s2='abcdefghij') == True\n    assert candidate(s1='abcdefghij', s2='ihgfjedcba') == True\n    assert candidate(s1='abcdefghij', s2='ijklabefgh') == False\n    assert candidate(s1='abcdefghij', s2='ghijefabcd') == True\n    assert candidate(s1='abcdefghij', s2='ihgfjklmno') == False\n    assert candidate(s1='interview', s2='reterivne') == False\n    assert candidate(s1='python', s2='nohtyp') == True\n    assert candidate(s1='abcdefghij', s2='bcdefghiaj') == True\n    assert candidate(s1='abcdefghij', s2='cdabefghij') == True\n    assert candidate(s1='abcdabcd', s2='dcbacabd') == True\n    assert candidate(s1='scramble', s2='blecrmas') == True\n    assert candidate(s1='abcdefghij', s2='cbadefghij') == True\n    assert candidate(s1='optimization', s2='nizationopti') == False\n    assert candidate(s1='intvw', s2='nvtiw') == True\n    assert candidate(s1='abcdefghij', s2='cdefghijab') == True\n    assert candidate(s1='intervw', s2='wvnreit') == False\n    assert candidate(s1='abcdefghij', s2='efghijabcd') == True\n    assert candidate(s1='optimization', s2='nizaitpmosio') == False\n    assert candidate(s1='algorithm', s2='rhtgmialo') == False\n    assert candidate(s1='interview', s2='terviewin') == True\n    assert candidate(s1='abcdabcd', s2='abcdabcd') == True\n    assert candidate(s1='abcdefghij', s2='jabcdefghi') == True\n    assert candidate(s1='abcdefghijk', s2='kjiabcdefgh') == True\n    assert candidate(s1='abab', s2='baba') == True\n    assert candidate(s1='scramble', s2='melcarbs') == False\n    assert candidate(s1='abcdefghij', s2='fghebacijd') == False\n    assert candidate(s1='scramble', s2='ercmsbal') == False\n    assert candidate(s1='abcdefghij', s2='cbadefghji') == True\n    assert candidate(s1='introduction', s2='ntrioduicton') == True\n    assert candidate(s1='abcdefghij', s2='abjihgfedc') == True\n    assert candidate(s1='recursion', s2='insrucero') == False\n",
+  "workload_hash": "7c5f94cde2c35918c62743906479da10ad8f75fa5531ebafccc7b98e92a7097e"
 }

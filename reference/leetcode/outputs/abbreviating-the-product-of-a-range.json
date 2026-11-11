@@ -1,5 +1,5 @@
 {
-  "workload_hash": "e19e60fa56476094d6a162200766460a2f3b4e14a6829872ab65b5ae42eed55e",
+  "workload_hash": "89d830888e5e23ae1d8b2b888fba287fbd3d280be4c84856e246a19be4722d23",
   "problem": "abbreviating-the-product-of-a-range",
   "expected": [
     {
@@ -347,14 +347,6 @@
       "output": "90528...09184e27"
     },
     {
-      "name": "case_44",
-      "input": {
-        "left": 9995,
-        "right": 10005
-      },
-      "output": "99999...99856e6"
-    },
-    {
       "name": "case_45",
       "input": {
         "left": 100,
@@ -505,14 +497,6 @@
         "right": 8780
       },
       "output": "12301...69504e5"
-    },
-    {
-      "name": "case_64",
-      "input": {
-        "left": 10000,
-        "right": 10010
-      },
-      "output": "10055...00288e6"
     },
     {
       "name": "case_65",

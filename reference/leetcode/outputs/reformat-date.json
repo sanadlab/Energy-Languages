@@ -1,5 +1,5 @@
 {
-  "workload_hash": "f6f0d1cd8953701a223ed21c3b163dfcccaea184184c568cd27b5aec11a96d07",
+  "workload_hash": "9497dcd9c42e0f39900c23658d028207bd2f2c0201964b111157e3cd878f282d",
   "problem": "reformat-date",
   "expected": [
     {
@@ -92,13 +92,6 @@
         "date": "11th Mar 2000"
       },
       "output": "2000-03-11"
-    },
-    {
-      "name": "case_14",
-      "input": {
-        "date": "5th Sep 1899"
-      },
-      "output": "1899-09-05"
     },
     {
       "name": "case_15",
@@ -575,13 +568,6 @@
         "date": "13th Aug 2023"
       },
       "output": "2023-08-13"
-    },
-    {
-      "name": "case_83",
-      "input": {
-        "date": "10th Oct 1899"
-      },
-      "output": "1899-10-10"
     },
     {
       "name": "case_84",

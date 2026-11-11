@@ -1,5 +1,5 @@
 {
-  "workload_hash": "33ed4f708fc7eb1a8bcb0100981daf90d11fe5bad385609ab266b57c31d1c82e",
+  "workload_hash": "ecc05ffe47ca1e2c196f3e773586ac25e28b50ba9841dee04b38cffeeb87a03d",
   "problem": "compare-strings-by-frequency-of-the-smallest-character",
   "expected": [
     {
@@ -709,23 +709,6 @@
       ]
     },
     {
-      "name": "case_34",
-      "input": {
-        "queries": [
-          "abcdefghijklmnopqrstuvwxyz",
-          "zyxwvutsrqponmlkjihgfedcba"
-        ],
-        "words": [
-          "qwertyuiopasdfghjklzxcvbnm",
-          "mnbvcxzasdfghjklpoiuytrewq"
-        ]
-      },
-      "output": [
-        0,
-        0
-      ]
-    },
-    {
       "name": "case_35",
       "input": {
         "queries": [
@@ -1218,30 +1201,6 @@
       ]
     },
     {
-      "name": "case_56",
-      "input": {
-        "queries": [
-          "leetcode",
-          "challenge",
-          "python"
-        ],
-        "words": [
-          "programming",
-          "interview",
-          "solution",
-          "difficulty",
-          "easy",
-          "hard",
-          "medium"
-        ]
-      },
-      "output": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
       "name": "case_57",
       "input": {
         "queries": [
@@ -1281,30 +1240,6 @@
         0,
         0,
         0
-      ]
-    },
-    {
-      "name": "case_59",
-      "input": {
-        "queries": [
-          "mississippi",
-          "delaware",
-          "kentucky"
-        ],
-        "words": [
-          "alabama",
-          "missouri",
-          "georgia",
-          "texas",
-          "california",
-          "arizona",
-          "wyoming"
-        ]
-      },
-      "output": [
-        0,
-        1,
-        4
       ]
     },
     {
@@ -1414,30 +1349,6 @@
         4,
         4,
         4
-      ]
-    },
-    {
-      "name": "case_65",
-      "input": {
-        "queries": [
-          "a"
-        ],
-        "words": [
-          "aaaaaaaaaab",
-          "aaaaaaaaaa",
-          "aaaaaaaaa",
-          "aaaaaaaa",
-          "aaaaaaa",
-          "aaaaaa",
-          "aaaaa",
-          "aaaa",
-          "aaa",
-          "aa",
-          "a"
-        ]
-      },
-      "output": [
-        10
       ]
     },
     {
@@ -1788,26 +1699,6 @@
       ]
     },
     {
-      "name": "case_80",
-      "input": {
-        "queries": [
-          "abcdabcd",
-          "abcdeabcde",
-          "abcdefabcdef"
-        ],
-        "words": [
-          "bcdefgbcdefg",
-          "cdefghcdefgh",
-          "defghidefghi"
-        ]
-      },
-      "output": [
-        0,
-        0,
-        0
-      ]
-    },
-    {
       "name": "case_81",
       "input": {
         "queries": [
@@ -1834,26 +1725,6 @@
         0,
         0,
         0
-      ]
-    },
-    {
-      "name": "case_82",
-      "input": {
-        "queries": [
-          "applepie",
-          "bananabread",
-          "cherrypie"
-        ],
-        "words": [
-          "strawberry",
-          "blueberry",
-          "raspberry"
-        ]
-      },
-      "output": [
-        1,
-        0,
-        1
       ]
     },
     {
@@ -2018,30 +1889,6 @@
         0,
         0,
         0
-      ]
-    },
-    {
-      "name": "case_90",
-      "input": {
-        "queries": [
-          "abcdabcd",
-          "bcdbcd",
-          "cdab"
-        ],
-        "words": [
-          "ababcdabcd",
-          "bcdbcdabcd",
-          "cdababcd",
-          "abcdabcdabcd",
-          "bcdabcd",
-          "cdabcd",
-          "abcd"
-        ]
-      },
-      "output": [
-        2,
-        2,
-        3
       ]
     },
     {

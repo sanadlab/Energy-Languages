@@ -1,5 +1,5 @@
 {
-  "workload_hash": "faf0e1d7f93adc963407dbbe22a1075871dceb453428f18afa06da3ca73a0811",
+  "workload_hash": "2788ce2c9798ec277bcbb1bef90aaa4f38777ff141a0957e218ba5e0b2cb2621",
   "problem": "kids-with-the-greatest-number-of-candies",
   "expected": [
     {
@@ -99,26 +99,6 @@
       ]
     },
     {
-      "name": "case_6",
-      "input": {
-        "candies": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "extraCandies": 0
-      },
-      "output": [
-        false,
-        false,
-        false,
-        false,
-        true
-      ]
-    },
-    {
       "name": "case_7",
       "input": {
         "candies": [
@@ -208,56 +188,6 @@
         true,
         true,
         true,
-        true,
-        true,
-        true,
-        true
-      ]
-    },
-    {
-      "name": "case_10",
-      "input": {
-        "candies": [
-          90,
-          80,
-          70,
-          60,
-          50,
-          40,
-          30,
-          20,
-          10,
-          0
-        ],
-        "extraCandies": 15
-      },
-      "output": [
-        true,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-    },
-    {
-      "name": "case_11",
-      "input": {
-        "candies": [
-          98,
-          99,
-          100,
-          101,
-          102
-        ],
-        "extraCandies": 3
-      },
-      "output": [
-        false,
         true,
         true,
         true,
@@ -713,28 +643,6 @@
       ]
     },
     {
-      "name": "case_28",
-      "input": {
-        "candies": [
-          50,
-          40,
-          30,
-          20,
-          10,
-          0
-        ],
-        "extraCandies": 10
-      },
-      "output": [
-        true,
-        true,
-        false,
-        false,
-        false,
-        false
-      ]
-    },
-    {
       "name": "case_29",
       "input": {
         "candies": [
@@ -906,36 +814,6 @@
           1
         ],
         "extraCandies": 9
-      },
-      "output": [
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ]
-    },
-    {
-      "name": "case_34",
-      "input": {
-        "candies": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          1,
-          100
-        ],
-        "extraCandies": 99
       },
       "output": [
         true,
@@ -1231,36 +1109,6 @@
       ]
     },
     {
-      "name": "case_43",
-      "input": {
-        "candies": [
-          1,
-          2,
-          4,
-          8,
-          16,
-          32,
-          64,
-          128,
-          256,
-          512
-        ],
-        "extraCandies": 255
-      },
-      "output": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true
-      ]
-    },
-    {
       "name": "case_44",
       "input": {
         "candies": [
@@ -1519,56 +1367,6 @@
       ]
     },
     {
-      "name": "case_53",
-      "input": {
-        "candies": [
-          10,
-          20,
-          30,
-          40,
-          50,
-          60,
-          70,
-          80,
-          90,
-          100,
-          110,
-          120,
-          130,
-          140,
-          150,
-          160,
-          170,
-          180,
-          190,
-          200
-        ],
-        "extraCandies": 80
-      },
-      "output": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ]
-    },
-    {
       "name": "case_54",
       "input": {
         "candies": [
@@ -1618,36 +1416,6 @@
       },
       "output": [
         false,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-      ]
-    },
-    {
-      "name": "case_56",
-      "input": {
-        "candies": [
-          1,
-          100,
-          1,
-          100,
-          1,
-          100,
-          1,
-          100,
-          1,
-          100
-        ],
-        "extraCandies": 99
-      },
-      "output": [
         true,
         true,
         true,
@@ -1943,36 +1711,6 @@
       ]
     },
     {
-      "name": "case_64",
-      "input": {
-        "candies": [
-          100,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "extraCandies": 90
-      },
-      "output": [
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ]
-    },
-    {
       "name": "case_65",
       "input": {
         "candies": [
@@ -1995,36 +1733,6 @@
         false,
         false,
         false,
-        true,
-        true,
-        true,
-        true,
-        true
-      ]
-    },
-    {
-      "name": "case_66",
-      "input": {
-        "candies": [
-          8,
-          8,
-          8,
-          8,
-          8,
-          8,
-          8,
-          8,
-          8,
-          8
-        ],
-        "extraCandies": 0
-      },
-      "output": [
-        true,
-        true,
-        true,
-        true,
-        true,
         true,
         true,
         true,

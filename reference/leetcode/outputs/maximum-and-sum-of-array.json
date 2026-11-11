@@ -1,5 +1,5 @@
 {
-  "workload_hash": "44c806413ab2a7432693e53ef38c91d261a4391b62b676279ea7735aa85d454f",
+  "workload_hash": "333bccd906434f0382ed38a3c1b837090f2f81ba1064c7c2eb53db113d9f03e4",
   "problem": "maximum-and-sum-of-array",
   "expected": [
     {
@@ -798,33 +798,6 @@
       "output": 40
     },
     {
-      "name": "case_40",
-      "input": {
-        "nums": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18
-        ],
-        "numSlots": 9
-      },
-      "output": 87
-    },
-    {
       "name": "case_41",
       "input": {
         "nums": [
@@ -871,29 +844,6 @@
         "numSlots": 7
       },
       "output": 49
-    },
-    {
-      "name": "case_43",
-      "input": {
-        "nums": [
-          1,
-          2,
-          4,
-          8,
-          16,
-          32,
-          64,
-          128,
-          256,
-          512,
-          1024,
-          2048,
-          4096,
-          8192
-        ],
-        "numSlots": 7
-      },
-      "output": 7
     },
     {
       "name": "case_44",
@@ -1354,25 +1304,6 @@
       "output": 20
     },
     {
-      "name": "case_65",
-      "input": {
-        "nums": [
-          3,
-          6,
-          9,
-          12,
-          15,
-          18,
-          21,
-          24,
-          27,
-          30
-        ],
-        "numSlots": 5
-      },
-      "output": 29
-    },
-    {
       "name": "case_66",
       "input": {
         "nums": [
@@ -1504,23 +1435,6 @@
       "output": 19
     },
     {
-      "name": "case_72",
-      "input": {
-        "nums": [
-          2,
-          4,
-          6,
-          8,
-          10,
-          12,
-          14,
-          16
-        ],
-        "numSlots": 4
-      },
-      "output": 16
-    },
-    {
       "name": "case_73",
       "input": {
         "nums": [
@@ -1546,60 +1460,6 @@
         "numSlots": 9
       },
       "output": 90
-    },
-    {
-      "name": "case_74",
-      "input": {
-        "nums": [
-          7,
-          14,
-          21,
-          28,
-          35,
-          42,
-          49,
-          56
-        ],
-        "numSlots": 4
-      },
-      "output": 19
-    },
-    {
-      "name": "case_75",
-      "input": {
-        "nums": [
-          7,
-          11,
-          13,
-          17,
-          19,
-          23,
-          29,
-          31,
-          37,
-          41
-        ],
-        "numSlots": 5
-      },
-      "output": 30
-    },
-    {
-      "name": "case_76",
-      "input": {
-        "nums": [
-          2,
-          4,
-          6,
-          8,
-          10,
-          12,
-          14,
-          16,
-          18
-        ],
-        "numSlots": 9
-      },
-      "output": 46
     },
     {
       "name": "case_77",
@@ -1672,21 +1532,6 @@
         "numSlots": 8
       },
       "output": 71
-    },
-    {
-      "name": "case_80",
-      "input": {
-        "nums": [
-          3,
-          5,
-          7,
-          11,
-          13,
-          17
-        ],
-        "numSlots": 3
-      },
-      "output": 10
     },
     {
       "name": "case_81",
@@ -1807,33 +1652,6 @@
         "numSlots": 5
       },
       "output": 22
-    },
-    {
-      "name": "case_86",
-      "input": {
-        "nums": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14,
-          15,
-          16,
-          17,
-          18
-        ],
-        "numSlots": 9
-      },
-      "output": 87
     },
     {
       "name": "case_87",

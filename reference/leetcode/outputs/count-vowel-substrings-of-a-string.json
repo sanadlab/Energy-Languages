@@ -1,5 +1,5 @@
 {
-  "workload_hash": "5042d9aa5650f05c98e6e9d5b38ec0bd15207e3a8a28d40ea2526a5044a5aebd",
+  "workload_hash": "bde0ea608c1f4aca45eeb8110e09edb3374470891d375ff11eb17fe4418aca1a",
   "problem": "count-vowel-substrings-of-a-string",
   "expected": [
     {
@@ -470,13 +470,6 @@
         "word": "aeiaeiouoieiouaeiou"
       },
       "output": 93
-    },
-    {
-      "name": "case_68",
-      "input": {
-        "word": "aeioubaeioucaeioudaeioufaeioubaeioucaeioudaeioufaeioubaeioucaeioudaeioufxyzaeioubaeioucaeioudaeioufaeioubaeioucaeioudaeiouf"
-      },
-      "output": 20
     },
     {
       "name": "case_69",

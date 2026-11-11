@@ -10,10 +10,6 @@
       "output": "0"
     },
     {
-      "input": "s = \"]][[[]]]\"",
-      "output": "0"
-    },
-    {
       "input": "s = \"][][\"",
       "output": "1"
     },
@@ -62,10 +58,6 @@
       "output": "1"
     },
     {
-      "input": "s = \"]]][[[[[[]]]]]\"",
-      "output": "1"
-    },
-    {
       "input": "s = \"]][[[]\"",
       "output": "1"
     },
@@ -82,19 +74,7 @@
       "output": "0"
     },
     {
-      "input": "s = \"]]]]][[[[[[[]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]]]][[[[[][][]]]]]][[[[[][][]]]]]\"",
-      "output": "0"
-    },
-    {
       "input": "s = \"[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"][]]]][[[[[]][[]]]\"",
       "output": "1"
     },
     {
@@ -102,52 +82,12 @@
       "output": "1"
     },
     {
-      "input": "s = \"]][[[]]]]][[[[[]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[][[[[[]]]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[[[[[][][][]]]]]]][[[[[[[[[][][][]]]]]]][[[[[[[[[][][][]]]]]]]\"",
-      "output": "4"
-    },
-    {
-      "input": "s = \"]]][[[[]]]][[[[[]]]]][[[[]]]]\"",
-      "output": "0"
-    },
-    {
       "input": "s = \"]]][[[][]]][[[[[[[]]]]]][][][[]][[\"",
       "output": "2"
     },
     {
-      "input": "s = \"]][[[]]][][[[[[[[[]]]]]][][[\"",
-      "output": "2"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]][[[[[]]]]]][[[[]]]]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]]]][[[[[[]]][]]]\"",
-      "output": "1"
-    },
-    {
       "input": "s = \"]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[\"",
       "output": "1"
-    },
-    {
-      "input": "s = \"[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]][[[]]][][[[]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]]]]]]]][[[[[[[[[[\"",
-      "output": "5"
     },
     {
       "input": "s = \"[[][]]]][[[][][[]][][[]][[]]\"",
@@ -158,120 +98,12 @@
       "output": "0"
     },
     {
-      "input": "s = \"]][[[][]]][[[[]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]][[[][]]][[[[[[[]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[][]][[[\"",
-      "output": "2"
-    },
-    {
-      "input": "s = \"]]][[[[[[[[[[[][]]]]]]]]][[[[[[[[[][]]]]]]]]][[[[[[[[[][]]]]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"[[[[]]]]][[[[]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"[[[[[[]]]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[][]]]]]]][[[[[][]]]]][[[[[][]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[]]][[[[][[\"",
-      "output": "3"
-    },
-    {
-      "input": "s = \"]][[][][][[][]][[]][[\"",
-      "output": "2"
-    },
-    {
-      "input": "s = \"]]][[[[]][]][][[][]][][[[]][]][][[[]]]\"",
-      "output": "1"
-    },
-    {
       "input": "s = \"[][][][][][][][][][][][][][][][][][][][][][][][]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]][[[]][[]][[[]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"[[[[[[[[]]]]]]]][[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]\"",
       "output": "0"
     },
     {
       "input": "s = \"]]]]]][[[[[[\"",
       "output": "3"
-    },
-    {
-      "input": "s = \"]]]][[[[[][]]][]][[[[[]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]]]][[[[[]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]][[[[[[]]]]]]][[[[\"",
-      "output": "3"
-    },
-    {
-      "input": "s = \"]]]]][[[[[]]]][[\"",
-      "output": "2"
-    },
-    {
-      "input": "s = \"]]][[[[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][]]]]]]]]]\"",
-      "output": "3"
-    },
-    {
-      "input": "s = \"]]][[[[[[[[[[[][][]]]]]]][[[[[[[[[][][]]]]]]][[[[[[[[[][][]]]]]]][[[[[[[[[][]]]]]]]]]\"",
-      "output": "4"
-    },
-    {
-      "input": "s = \"]][[[[[[[]]]]]]][[[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[]][[[[]]]][]]]]][][[[[]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[]]][][[[]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]][[[[\"",
-      "output": "3"
-    },
-    {
-      "input": "s = \"]][[[[[][]]]]]][[[[[][]]]]]][[[[[][]]]]][[\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[]][][[[]]]]\"",
-      "output": "0"
     },
     {
       "input": "s = \"]][[[][]]][[\"",
@@ -286,84 +118,12 @@
       "output": "1"
     },
     {
-      "input": "s = \"]]][[[[[]][[]]]]][[[[[]][[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]][[[]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[]]][[[]]]]][[[[[]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[][]][[[[[[[]]]]]][]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]]]][[[[[[]]]]][[[[]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]][[[[[][]]]]]][[[[[[[]]]]]][[[[[]]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[]]]][]][[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[[[[[][][]][[]][]]]][][[[[[[[[][][]][[]][]]]][][[[[[[[[][][]][[]][]]]][][[[[[[[[][]]]]]]]]]\"",
-      "output": "6"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]]][[[[[]]]]]]]]]]\"",
-      "output": "0"
-    },
-    {
       "input": "s = \"]]][[[]]]][[[[\"",
       "output": "2"
     },
     {
       "input": "s = \"]]]][][][[[[\"",
       "output": "2"
-    },
-    {
-      "input": "s = \"]][[[[[[]]]]]][[[]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]][[[[[][]]]]]][[\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[][]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]][[[]][[[]][]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[][][]]]]]]][[[[[][][]]]]][[[[[][][]]]]]\"",
-      "output": "0"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]][[[[[[]]]]]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[]][]]\"",
-      "output": "1"
-    },
-    {
-      "input": "s = \"]]][[[[[[[]]]]]]]]][[[[[[[[[]]]]]]]]]\"",
-      "output": "0"
     }
   ],
   "entry_point": "Solution().minSwaps",
@@ -374,6 +134,6 @@
   "source_dataset": "leetcode_energy_93_curated.jsonl",
   "source_dataset_sha256": "1b56e4a02bb35712ba41e0189b2cee937d15eec90a00bd9e6e2b1cb96764ea50",
   "starter_code": "class Solution:\n    def minSwaps(self, s: str) -> int:\n        ",
-  "test": "def _same_unordered(actual, expected):\n    return sorted(actual) == sorted(expected)\n\ndef _valid_di_string(actual, pattern):\n    if not isinstance(actual, list) or sorted(actual) != list(range(len(pattern) + 1)):\n        return False\n    return all(\n        (char == \"I\" and actual[index] < actual[index + 1])\n        or (char == \"D\" and actual[index] > actual[index + 1])\n        for index, char in enumerate(pattern)\n    )\n\ndef _valid_restore(actual, adjacent_pairs):\n    if not isinstance(actual, list) or len(actual) != len(adjacent_pairs) + 1:\n        return False\n    expected = Counter(frozenset(pair) for pair in adjacent_pairs)\n    produced = Counter(\n        frozenset((actual[index], actual[index + 1]))\n        for index in range(len(actual) - 1)\n    )\n    return produced == expected\n\ndef _valid_no_triples(actual, a, b):\n    return (\n        isinstance(actual, str)\n        and len(actual) == a + b\n        and actual.count(\"a\") == a\n        and actual.count(\"b\") == b\n        and \"aaa\" not in actual\n        and \"bbb\" not in actual\n    )\n\ndef check(candidate):\n    assert candidate(s='[]][[]') == 1\n    assert candidate(s='[[[[]]]]') == 0\n    assert candidate(s=']][[[]]]') == 0\n    assert candidate(s='][][') == 1\n    assert candidate(s=']]][[][[') == 2\n    assert candidate(s=']]]][[[[') == 2\n    assert candidate(s='][[]][') == 1\n    assert candidate(s='[][][][]') == 0\n    assert candidate(s='[[[]]]') == 0\n    assert candidate(s='[[[]]][[]]') == 0\n    assert candidate(s=']][[][][') == 1\n    assert candidate(s=']]][[[') == 2\n    assert candidate(s='[][]') == 0\n    assert candidate(s='[]') == 0\n    assert candidate(s=']][[') == 1\n    assert candidate(s=']]][[[[[[]]]]]') == 1\n    assert candidate(s=']][[[]') == 1\n    assert candidate(s='[[]][]') == 0\n    assert candidate(s='][[][]') == 1\n    assert candidate(s='[[[][]]]') == 0\n    assert candidate(s=']]]]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']]]]][[[[[][][]]]]]][[[[[][][]]]]]') == 0\n    assert candidate(s='[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]') == 1\n    assert candidate(s='][]]]][[[[[]][[]]]') == 1\n    assert candidate(s=']][[[[[[[[[[]]]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']][[[]]]]][[[[[]]]') == 1\n    assert candidate(s=']]][[][[[[[]]]]]]]') == 0\n    assert candidate(s=']]][[[[[[[[[[[][][][]]]]]]][[[[[[[[[][][][]]]]]]][[[[[[[[[][][][]]]]]]]') == 4\n    assert candidate(s=']]][[[[]]]][[[[[]]]]][[[[]]]]') == 0\n    assert candidate(s=']]][[[][]]][[[[[[[]]]]]][][][[]][[') == 2\n    assert candidate(s=']][[[]]][][[[[[[[[]]]]]][][[') == 2\n    assert candidate(s=']]][[[[[[[]]]]]]][[[[[]]]]]][[[[]]]]]]]]') == 0\n    assert candidate(s=']]]]][[[[[[]]][]]]') == 1\n    assert candidate(s=']][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[') == 1\n    assert candidate(s='[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]') == 0\n    assert candidate(s=']][[[]]][][[[]]]') == 0\n    assert candidate(s=']]]]]]]]][[[[[[[[[[') == 5\n    assert candidate(s='[[][]]]][[[][][[]][][[]][[]]') == 1\n    assert candidate(s='[[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]]') == 0\n    assert candidate(s=']][[[][]]][[[[]]]') == 1\n    assert candidate(s=']][[[][]]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']]][[[][]][[[') == 2\n    assert candidate(s=']]][[[[[[[[[[[][]]]]]]]]][[[[[[[[[][]]]]]]]]][[[[[[[[[][]]]]]]]]]') == 1\n    assert candidate(s='[[[[]]]]][[[[]]]]') == 0\n    assert candidate(s='[[[[[[]]]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]') == 0\n    assert candidate(s=']]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]]]]]]') == 0\n    assert candidate(s=']]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]') == 0\n    assert candidate(s=']]][[[[[[[][]]]]]]][[[[[][]]]]][[[[[][]]]]]') == 0\n    assert candidate(s=']]][[]]][[[[][[') == 3\n    assert candidate(s=']][[][][][[][]][[]][[') == 2\n    assert candidate(s=']]][[[[]][]][][[][]][][[[]][]][][[[]]]') == 1\n    assert candidate(s='[][][][][][][][][][][][][][][][][][][][][][][][]') == 0\n    assert candidate(s=']][[[]][[]][[[]]]') == 1\n    assert candidate(s='[[[[[[[[]]]]]]]][[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]') == 0\n    assert candidate(s=']]]]]][[[[[[') == 3\n    assert candidate(s=']]]][[[[[][]]][]][[[[[]]]]]') == 1\n    assert candidate(s=']]]]][[[[[]]]]') == 1\n    assert candidate(s=']]][[[[[[[]]]]][[[[[[]]]]]]][[[[') == 3\n    assert candidate(s=']]]]][[[[[]]]][[') == 2\n    assert candidate(s=']]][[[[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][][]][[]][]]]]]]][[[[[[[[[][]]]]]]]]]') == 3\n    assert candidate(s=']]][[[[[[[[[[[][][]]]]]]][[[[[[[[[][][]]]]]]][[[[[[[[[][][]]]]]]][[[[[[[[[][]]]]]]]]]') == 4\n    assert candidate(s=']][[[[[[[]]]]]]][[[[[]]]]]') == 0\n    assert candidate(s=']]][[[]][[[[]]]][]]]]][][[[[]]]]') == 0\n    assert candidate(s=']]][[[[]]][][[[]]]') == 1\n    assert candidate(s=']]][[[[[[[]]]]][[[[') == 3\n    assert candidate(s=']][[[[[][]]]]]][[[[[][]]]]]][[[[[][]]]]][[') == 1\n    assert candidate(s=']]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']]][[[]][][[[]]]]') == 0\n    assert candidate(s=']][[[][]]][[') == 1\n    assert candidate(s=']][[[[[[[[[[]]]]]]]]][[[[[[[[[[[]]]]]]]]]][[[[[[[[[[[]]]]]]]]]]]') == 1\n    assert candidate(s=']][[[]]][][[') == 1\n    assert candidate(s=']]][[[[[]][[]]]]][[[[[]][[]]]]]') == 0\n    assert candidate(s=']]][[[[[[[]]]]]]][[[]]]') == 0\n    assert candidate(s=']]][[[]]][[[]]]]][[[[[]]]]') == 1\n    assert candidate(s=']]][[[][]][[[[[[[]]]]]][]') == 1\n    assert candidate(s=']]]]][[[[[[]]]]][[[[]]]]') == 1\n    assert candidate(s=']][[[[[][]]]]]][[[[[[[]]]]]][[[[[]]]]]]') == 0\n    assert candidate(s=']]][[[[[[]]]][]][[[[]]]]]') == 0\n    assert candidate(s=']]][[[[[[[[[[[][][]][[]][]]]][][[[[[[[[][][]][[]][]]]][][[[[[[[[][][]][[]][]]]][][[[[[[[[][]]]]]]]]]') == 6\n    assert candidate(s=']]][[[[[[[]]]]]]][[[[[]]]]]][[[[[]]]]]]][[[[[]]]]]]]]]]') == 0\n    assert candidate(s=']]][[[]]]][[[[') == 2\n    assert candidate(s=']]]][][][[[[') == 2\n    assert candidate(s=']][[[[[[]]]]]][[[]]') == 1\n    assert candidate(s=']][[[[[][]]]]]][[') == 1\n    assert candidate(s=']]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]][[[[[]]]]]') == 0\n    assert candidate(s=']]][[[[[[[][]]]]]]') == 1\n    assert candidate(s=']][[[]][[[]][]]]') == 0\n    assert candidate(s=']]][[[[[[[][][]]]]]]][[[[[][][]]]]][[[[[][][]]]]]') == 0\n    assert candidate(s=']]][[[[[[[]]]]][[[[[[]]]]]]') == 1\n    assert candidate(s=']]][[[[]][]]') == 1\n    assert candidate(s=']]][[[[[[[]]]]]]]]][[[[[[[[[]]]]]]]]]') == 0\n",
-  "workload_hash": "792cff36d47f8c5031075686a9a4c4ddf18a30f8bc15cb2364ca86bfbfc77a27"
+  "test": "def _same_unordered(actual, expected):\n    return sorted(actual) == sorted(expected)\n\ndef _valid_di_string(actual, pattern):\n    if not isinstance(actual, list) or sorted(actual) != list(range(len(pattern) + 1)):\n        return False\n    return all(\n        (char == \"I\" and actual[index] < actual[index + 1])\n        or (char == \"D\" and actual[index] > actual[index + 1])\n        for index, char in enumerate(pattern)\n    )\n\ndef _valid_restore(actual, adjacent_pairs):\n    if not isinstance(actual, list) or len(actual) != len(adjacent_pairs) + 1:\n        return False\n    expected = Counter(frozenset(pair) for pair in adjacent_pairs)\n    produced = Counter(\n        frozenset((actual[index], actual[index + 1]))\n        for index in range(len(actual) - 1)\n    )\n    return produced == expected\n\ndef _valid_no_triples(actual, a, b):\n    return (\n        isinstance(actual, str)\n        and len(actual) == a + b\n        and actual.count(\"a\") == a\n        and actual.count(\"b\") == b\n        and \"aaa\" not in actual\n        and \"bbb\" not in actual\n    )\n\ndef check(candidate):\n    assert candidate(s='[]][[]') == 1\n    assert candidate(s='[[[[]]]]') == 0\n    assert candidate(s='][][') == 1\n    assert candidate(s=']]][[][[') == 2\n    assert candidate(s=']]]][[[[') == 2\n    assert candidate(s='][[]][') == 1\n    assert candidate(s='[][][][]') == 0\n    assert candidate(s='[[[]]]') == 0\n    assert candidate(s='[[[]]][[]]') == 0\n    assert candidate(s=']][[][][') == 1\n    assert candidate(s=']]][[[') == 2\n    assert candidate(s='[][]') == 0\n    assert candidate(s='[]') == 0\n    assert candidate(s=']][[') == 1\n    assert candidate(s=']][[[]') == 1\n    assert candidate(s='[[]][]') == 0\n    assert candidate(s='][[][]') == 1\n    assert candidate(s='[[[][]]]') == 0\n    assert candidate(s='[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']][[[[[[[[[[]]]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]][[[[[[[]]]]]]') == 1\n    assert candidate(s=']]][[[][]]][[[[[[[]]]]]][][][[]][[') == 2\n    assert candidate(s=']][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[') == 1\n    assert candidate(s='[[][]]]][[[][][[]][][[]][[]]') == 1\n    assert candidate(s='[[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]][[]]') == 0\n    assert candidate(s='[][][][][][][][][][][][][][][][][][][][][][][][]') == 0\n    assert candidate(s=']]]]]][[[[[[') == 3\n    assert candidate(s=']][[[][]]][[') == 1\n    assert candidate(s=']][[[[[[[[[[]]]]]]]]][[[[[[[[[[[]]]]]]]]]][[[[[[[[[[[]]]]]]]]]]]') == 1\n    assert candidate(s=']][[[]]][][[') == 1\n    assert candidate(s=']]][[[]]]][[[[') == 2\n    assert candidate(s=']]]][][][[[[') == 2\n",
+  "workload_hash": "6e6edf6bc8140c6a885eb091a2e77d742253ba21cbbb461c18ff11a092d67495"
 }

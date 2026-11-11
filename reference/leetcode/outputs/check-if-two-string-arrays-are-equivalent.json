@@ -1,5 +1,5 @@
 {
-  "workload_hash": "80d55793df7cad67c8d0b1233c53005c3ae6ee51faba32c20abd61365fee565e",
+  "workload_hash": "fc7fb20f63cbb13d27883acbfb2a3f027a32852d430871b5f1274d47b4b0a0d4",
   "problem": "check-if-two-string-arrays-are-equivalent",
   "expected": [
     {
@@ -107,19 +107,6 @@
         ]
       },
       "output": true
-    },
-    {
-      "name": "case_9",
-      "input": {
-        "word1": [
-          "hello",
-          "world"
-        ],
-        "word2": [
-          "helloWorld"
-        ]
-      },
-      "output": false
     },
     {
       "name": "case_10",
@@ -361,21 +348,6 @@
         ]
       },
       "output": false
-    },
-    {
-      "name": "case_26",
-      "input": {
-        "word1": [
-          "xyz",
-          "123",
-          "abc"
-        ],
-        "word2": [
-          "xyz1",
-          "23abc"
-        ]
-      },
-      "output": true
     },
     {
       "name": "case_27",
@@ -1025,22 +997,6 @@
       "output": true
     },
     {
-      "name": "case_70",
-      "input": {
-        "word1": [
-          "part1",
-          "part2",
-          "part3"
-        ],
-        "word2": [
-          "part",
-          "1part2",
-          "part3"
-        ]
-      },
-      "output": true
-    },
-    {
       "name": "case_71",
       "input": {
         "word1": [
@@ -1053,19 +1009,6 @@
           "a",
           "longerstring",
           "here"
-        ]
-      },
-      "output": true
-    },
-    {
-      "name": "case_72",
-      "input": {
-        "word1": [
-          "part1",
-          "part2"
-        ],
-        "word2": [
-          "part1part2"
         ]
       },
       "output": true

@@ -118,10 +118,6 @@
       "output": "15"
     },
     {
-      "input": "n = 4096",
-      "output": "24"
-    },
-    {
       "input": "n = 300",
       "output": "17"
     },
@@ -164,10 +160,6 @@
     {
       "input": "n = 819",
       "output": "26"
-    },
-    {
-      "input": "n = 1024",
-      "output": "20"
     },
     {
       "input": "n = 128",
@@ -270,6 +262,6 @@
   "source_dataset": "leetcode_energy_93_curated.jsonl",
   "source_dataset_sha256": "1b56e4a02bb35712ba41e0189b2cee937d15eec90a00bd9e6e2b1cb96764ea50",
   "starter_code": "class Solution:\n    def minSteps(self, n: int) -> int:\n        ",
-  "test": "def check(candidate):\n    assert candidate(n = 3) == 3\n    assert candidate(n = 12) == 7\n    assert candidate(n = 100) == 14\n    assert candidate(n = 10) == 7\n    assert candidate(n = 1000) == 21\n    assert candidate(n = 5) == 5\n    assert candidate(n = 4) == 4\n    assert candidate(n = 16) == 8\n    assert candidate(n = 17) == 17\n    assert candidate(n = 2) == 2\n    assert candidate(n = 8) == 6\n    assert candidate(n = 27) == 9\n    assert candidate(n = 18) == 8\n    assert candidate(n = 20) == 9\n    assert candidate(n = 19) == 19\n    assert candidate(n = 11) == 11\n    assert candidate(n = 15) == 8\n    assert candidate(n = 14) == 9\n    assert candidate(n = 9) == 6\n    assert candidate(n = 6) == 5\n    assert candidate(n = 1) == 0\n    assert candidate(n = 7) == 7\n    assert candidate(n = 13) == 13\n    assert candidate(n = 625) == 20\n    assert candidate(n = 97) == 97\n    assert candidate(n = 729) == 18\n    assert candidate(n = 144) == 14\n    assert candidate(n = 49) == 14\n    assert candidate(n = 125) == 15\n    assert candidate(n = 4096) == 24\n    assert candidate(n = 300) == 17\n    assert candidate(n = 841) == 58\n    assert candidate(n = 60) == 12\n    assert candidate(n = 30) == 10\n    assert candidate(n = 600) == 19\n    assert candidate(n = 64) == 12\n    assert candidate(n = 72) == 12\n    assert candidate(n = 99) == 17\n    assert candidate(n = 343) == 21\n    assert candidate(n = 225) == 16\n    assert candidate(n = 819) == 26\n    assert candidate(n = 1024) == 20\n    assert candidate(n = 128) == 14\n    assert candidate(n = 999) == 46\n    assert candidate(n = 96) == 13\n    assert candidate(n = 256) == 16\n    assert candidate(n = 997) == 997\n    assert candidate(n = 36) == 10\n    assert candidate(n = 529) == 46\n    assert candidate(n = 91) == 20\n    assert candidate(n = 77) == 18\n    assert candidate(n = 81) == 12\n    assert candidate(n = 48) == 11\n    assert candidate(n = 961) == 62\n    assert candidate(n = 200) == 16\n    assert candidate(n = 400) == 18\n    assert candidate(n = 512) == 18\n    assert candidate(n = 196) == 18\n    assert candidate(n = 750) == 20\n    assert candidate(n = 121) == 22\n    assert candidate(n = 361) == 38\n    assert candidate(n = 441) == 20\n    assert candidate(n = 500) == 19\n    assert candidate(n = 55) == 16\n    assert candidate(n = 25) == 10\n",
-  "workload_hash": "3a3c7a1dc4e502f153bb633f1fe9bb447d531a80c272030cbdb6b11bdc9f4c9a"
+  "test": "def check(candidate):\n    assert candidate(n = 3) == 3\n    assert candidate(n = 12) == 7\n    assert candidate(n = 100) == 14\n    assert candidate(n = 10) == 7\n    assert candidate(n = 1000) == 21\n    assert candidate(n = 5) == 5\n    assert candidate(n = 4) == 4\n    assert candidate(n = 16) == 8\n    assert candidate(n = 17) == 17\n    assert candidate(n = 2) == 2\n    assert candidate(n = 8) == 6\n    assert candidate(n = 27) == 9\n    assert candidate(n = 18) == 8\n    assert candidate(n = 20) == 9\n    assert candidate(n = 19) == 19\n    assert candidate(n = 11) == 11\n    assert candidate(n = 15) == 8\n    assert candidate(n = 14) == 9\n    assert candidate(n = 9) == 6\n    assert candidate(n = 6) == 5\n    assert candidate(n = 1) == 0\n    assert candidate(n = 7) == 7\n    assert candidate(n = 13) == 13\n    assert candidate(n = 625) == 20\n    assert candidate(n = 97) == 97\n    assert candidate(n = 729) == 18\n    assert candidate(n = 144) == 14\n    assert candidate(n = 49) == 14\n    assert candidate(n = 125) == 15\n    assert candidate(n = 300) == 17\n    assert candidate(n = 841) == 58\n    assert candidate(n = 60) == 12\n    assert candidate(n = 30) == 10\n    assert candidate(n = 600) == 19\n    assert candidate(n = 64) == 12\n    assert candidate(n = 72) == 12\n    assert candidate(n = 99) == 17\n    assert candidate(n = 343) == 21\n    assert candidate(n = 225) == 16\n    assert candidate(n = 819) == 26\n    assert candidate(n = 128) == 14\n    assert candidate(n = 999) == 46\n    assert candidate(n = 96) == 13\n    assert candidate(n = 256) == 16\n    assert candidate(n = 997) == 997\n    assert candidate(n = 36) == 10\n    assert candidate(n = 529) == 46\n    assert candidate(n = 91) == 20\n    assert candidate(n = 77) == 18\n    assert candidate(n = 81) == 12\n    assert candidate(n = 48) == 11\n    assert candidate(n = 961) == 62\n    assert candidate(n = 200) == 16\n    assert candidate(n = 400) == 18\n    assert candidate(n = 512) == 18\n    assert candidate(n = 196) == 18\n    assert candidate(n = 750) == 20\n    assert candidate(n = 121) == 22\n    assert candidate(n = 361) == 38\n    assert candidate(n = 441) == 20\n    assert candidate(n = 500) == 19\n    assert candidate(n = 55) == 16\n    assert candidate(n = 25) == 10\n",
+  "workload_hash": "8d2d5fb970177a3dbb491a23c50670f9fd7cbba9dc34d6dbad4ff97ea001c151"
 }

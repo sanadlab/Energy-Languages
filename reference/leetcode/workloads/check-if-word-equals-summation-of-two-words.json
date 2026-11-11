@@ -18,10 +18,6 @@
       "output": "True"
     },
     {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"aaaaaaaaaa\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"i\", secondWord = \"j\", targetWord = \"ji\"",
       "output": "False"
     },
@@ -58,39 +54,11 @@
       "output": "False"
     },
     {
-      "input": "firstWord = \"aaaabbbb\", secondWord = \"ccccdddd\", targetWord = \"aaaabbbbccccdddd\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"ijijijij\", secondWord = \"jijijiji\", targetWord = \"jjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"ijijij\", secondWord = \"jijiji\", targetWord = \"jjjjjjjj\"",
       "output": "False"
     },
     {
       "input": "firstWord = \"j\", secondWord = \"jj\", targetWord = \"jjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghi\", targetWord = \"aaaaaaaaaa\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"babcbabcba\", secondWord = \"cbabcbabcb\", targetWord = \"bbbbbbaaaa\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"jihgfedcba\", secondWord = \"abcdefghij\", targetWord = \"aaaaaaaaaa\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"jjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"ijkl\", secondWord = \"lkji\", targetWord = \"jjjjjj\"",
       "output": "False"
     },
     {
@@ -122,43 +90,7 @@
       "output": "False"
     },
     {
-      "input": "firstWord = \"abcdefghi\", secondWord = \"j\", targetWord = \"abcdefghij\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghi\", targetWord = \"jjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghijabcdefghij\", secondWord = \"abcdefghijabcdefghij\", targetWord = \"jjjjjjjjjjjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefgh\", secondWord = \"hgfedcba\", targetWord = \"aaaaaaaaaa\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefgh\", secondWord = \"hgfedcba\", targetWord = \"abcdefghhgfedcba\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefgh\", secondWord = \"abcdefgh\", targetWord = \"ggggggggg\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"abc\", secondWord = \"def\", targetWord = \"defabc\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghi\", targetWord = \"abcdefghijj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefgh\", secondWord = \"abcdefgh\", targetWord = \"aaaaaaaaaaaaaaaa\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"aabbccddeeff\", secondWord = \"ffeeddccbbaa\", targetWord = \"feebbaaccdd\"",
       "output": "False"
     },
     {
@@ -167,10 +99,6 @@
     },
     {
       "input": "firstWord = \"abcdefgh\", secondWord = \"hgfedcba\", targetWord = \"jjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcd\", secondWord = \"efgh\", targetWord = \"ijkl\"",
       "output": "False"
     },
     {
@@ -186,27 +114,7 @@
       "output": "False"
     },
     {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"iiiiiiiiii\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcabcabc\", secondWord = \"cbacbacba\", targetWord = \"bbbcccbbb\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"iiii\", secondWord = \"jjjj\", targetWord = \"jjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghi\", secondWord = \"abcdefghj\", targetWord = \"jjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"ijijijijij\", secondWord = \"jijijijiji\", targetWord = \"jjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcde\", secondWord = \"edcba\", targetWord = \"abcdeedcba\"",
       "output": "False"
     },
     {
@@ -214,55 +122,7 @@
       "output": "False"
     },
     {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghija\", targetWord = \"jjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"jijij\", secondWord = \"ijiji\", targetWord = \"jjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"abcdefghijabcdefghij\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"ijijij\", secondWord = \"jijiji\", targetWord = \"jjjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"aaaaaaaaaab\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefgh\", secondWord = \"hgfedcba\", targetWord = \"abcdefghij\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"aaaaaaaaaabbbbbbbbbb\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghi\", secondWord = \"hgfedcba\", targetWord = \"jjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"jihgfedcba\", secondWord = \"abcdefghij\", targetWord = \"jjjjjjjjjj\"",
-      "output": "True"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"ijijijijij\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"jijijijijij\", secondWord = \"jijijijijij\", targetWord = \"jjjjjjjjjjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"aabbccddeeffgg\", secondWord = \"hhiijjkkllmm\", targetWord = \"jjjjjjjjjjjj\"",
-      "output": "False"
-    },
-    {
-      "input": "firstWord = \"abcdefghij\", secondWord = \"abcdefghij\", targetWord = \"aaaaaaaaaaab\"",
       "output": "False"
     },
     {
@@ -286,10 +146,6 @@
       "output": "True"
     },
     {
-      "input": "firstWord = \"aabbccdd\", secondWord = \"ddeeffgg\", targetWord = \"hhiijjkk\"",
-      "output": "False"
-    },
-    {
       "input": "firstWord = \"jij\", secondWord = \"iji\", targetWord = \"jjjj\"",
       "output": "False"
     }
@@ -302,6 +158,6 @@
   "source_dataset": "leetcode_energy_93_curated.jsonl",
   "source_dataset_sha256": "1b56e4a02bb35712ba41e0189b2cee937d15eec90a00bd9e6e2b1cb96764ea50",
   "starter_code": "class Solution:\n    def isSumEqual(self, firstWord: str, secondWord: str, targetWord: str) -> bool:\n        ",
-  "test": "def check(candidate):\n    assert candidate(firstWord = \"ij\",secondWord = \"ji\",targetWord = \"ii\") == False\n    assert candidate(firstWord = \"fgh\",secondWord = \"ghf\",targetWord = \"ggg\") == False\n    assert candidate(firstWord = \"ij\",secondWord = \"ji\",targetWord = \"jjj\") == False\n    assert candidate(firstWord = \"b\",secondWord = \"c\",targetWord = \"d\") == True\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"aaaaaaaaaa\") == False\n    assert candidate(firstWord = \"i\",secondWord = \"j\",targetWord = \"ji\") == False\n    assert candidate(firstWord = \"ab\",secondWord = \"ba\",targetWord = \"bb\") == True\n    assert candidate(firstWord = \"j\",secondWord = \"j\",targetWord = \"i\") == False\n    assert candidate(firstWord = \"a\",secondWord = \"a\",targetWord = \"b\") == False\n    assert candidate(firstWord = \"aaa\",secondWord = \"a\",targetWord = \"aab\") == False\n    assert candidate(firstWord = \"aaa\",secondWord = \"a\",targetWord = \"aaaa\") == True\n    assert candidate(firstWord = \"acb\",secondWord = \"cba\",targetWord = \"cdb\") == True\n    assert candidate(firstWord = \"j\",secondWord = \"j\",targetWord = \"jj\") == False\n    assert candidate(firstWord = \"acacacac\",secondWord = \"bdbdbdbd\",targetWord = \"cececece\") == False\n    assert candidate(firstWord = \"aaaabbbb\",secondWord = \"ccccdddd\",targetWord = \"aaaabbbbccccdddd\") == False\n    assert candidate(firstWord = \"ijijijij\",secondWord = \"jijijiji\",targetWord = \"jjjjjjjjjj\") == False\n    assert candidate(firstWord = \"ijijij\",secondWord = \"jijiji\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"j\",secondWord = \"jj\",targetWord = \"jjj\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghi\",targetWord = \"aaaaaaaaaa\") == False\n    assert candidate(firstWord = \"babcbabcba\",secondWord = \"cbabcbabcb\",targetWord = \"bbbbbbaaaa\") == False\n    assert candidate(firstWord = \"jihgfedcba\",secondWord = \"abcdefghij\",targetWord = \"aaaaaaaaaa\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"jjjjjjjjjj\") == False\n    assert candidate(firstWord = \"ijkl\",secondWord = \"lkji\",targetWord = \"jjjjjj\") == False\n    assert candidate(firstWord = \"ijijij\",secondWord = \"ijijij\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"hjihj\",secondWord = \"ihjih\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"aabbcc\",secondWord = \"ddeeff\",targetWord = \"gggggh\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"abcdefgh\",targetWord = \"hhhhhhhh\") == False\n    assert candidate(firstWord = \"babababa\",secondWord = \"babababa\",targetWord = \"cacacaca\") == True\n    assert candidate(firstWord = \"aaa\",secondWord = \"bbb\",targetWord = \"ccc\") == False\n    assert candidate(firstWord = \"iiii\",secondWord = \"jjjj\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghi\",secondWord = \"j\",targetWord = \"abcdefghij\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghi\",targetWord = \"jjjjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghijabcdefghij\",secondWord = \"abcdefghijabcdefghij\",targetWord = \"jjjjjjjjjjjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"aaaaaaaaaa\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"abcdefghhgfedcba\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"abcdefgh\",targetWord = \"ggggggggg\") == False\n    assert candidate(firstWord = \"abc\",secondWord = \"def\",targetWord = \"defabc\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghi\",targetWord = \"abcdefghijj\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"abcdefgh\",targetWord = \"aaaaaaaaaaaaaaaa\") == False\n    assert candidate(firstWord = \"aabbccddeeff\",secondWord = \"ffeeddccbbaa\",targetWord = \"feebbaaccdd\") == False\n    assert candidate(firstWord = \"a\",secondWord = \"b\",targetWord = \"c\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"abcd\",secondWord = \"efgh\",targetWord = \"ijkl\") == False\n    assert candidate(firstWord = \"jjjjj\",secondWord = \"jjjjj\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"aaaaaaaa\",secondWord = \"bbbbbbbb\",targetWord = \"cccccccc\") == False\n    assert candidate(firstWord = \"aabbccdd\",secondWord = \"dccbbaaa\",targetWord = \"dddddddd\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"iiiiiiiiii\") == False\n    assert candidate(firstWord = \"abcabcabc\",secondWord = \"cbacbacba\",targetWord = \"bbbcccbbb\") == False\n    assert candidate(firstWord = \"iiii\",secondWord = \"jjjj\",targetWord = \"jjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghi\",secondWord = \"abcdefghj\",targetWord = \"jjjjjjjjj\") == False\n    assert candidate(firstWord = \"ijijijijij\",secondWord = \"jijijijiji\",targetWord = \"jjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"abcde\",secondWord = \"edcba\",targetWord = \"abcdeedcba\") == False\n    assert candidate(firstWord = \"ijijijij\",secondWord = \"hghghghg\",targetWord = \"gggggggg\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghija\",targetWord = \"jjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"jijij\",secondWord = \"ijiji\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"abcdefghijabcdefghij\") == False\n    assert candidate(firstWord = \"ijijij\",secondWord = \"jijiji\",targetWord = \"jjjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"aaaaaaaaaab\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"abcdefghij\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"aaaaaaaaaabbbbbbbbbb\") == False\n    assert candidate(firstWord = \"abcdefghi\",secondWord = \"hgfedcba\",targetWord = \"jjjjjjjjj\") == False\n    assert candidate(firstWord = \"jihgfedcba\",secondWord = \"abcdefghij\",targetWord = \"jjjjjjjjjj\") == True\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"ijijijijij\") == False\n    assert candidate(firstWord = \"jijijijijij\",secondWord = \"jijijijijij\",targetWord = \"jjjjjjjjjjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"aabbccddeeffgg\",secondWord = \"hhiijjkkllmm\",targetWord = \"jjjjjjjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefghij\",secondWord = \"abcdefghij\",targetWord = \"aaaaaaaaaaab\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"abcde\",secondWord = \"edcba\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"hgfedcba\",secondWord = \"abcdefgh\",targetWord = \"iiiiiiii\") == False\n    assert candidate(firstWord = \"jijij\",secondWord = \"ijiji\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"j\",secondWord = \"ij\",targetWord = \"ji\") == True\n    assert candidate(firstWord = \"aabbccdd\",secondWord = \"ddeeffgg\",targetWord = \"hhiijjkk\") == False\n    assert candidate(firstWord = \"jij\",secondWord = \"iji\",targetWord = \"jjjj\") == False\n",
-  "workload_hash": "fbf0f724f0a7b796a2ff8ad46d556dfe29249508c1b2723f0bcf5bd37b122dbb"
+  "test": "def check(candidate):\n    assert candidate(firstWord = \"ij\",secondWord = \"ji\",targetWord = \"ii\") == False\n    assert candidate(firstWord = \"fgh\",secondWord = \"ghf\",targetWord = \"ggg\") == False\n    assert candidate(firstWord = \"ij\",secondWord = \"ji\",targetWord = \"jjj\") == False\n    assert candidate(firstWord = \"b\",secondWord = \"c\",targetWord = \"d\") == True\n    assert candidate(firstWord = \"i\",secondWord = \"j\",targetWord = \"ji\") == False\n    assert candidate(firstWord = \"ab\",secondWord = \"ba\",targetWord = \"bb\") == True\n    assert candidate(firstWord = \"j\",secondWord = \"j\",targetWord = \"i\") == False\n    assert candidate(firstWord = \"a\",secondWord = \"a\",targetWord = \"b\") == False\n    assert candidate(firstWord = \"aaa\",secondWord = \"a\",targetWord = \"aab\") == False\n    assert candidate(firstWord = \"aaa\",secondWord = \"a\",targetWord = \"aaaa\") == True\n    assert candidate(firstWord = \"acb\",secondWord = \"cba\",targetWord = \"cdb\") == True\n    assert candidate(firstWord = \"j\",secondWord = \"j\",targetWord = \"jj\") == False\n    assert candidate(firstWord = \"acacacac\",secondWord = \"bdbdbdbd\",targetWord = \"cececece\") == False\n    assert candidate(firstWord = \"ijijij\",secondWord = \"jijiji\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"j\",secondWord = \"jj\",targetWord = \"jjj\") == False\n    assert candidate(firstWord = \"ijijij\",secondWord = \"ijijij\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"hjihj\",secondWord = \"ihjih\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"aabbcc\",secondWord = \"ddeeff\",targetWord = \"gggggh\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"abcdefgh\",targetWord = \"hhhhhhhh\") == False\n    assert candidate(firstWord = \"babababa\",secondWord = \"babababa\",targetWord = \"cacacaca\") == True\n    assert candidate(firstWord = \"aaa\",secondWord = \"bbb\",targetWord = \"ccc\") == False\n    assert candidate(firstWord = \"iiii\",secondWord = \"jjjj\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"abc\",secondWord = \"def\",targetWord = \"defabc\") == False\n    assert candidate(firstWord = \"a\",secondWord = \"b\",targetWord = \"c\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"jjjjjjjj\") == False\n    assert candidate(firstWord = \"jjjjj\",secondWord = \"jjjjj\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"aaaaaaaa\",secondWord = \"bbbbbbbb\",targetWord = \"cccccccc\") == False\n    assert candidate(firstWord = \"aabbccdd\",secondWord = \"dccbbaaa\",targetWord = \"dddddddd\") == False\n    assert candidate(firstWord = \"iiii\",secondWord = \"jjjj\",targetWord = \"jjjjjj\") == False\n    assert candidate(firstWord = \"ijijijij\",secondWord = \"hghghghg\",targetWord = \"gggggggg\") == False\n    assert candidate(firstWord = \"jijij\",secondWord = \"ijiji\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"abcdefgh\",secondWord = \"hgfedcba\",targetWord = \"jjjjjjj\") == False\n    assert candidate(firstWord = \"abcde\",secondWord = \"edcba\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"hgfedcba\",secondWord = \"abcdefgh\",targetWord = \"iiiiiiii\") == False\n    assert candidate(firstWord = \"jijij\",secondWord = \"ijiji\",targetWord = \"jjjjj\") == False\n    assert candidate(firstWord = \"j\",secondWord = \"ij\",targetWord = \"ji\") == True\n    assert candidate(firstWord = \"jij\",secondWord = \"iji\",targetWord = \"jjjj\") == False\n",
+  "workload_hash": "61c5300cc5d89cbdcc7f1a6c508646ae7de95e302922a50e7d6ac999c46950aa"
 }

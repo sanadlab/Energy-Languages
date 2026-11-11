@@ -1,5 +1,5 @@
 {
-  "workload_hash": "ae969bed51442d66512a6e4cbdb0f036dbbb8d57a15d69103f84495e4c2940c6",
+  "workload_hash": "53d78a14560b20a56b6aa778144148512a81f01e82029cdb60ebcf7ef641e5ce",
   "problem": "minimum-number-of-days-to-eat-n-oranges",
   "expected": [
     {
@@ -155,13 +155,6 @@
         "n": 53
       },
       "output": 8
-    },
-    {
-      "name": "case_23",
-      "input": {
-        "n": 2147483647
-      },
-      "output": 35
     },
     {
       "name": "case_24",

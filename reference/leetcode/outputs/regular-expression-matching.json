@@ -1,5 +1,5 @@
 {
-  "workload_hash": "b3eb75cdd115c286e242f993a9204a7dffb28cdecd5c065f2df45299926dee6e",
+  "workload_hash": "b6072077930f2bd724d28f59e0dd75a6071a70aca70c1e89e60fc900f56d0a45",
   "problem": "regular-expression-matching",
   "expected": [
     {
@@ -49,14 +49,6 @@
         "p": "a*b*c*d*e*f*f*"
       },
       "output": true
-    },
-    {
-      "name": "case_7",
-      "input": {
-        "s": "abababa",
-        "p": "(ab)*a"
-      },
-      "output": false
     },
     {
       "name": "case_8",
@@ -115,14 +107,6 @@
       "output": true
     },
     {
-      "name": "case_15",
-      "input": {
-        "s": "ababab",
-        "p": "(ab)*"
-      },
-      "output": false
-    },
-    {
       "name": "case_16",
       "input": {
         "s": "ab",
@@ -155,14 +139,6 @@
       "output": false
     },
     {
-      "name": "case_20",
-      "input": {
-        "s": "aaa",
-        "p": "a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a"
-      },
-      "output": true
-    },
-    {
       "name": "case_21",
       "input": {
         "s": "mississippi",
@@ -183,14 +159,6 @@
       "input": {
         "s": "abcdefgh",
         "p": "a.h"
-      },
-      "output": false
-    },
-    {
-      "name": "case_24",
-      "input": {
-        "s": "ababab",
-        "p": "(ab)*b*"
       },
       "output": false
     },
@@ -331,14 +299,6 @@
       "output": false
     },
     {
-      "name": "case_42",
-      "input": {
-        "s": "abababab",
-        "p": "(ab)*"
-      },
-      "output": false
-    },
-    {
       "name": "case_43",
       "input": {
         "s": "hello",
@@ -369,14 +329,6 @@
         "p": "a..de"
       },
       "output": true
-    },
-    {
-      "name": "case_47",
-      "input": {
-        "s": "abcabcabcabc",
-        "p": "(abc)*d"
-      },
-      "output": false
     },
     {
       "name": "case_48",
@@ -427,28 +379,12 @@
       "output": true
     },
     {
-      "name": "case_54",
-      "input": {
-        "s": "xyxxyxyx",
-        "p": "(xy)*x"
-      },
-      "output": false
-    },
-    {
       "name": "case_55",
       "input": {
         "s": "aabbbccc",
         "p": "a*b*c*"
       },
       "output": true
-    },
-    {
-      "name": "case_56",
-      "input": {
-        "s": "abcabcabcabc",
-        "p": "(abc)*"
-      },
-      "output": false
     },
     {
       "name": "case_57",
@@ -511,14 +447,6 @@
       "input": {
         "s": "abcde",
         "p": "a*b*c*d*e*"
-      },
-      "output": true
-    },
-    {
-      "name": "case_65",
-      "input": {
-        "s": "zzzzzzzzzzzz",
-        "p": "z*z*z*z*z*z*z*z*z*z*z*z*z*z*z*z*z*"
       },
       "output": true
     },
@@ -715,14 +643,6 @@
       "output": true
     },
     {
-      "name": "case_90",
-      "input": {
-        "s": "xyxyxyxyxyx",
-        "p": "x.y.x.y.x.y.x.y.x.y.x"
-      },
-      "output": false
-    },
-    {
       "name": "case_91",
       "input": {
         "s": "a",
@@ -735,14 +655,6 @@
       "input": {
         "s": "abababab",
         "p": "a*b*a*b*a*b*a*b"
-      },
-      "output": true
-    },
-    {
-      "name": "case_93",
-      "input": {
-        "s": "abcdeabcdeabcde",
-        "p": "abc*de*abc*de*abc*de*f*"
       },
       "output": true
     },
@@ -883,14 +795,6 @@
       "output": true
     },
     {
-      "name": "case_111",
-      "input": {
-        "s": "abcdeabcdeabcde",
-        "p": "abc*de*abc*de*abc*de*"
-      },
-      "output": true
-    },
-    {
       "name": "case_112",
       "input": {
         "s": "abcde",
@@ -905,14 +809,6 @@
         "p": "x*y*.*z*"
       },
       "output": true
-    },
-    {
-      "name": "case_114",
-      "input": {
-        "s": "ababab",
-        "p": "(ab)*b"
-      },
-      "output": false
     },
     {
       "name": "case_115",
@@ -1043,22 +939,6 @@
       "output": true
     },
     {
-      "name": "case_131",
-      "input": {
-        "s": "hello world",
-        "p": "h.*o w*r*d"
-      },
-      "output": false
-    },
-    {
-      "name": "case_132",
-      "input": {
-        "s": "abcdefgh",
-        "p": "a.*b.*c.*d.*e.*f.*g.*h"
-      },
-      "output": true
-    },
-    {
       "name": "case_133",
       "input": {
         "s": "hello",
@@ -1097,22 +977,6 @@
         "p": "pat*tern*m*atching*"
       },
       "output": true
-    },
-    {
-      "name": "case_138",
-      "input": {
-        "s": "abcabcabc",
-        "p": "(abc)*"
-      },
-      "output": false
-    },
-    {
-      "name": "case_139",
-      "input": {
-        "s": "ababab",
-        "p": "(ab)*ab*"
-      },
-      "output": false
     },
     {
       "name": "case_140",
@@ -1169,14 +1033,6 @@
         "p": "a*a*a*a*a*a*"
       },
       "output": true
-    },
-    {
-      "name": "case_147",
-      "input": {
-        "s": "abab",
-        "p": "(ab)*"
-      },
-      "output": false
     },
     {
       "name": "case_148",

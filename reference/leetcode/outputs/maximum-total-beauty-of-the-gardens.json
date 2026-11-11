@@ -1,5 +1,5 @@
 {
-  "workload_hash": "54ce20ff4585e0834585d2801d0f9af65c89afe1a3f0e0ad4b157147b3ebe417",
+  "workload_hash": "4b404d0e3b37267369dda70b4b9dd2ebd92c4ae481d4f8c869e44152e9b7cd5d",
   "problem": "maximum-total-beauty-of-the-gardens",
   "expected": [
     {
@@ -162,21 +162,6 @@
         "partial": 5
       },
       "output": 100
-    },
-    {
-      "name": "case_11",
-      "input": {
-        "flowers": [
-          10,
-          10,
-          10
-        ],
-        "newFlowers": 0,
-        "target": 10,
-        "full": 100,
-        "partial": 50
-      },
-      "output": 300
     },
     {
       "name": "case_12",
@@ -386,28 +371,6 @@
       "output": 153
     },
     {
-      "name": "case_23",
-      "input": {
-        "flowers": [
-          1,
-          10,
-          100,
-          1000,
-          10000,
-          100000,
-          1000000,
-          10000000,
-          100000000,
-          1000000000
-        ],
-        "newFlowers": 10000000000,
-        "target": 500000000,
-        "full": 100000,
-        "partial": 50000
-      },
-      "output": 25000000850000
-    },
-    {
       "name": "case_24",
       "input": {
         "flowers": [
@@ -508,50 +471,6 @@
         "partial": 1
       },
       "output": 10
-    },
-    {
-      "name": "case_29",
-      "input": {
-        "flowers": [
-          50,
-          40,
-          30,
-          20,
-          10,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "newFlowers": 150,
-        "target": 35,
-        "full": 100,
-        "partial": 20
-      },
-      "output": 940
-    },
-    {
-      "name": "case_30",
-      "input": {
-        "flowers": [
-          1,
-          10,
-          100,
-          1000,
-          10000,
-          100000,
-          1000000,
-          10000000,
-          100000000,
-          1000000000
-        ],
-        "newFlowers": 10000000000,
-        "target": 100000,
-        "full": 1000,
-        "partial": 500
-      },
-      "output": 50008500
     },
     {
       "name": "case_31",
@@ -1741,28 +1660,6 @@
       "output": 105
     },
     {
-      "name": "case_78",
-      "input": {
-        "flowers": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10
-        ],
-        "newFlowers": 0,
-        "target": 5,
-        "full": 50,
-        "partial": 10
-      },
-      "output": 310
-    },
-    {
       "name": "case_79",
       "input": {
         "flowers": [
@@ -2230,28 +2127,6 @@
       "output": 250
     },
     {
-      "name": "case_96",
-      "input": {
-        "flowers": [
-          90000,
-          80000,
-          70000,
-          60000,
-          50000,
-          40000,
-          30000,
-          20000,
-          10000,
-          0
-        ],
-        "newFlowers": 150000,
-        "target": 60000,
-        "full": 500,
-        "partial": 200
-      },
-      "output": 10002000
-    },
-    {
       "name": "case_97",
       "input": {
         "flowers": [
@@ -2326,28 +2201,6 @@
         "partial": 25
       },
       "output": 1050
-    },
-    {
-      "name": "case_100",
-      "input": {
-        "flowers": [
-          9,
-          8,
-          7,
-          6,
-          5,
-          4,
-          3,
-          2,
-          1,
-          0
-        ],
-        "newFlowers": 45,
-        "target": 5,
-        "full": 15,
-        "partial": 10
-      },
-      "output": 175
     },
     {
       "name": "case_101",

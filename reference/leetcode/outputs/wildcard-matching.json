@@ -1,5 +1,5 @@
 {
-  "workload_hash": "1ec0673e8f6a2db65bb1ddecdc291c7d3940faf36b4b21450814106f95affaa8",
+  "workload_hash": "f74be4c02d5c4ad6584ea92625b12c9f1a86af3c4b4018b9c247a59d3b0a48ff",
   "problem": "wildcard-matching",
   "expected": [
     {
@@ -1187,14 +1187,6 @@
       "output": true
     },
     {
-      "name": "case_149",
-      "input": {
-        "s": "hello_world",
-        "p": "he*o?wo*rld"
-      },
-      "output": true
-    },
-    {
       "name": "case_150",
       "input": {
         "s": "abcdefg",
@@ -1361,14 +1353,6 @@
         "p": "ab*?de*?"
       },
       "output": true
-    },
-    {
-      "name": "case_171",
-      "input": {
-        "s": "pattern_matching",
-        "p": "p*a*t*t*e*r_*m*a*t*c*h*i*n*g"
-      },
-      "output": false
     },
     {
       "name": "case_172",
@@ -1623,14 +1607,6 @@
       "input": {
         "s": "examplepattern",
         "p": "e*ample?attern"
-      },
-      "output": true
-    },
-    {
-      "name": "case_204",
-      "input": {
-        "s": "nested_matching",
-        "p": "n*es*t*e*d_*m*a*t*c*h*i*n*g"
       },
       "output": true
     },

@@ -1,5 +1,5 @@
 {
-  "workload_hash": "417f92027bd380c32902d7a211a781d9347adde6d7bb9e6a54dd9461da204f7f",
+  "workload_hash": "9f9e35d576778b12f1c79701c7c812eab2493bec5eea5168c2c2bf81f6f14b66",
   "problem": "check-if-it-is-a-straight-line",
   "expected": [
     {
@@ -1667,30 +1667,6 @@
       "output": true
     },
     {
-      "name": "case_57",
-      "input": {
-        "coordinates": [
-          [
-            0,
-            -10000
-          ],
-          [
-            10000,
-            -10000
-          ],
-          [
-            20000,
-            -10000
-          ],
-          [
-            30000,
-            -10000
-          ]
-        ]
-      },
-      "output": true
-    },
-    {
       "name": "case_58",
       "input": {
         "coordinates": [
@@ -2777,34 +2753,6 @@
         ]
       },
       "output": true
-    },
-    {
-      "name": "case_93",
-      "input": {
-        "coordinates": [
-          [
-            -1,
-            0
-          ],
-          [
-            0,
-            1
-          ],
-          [
-            1,
-            0
-          ],
-          [
-            0,
-            -1
-          ],
-          [
-            -1,
-            0
-          ]
-        ]
-      },
-      "output": false
     },
     {
       "name": "case_94",

@@ -1,5 +1,5 @@
 {
-  "workload_hash": "8a66566dc8082d255a5f287eb382e173b830b5e467e5737650b2b8d48b703be0",
+  "workload_hash": "465dcdabf9f9360aa164bf18e0a515a4f76c3126d933bd1b56409fb2bec66d19",
   "problem": "search-suggestions-system",
   "expected": [
     {
@@ -241,35 +241,6 @@
         ],
         [
           "banana"
-        ]
-      ]
-    },
-    {
-      "name": "case_11",
-      "input": {
-        "products": [
-          "keyboard",
-          "keypad",
-          "keyboard",
-          "keychain"
-        ],
-        "searchWord": "key"
-      },
-      "output": [
-        [
-          "keyboard",
-          "keyboard",
-          "keychain"
-        ],
-        [
-          "keyboard",
-          "keyboard",
-          "keychain"
-        ],
-        [
-          "keyboard",
-          "keyboard",
-          "keychain"
         ]
       ]
     },
@@ -773,71 +744,6 @@
       ]
     },
     {
-      "name": "case_29",
-      "input": {
-        "products": [
-          "algorithm",
-          "array",
-          "binary",
-          "bit",
-          "bitset",
-          "bucket",
-          "class",
-          "collection",
-          "datatype",
-          "enumerate",
-          "file",
-          "float",
-          "function",
-          "garbage",
-          "graph",
-          "hash",
-          "id",
-          "implementation",
-          "integer",
-          "java",
-          "keyword",
-          "list",
-          "map",
-          "namespace",
-          "None",
-          "object",
-          "operator",
-          "pair",
-          "pointer",
-          "queue",
-          "range",
-          "reference",
-          "set",
-          "stack",
-          "string",
-          "struct",
-          "template",
-          "typedef",
-          "union",
-          "variable",
-          "while",
-          "xor"
-        ],
-        "searchWord": "algo"
-      },
-      "output": [
-        [
-          "algorithm",
-          "array"
-        ],
-        [
-          "algorithm"
-        ],
-        [
-          "algorithm"
-        ],
-        [
-          "algorithm"
-        ]
-      ]
-    },
-    {
       "name": "case_30",
       "input": {
         "products": [
@@ -925,41 +831,6 @@
         ],
         [
           "ambient"
-        ]
-      ]
-    },
-    {
-      "name": "case_33",
-      "input": {
-        "products": [
-          "xylophone",
-          "xylography",
-          "xylophone",
-          "xylophone",
-          "xylophone"
-        ],
-        "searchWord": "xylo"
-      },
-      "output": [
-        [
-          "xylography",
-          "xylophone",
-          "xylophone"
-        ],
-        [
-          "xylography",
-          "xylophone",
-          "xylophone"
-        ],
-        [
-          "xylography",
-          "xylophone",
-          "xylophone"
-        ],
-        [
-          "xylography",
-          "xylophone",
-          "xylophone"
         ]
       ]
     },
@@ -1052,71 +923,6 @@
           "zebra",
           "zest",
           "zesty"
-        ]
-      ]
-    },
-    {
-      "name": "case_37",
-      "input": {
-        "products": [
-          "aardvark",
-          "aardwolf",
-          "aardvark",
-          "aardvark",
-          "aardvark"
-        ],
-        "searchWord": "aard"
-      },
-      "output": [
-        [
-          "aardvark",
-          "aardvark",
-          "aardvark"
-        ],
-        [
-          "aardvark",
-          "aardvark",
-          "aardvark"
-        ],
-        [
-          "aardvark",
-          "aardvark",
-          "aardvark"
-        ],
-        [
-          "aardvark",
-          "aardvark",
-          "aardvark"
-        ]
-      ]
-    },
-    {
-      "name": "case_38",
-      "input": {
-        "products": [
-          "umbrella",
-          "umber",
-          "umbilical",
-          "umbrella",
-          "umbrella"
-        ],
-        "searchWord": "umb"
-      },
-      "output": [
-        [
-          "umber",
-          "umbilical",
-          "umbrella"
-        ],
-        [
-          "umber",
-          "umbilical",
-          "umbrella"
-        ],
-        [
-          "umber",
-          "umbilical",
-          "umbrella"
         ]
       ]
     },
@@ -1255,36 +1061,6 @@
           "zebra",
           "zebrafish",
           "zebrafly"
-        ]
-      ]
-    },
-    {
-      "name": "case_42",
-      "input": {
-        "products": [
-          "infinite",
-          "infinity",
-          "infinitesimal",
-          "infinity",
-          "infinitary"
-        ],
-        "searchWord": "inf"
-      },
-      "output": [
-        [
-          "infinitary",
-          "infinite",
-          "infinitesimal"
-        ],
-        [
-          "infinitary",
-          "infinite",
-          "infinitesimal"
-        ],
-        [
-          "infinitary",
-          "infinite",
-          "infinitesimal"
         ]
       ]
     },
@@ -1440,66 +1216,6 @@
       ]
     },
     {
-      "name": "case_48",
-      "input": {
-        "products": [
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        "searchWord": "umbrella"
-      },
-      "output": [
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ]
-      ]
-    },
-    {
       "name": "case_49",
       "input": {
         "products": [
@@ -1523,32 +1239,6 @@
           "albatross",
           "albino",
           "alligator"
-        ]
-      ]
-    },
-    {
-      "name": "case_50",
-      "input": {
-        "products": [
-          "zebra",
-          "zealot",
-          "zealous",
-          "zebrafish",
-          "zebra",
-          "zebrahead"
-        ],
-        "searchWord": "ze"
-      },
-      "output": [
-        [
-          "zealot",
-          "zealous",
-          "zebra"
-        ],
-        [
-          "zealot",
-          "zealous",
-          "zebra"
         ]
       ]
     },
@@ -1642,56 +1332,6 @@
       ]
     },
     {
-      "name": "case_54",
-      "input": {
-        "products": [
-          "abacaxi",
-          "abalone",
-          "abana",
-          "abanga",
-          "abaperture",
-          "abara",
-          "abaraxas",
-          "abarth",
-          "abart",
-          "abat",
-          "abate",
-          "abati",
-          "abatis",
-          "abator",
-          "abatt",
-          "abature",
-          "abavure",
-          "abaya",
-          "abaze",
-          "abba",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe",
-          "abbe"
-        ],
-        "searchWord": "ab"
-      },
-      "output": [
-        [
-          "abacaxi",
-          "abalone",
-          "abana"
-        ],
-        [
-          "abacaxi",
-          "abalone",
-          "abana"
-        ]
-      ]
-    },
-    {
       "name": "case_55",
       "input": {
         "products": [
@@ -1723,100 +1363,6 @@
           "apple",
           "applejack",
           "applepie"
-        ]
-      ]
-    },
-    {
-      "name": "case_56",
-      "input": {
-        "products": [
-          "camera",
-          "camcorder",
-          "cameralens",
-          "cameraman",
-          "cameraobscura",
-          "camouflage",
-          "camcorder",
-          "camera",
-          "camcorder"
-        ],
-        "searchWord": "cam"
-      },
-      "output": [
-        [
-          "camcorder",
-          "camcorder",
-          "camcorder"
-        ],
-        [
-          "camcorder",
-          "camcorder",
-          "camcorder"
-        ],
-        [
-          "camcorder",
-          "camcorder",
-          "camcorder"
-        ]
-      ]
-    },
-    {
-      "name": "case_57",
-      "input": {
-        "products": [
-          "chocolate",
-          "chocolatebar",
-          "chocolatechip",
-          "chocolate",
-          "chocolatefudge"
-        ],
-        "searchWord": "chocolate"
-      },
-      "output": [
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
-        ],
-        [
-          "chocolate",
-          "chocolate",
-          "chocolatebar"
         ]
       ]
     },
@@ -1984,66 +1530,6 @@
       ]
     },
     {
-      "name": "case_63",
-      "input": {
-        "products": [
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        "searchWord": "elephant"
-      },
-      "output": [
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ],
-        [
-          "elephant",
-          "elephant",
-          "elephant"
-        ]
-      ]
-    },
-    {
       "name": "case_64",
       "input": {
         "products": [
@@ -2170,56 +1656,6 @@
       ]
     },
     {
-      "name": "case_68",
-      "input": {
-        "products": [
-          "watermelon",
-          "water",
-          "waterproof",
-          "watering",
-          "waterfall",
-          "watermelon",
-          "watercolor",
-          "watergun",
-          "watermelon",
-          "watermark"
-        ],
-        "searchWord": "waterm"
-      },
-      "output": [
-        [
-          "water",
-          "watercolor",
-          "waterfall"
-        ],
-        [
-          "water",
-          "watercolor",
-          "waterfall"
-        ],
-        [
-          "water",
-          "watercolor",
-          "waterfall"
-        ],
-        [
-          "water",
-          "watercolor",
-          "waterfall"
-        ],
-        [
-          "water",
-          "watercolor",
-          "waterfall"
-        ],
-        [
-          "watermark",
-          "watermelon",
-          "watermelon"
-        ]
-      ]
-    },
-    {
       "name": "case_69",
       "input": {
         "products": [
@@ -2281,80 +1717,6 @@
           "paint",
           "paintball",
           "paintbrush"
-        ]
-      ]
-    },
-    {
-      "name": "case_71",
-      "input": {
-        "products": [
-          "xyz",
-          "xylophone",
-          "xylography",
-          "xylograph",
-          "xylography",
-          "xylographer",
-          "xylographs",
-          "xylography",
-          "xylography"
-        ],
-        "searchWord": "xylo"
-      },
-      "output": [
-        [
-          "xylograph",
-          "xylographer",
-          "xylographs"
-        ],
-        [
-          "xylograph",
-          "xylographer",
-          "xylographs"
-        ],
-        [
-          "xylograph",
-          "xylographer",
-          "xylographs"
-        ],
-        [
-          "xylograph",
-          "xylographer",
-          "xylographs"
-        ]
-      ]
-    },
-    {
-      "name": "case_72",
-      "input": {
-        "products": [
-          "microphone",
-          "microwave",
-          "microscope",
-          "microphone",
-          "micronutrient"
-        ],
-        "searchWord": "micr"
-      },
-      "output": [
-        [
-          "micronutrient",
-          "microphone",
-          "microphone"
-        ],
-        [
-          "micronutrient",
-          "microphone",
-          "microphone"
-        ],
-        [
-          "micronutrient",
-          "microphone",
-          "microphone"
-        ],
-        [
-          "micronutrient",
-          "microphone",
-          "microphone"
         ]
       ]
     },
@@ -2452,91 +1814,6 @@
           "football",
           "footbridge",
           "footlight"
-        ]
-      ]
-    },
-    {
-      "name": "case_76",
-      "input": {
-        "products": [
-          "bicycle",
-          "bicycling",
-          "bicycle",
-          "bicycle",
-          "bicycle"
-        ],
-        "searchWord": "bicy"
-      },
-      "output": [
-        [
-          "bicycle",
-          "bicycle",
-          "bicycle"
-        ],
-        [
-          "bicycle",
-          "bicycle",
-          "bicycle"
-        ],
-        [
-          "bicycle",
-          "bicycle",
-          "bicycle"
-        ],
-        [
-          "bicycle",
-          "bicycle",
-          "bicycle"
-        ]
-      ]
-    },
-    {
-      "name": "case_77",
-      "input": {
-        "products": [
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        "searchWord": "giraff"
-      },
-      "output": [
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
-        ],
-        [
-          "giraffe",
-          "giraffe",
-          "giraffe"
         ]
       ]
     },
@@ -2692,44 +1969,6 @@
       ]
     },
     {
-      "name": "case_82",
-      "input": {
-        "products": [
-          "photography",
-          "photoalbum",
-          "photobook",
-          "photoframe",
-          "photograph",
-          "photokino",
-          "photocopy",
-          "photography"
-        ],
-        "searchWord": "phot"
-      },
-      "output": [
-        [
-          "photoalbum",
-          "photobook",
-          "photocopy"
-        ],
-        [
-          "photoalbum",
-          "photobook",
-          "photocopy"
-        ],
-        [
-          "photoalbum",
-          "photobook",
-          "photocopy"
-        ],
-        [
-          "photoalbum",
-          "photobook",
-          "photocopy"
-        ]
-      ]
-    },
-    {
       "name": "case_83",
       "input": {
         "products": [
@@ -2871,91 +2110,6 @@
       ]
     },
     {
-      "name": "case_87",
-      "input": {
-        "products": [
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano",
-          "piano"
-        ],
-        "searchWord": "piano"
-      },
-      "output": [
-        [
-          "piano",
-          "piano",
-          "piano"
-        ],
-        [
-          "piano",
-          "piano",
-          "piano"
-        ],
-        [
-          "piano",
-          "piano",
-          "piano"
-        ],
-        [
-          "piano",
-          "piano",
-          "piano"
-        ],
-        [
-          "piano",
-          "piano",
-          "piano"
-        ]
-      ]
-    },
-    {
-      "name": "case_88",
-      "input": {
-        "products": [
-          "firefly",
-          "fireworks",
-          "firefly",
-          "firearm",
-          "firetruck",
-          "firewall",
-          "firefly",
-          "firefly",
-          "firefly",
-          "firefly"
-        ],
-        "searchWord": "fire"
-      },
-      "output": [
-        [
-          "firearm",
-          "firefly",
-          "firefly"
-        ],
-        [
-          "firearm",
-          "firefly",
-          "firefly"
-        ],
-        [
-          "firearm",
-          "firefly",
-          "firefly"
-        ],
-        [
-          "firearm",
-          "firefly",
-          "firefly"
-        ]
-      ]
-    },
-    {
       "name": "case_89",
       "input": {
         "products": [
@@ -3077,81 +2231,6 @@
       ]
     },
     {
-      "name": "case_92",
-      "input": {
-        "products": [
-          "dog",
-          "doghouse",
-          "dogwood",
-          "dog",
-          "doghouse"
-        ],
-        "searchWord": "dog"
-      },
-      "output": [
-        [
-          "dog",
-          "dog",
-          "doghouse"
-        ],
-        [
-          "dog",
-          "dog",
-          "doghouse"
-        ],
-        [
-          "dog",
-          "dog",
-          "doghouse"
-        ]
-      ]
-    },
-    {
-      "name": "case_93",
-      "input": {
-        "products": [
-          "abcd",
-          "abce",
-          "abcg",
-          "abch",
-          "abci",
-          "abcj",
-          "abck",
-          "abcl",
-          "abcm",
-          "abcn",
-          "abcd",
-          "abce",
-          "abcg",
-          "abch",
-          "abci",
-          "abcj",
-          "abck",
-          "abcl",
-          "abcm",
-          "abcn"
-        ],
-        "searchWord": "abc"
-      },
-      "output": [
-        [
-          "abcd",
-          "abcd",
-          "abce"
-        ],
-        [
-          "abcd",
-          "abcd",
-          "abce"
-        ],
-        [
-          "abcd",
-          "abcd",
-          "abce"
-        ]
-      ]
-    },
-    {
       "name": "case_94",
       "input": {
         "products": [
@@ -3253,46 +2332,6 @@
       ]
     },
     {
-      "name": "case_97",
-      "input": {
-        "products": [
-          "ant",
-          "antelope",
-          "antibody",
-          "antacid",
-          "antaeus",
-          "antarctica",
-          "anteater",
-          "antelope",
-          "antelope",
-          "antler"
-        ],
-        "searchWord": "ante"
-      },
-      "output": [
-        [
-          "ant",
-          "antacid",
-          "antaeus"
-        ],
-        [
-          "ant",
-          "antacid",
-          "antaeus"
-        ],
-        [
-          "ant",
-          "antacid",
-          "antaeus"
-        ],
-        [
-          "anteater",
-          "antelope",
-          "antelope"
-        ]
-      ]
-    },
-    {
       "name": "case_98",
       "input": {
         "products": [
@@ -3375,46 +2414,6 @@
           "alabama",
           "alaska",
           "algebra"
-        ]
-      ]
-    },
-    {
-      "name": "case_101",
-      "input": {
-        "products": [
-          "zebra",
-          "zebrafish",
-          "zebra",
-          "zebrahead",
-          "zebra"
-        ],
-        "searchWord": "zebra"
-      },
-      "output": [
-        [
-          "zebra",
-          "zebra",
-          "zebra"
-        ],
-        [
-          "zebra",
-          "zebra",
-          "zebra"
-        ],
-        [
-          "zebra",
-          "zebra",
-          "zebra"
-        ],
-        [
-          "zebra",
-          "zebra",
-          "zebra"
-        ],
-        [
-          "zebra",
-          "zebra",
-          "zebra"
         ]
       ]
     },
@@ -3566,91 +2565,6 @@
           "unicorn",
           "unicycle",
           "unique"
-        ]
-      ]
-    },
-    {
-      "name": "case_107",
-      "input": {
-        "products": [
-          "product",
-          "produces",
-          "productivity",
-          "productive",
-          "productize",
-          "production",
-          "productivity",
-          "productize",
-          "productivity",
-          "productize"
-        ],
-        "searchWord": "product"
-      },
-      "output": [
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "produces",
-          "product",
-          "production"
-        ],
-        [
-          "product",
-          "production",
-          "productive"
-        ]
-      ]
-    },
-    {
-      "name": "case_108",
-      "input": {
-        "products": [
-          "umbrella",
-          "umbilical",
-          "umbrella",
-          "umbrella",
-          "umbrella"
-        ],
-        "searchWord": "umb"
-      },
-      "output": [
-        [
-          "umbilical",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbilical",
-          "umbrella",
-          "umbrella"
-        ],
-        [
-          "umbilical",
-          "umbrella",
-          "umbrella"
         ]
       ]
     },

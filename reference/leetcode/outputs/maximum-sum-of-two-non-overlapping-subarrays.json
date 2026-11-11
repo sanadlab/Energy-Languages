@@ -1,5 +1,5 @@
 {
-  "workload_hash": "477a92f46d2a2bf8e81d9adc3bc1a0362760ade8446172ee3a46737b9a9767fc",
+  "workload_hash": "ba4f4d87f2997f51b424b88eeaf1db5b9e1c3d1b975920c59804a803c38ecca3",
   "problem": "maximum-sum-of-two-non-overlapping-subarrays",
   "expected": [
     {
@@ -2238,36 +2238,6 @@
       "output": 51
     },
     {
-      "name": "case_60",
-      "input": {
-        "nums": [
-          100,
-          200,
-          300,
-          400,
-          500,
-          600,
-          700,
-          800,
-          900,
-          1000,
-          1100,
-          1200,
-          1300,
-          1400,
-          1500,
-          1600,
-          1700,
-          1800,
-          1900,
-          2000
-        ],
-        "firstLen": 5,
-        "secondLen": 7
-      },
-      "output": 17400
-    },
-    {
       "name": "case_61",
       "input": {
         "nums": [
@@ -4034,36 +4004,6 @@
         "secondLen": 5
       },
       "output": 1650
-    },
-    {
-      "name": "case_106",
-      "input": {
-        "nums": [
-          100,
-          200,
-          300,
-          400,
-          500,
-          600,
-          700,
-          800,
-          900,
-          1000,
-          1100,
-          1200,
-          1300,
-          1400,
-          1500,
-          1600,
-          1700,
-          1800,
-          1900,
-          2000
-        ],
-        "firstLen": 9,
-        "secondLen": 10
-      },
-      "output": 20900
     },
     {
       "name": "case_107",

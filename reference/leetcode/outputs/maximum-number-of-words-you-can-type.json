@@ -1,5 +1,5 @@
 {
-  "workload_hash": "a0fef0d9e541eb52869e2e0107100c76e210667d7025e67d3624c32e7f2f7404",
+  "workload_hash": "118fa1c3edb5655038482638aab85f48f4f295436a49b6495110e3330f1aa22c",
   "problem": "maximum-number-of-words-you-can-type",
   "expected": [
     {
@@ -427,28 +427,12 @@
       "output": 0
     },
     {
-      "name": "case_54",
-      "input": {
-        "text": "special symbols are not included !@#$%^&*()",
-        "brokenLetters": ""
-      },
-      "output": 6
-    },
-    {
       "name": "case_55",
       "input": {
         "text": "brokenkeyboard faultydevice",
         "brokenLetters": "bdf"
       },
       "output": 0
-    },
-    {
-      "name": "case_56",
-      "input": {
-        "text": "sequential typing test",
-        "brokenLetters": "qseq"
-      },
-      "output": 1
     },
     {
       "name": "case_57",
@@ -691,14 +675,6 @@
       "output": 2
     },
     {
-      "name": "case_87",
-      "input": {
-        "text": "special characters are not considered",
-        "brokenLetters": "!@#$%^&*()"
-      },
-      "output": 5
-    },
-    {
       "name": "case_88",
       "input": {
         "text": "alibaba cloud is amazing",
@@ -883,14 +859,6 @@
       "output": 0
     },
     {
-      "name": "case_111",
-      "input": {
-        "text": "let us escape from this\u56f0\u5883",
-        "brokenLetters": "et"
-      },
-      "output": 2
-    },
-    {
       "name": "case_112",
       "input": {
         "text": "broken keyboards are annoying sometimes",
@@ -985,14 +953,6 @@
         "brokenLetters": ""
       },
       "output": 7
-    },
-    {
-      "name": "case_124",
-      "input": {
-        "text": "special characters !@#$%^&*()",
-        "brokenLetters": "s"
-      },
-      "output": 1
     },
     {
       "name": "case_125",

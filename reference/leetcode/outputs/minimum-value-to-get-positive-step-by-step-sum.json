@@ -1,5 +1,5 @@
 {
-  "workload_hash": "68b632e86f2b1d47675bd7c5507ccc5815832de5f9b9081494bcf8a93a9e4e71",
+  "workload_hash": "cc5525e8e6eec0fb3a86905292a97796824848346d890c50b7d1802843775c6f",
   "problem": "minimum-value-to-get-positive-step-by-step-sum",
   "expected": [
     {
@@ -342,21 +342,6 @@
       "output": 2
     },
     {
-      "name": "case_28",
-      "input": {
-        "nums": [
-          10,
-          20,
-          30,
-          40,
-          50,
-          -150,
-          60
-        ]
-      },
-      "output": 1
-    },
-    {
       "name": "case_29",
       "input": {
         "nums": [
@@ -389,21 +374,6 @@
         ]
       },
       "output": 5
-    },
-    {
-      "name": "case_31",
-      "input": {
-        "nums": [
-          1,
-          -100,
-          100,
-          -200,
-          200,
-          -300,
-          300
-        ]
-      },
-      "output": 300
     },
     {
       "name": "case_32",
@@ -666,21 +636,6 @@
         ]
       },
       "output": 1
-    },
-    {
-      "name": "case_47",
-      "input": {
-        "nums": [
-          100,
-          -200,
-          300,
-          -400,
-          500,
-          -600,
-          700
-        ]
-      },
-      "output": 301
     },
     {
       "name": "case_48",
@@ -978,20 +933,6 @@
           1,
           -1,
           1
-        ]
-      },
-      "output": 1
-    },
-    {
-      "name": "case_66",
-      "input": {
-        "nums": [
-          10,
-          20,
-          30,
-          40,
-          50,
-          -150
         ]
       },
       "output": 1
@@ -1387,20 +1328,6 @@
         ]
       },
       "output": 1
-    },
-    {
-      "name": "case_89",
-      "input": {
-        "nums": [
-          100,
-          -50,
-          -50,
-          -50,
-          -50,
-          200
-        ]
-      },
-      "output": 101
     },
     {
       "name": "case_90",

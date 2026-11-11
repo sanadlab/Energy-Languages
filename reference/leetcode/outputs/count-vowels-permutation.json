@@ -1,5 +1,5 @@
 {
-  "workload_hash": "b8f231bc26bd2cbfba252956dcd80d4c6eeb74c29f9f91dfd8ef63cbcaf26d33",
+  "workload_hash": "34a43fc05161beee8933afbd496c6a1def67478aeecc9a72a6880276583ef2b2",
   "problem": "count-vowels-permutation",
   "expected": [
     {
@@ -127,13 +127,6 @@
         "n": 4
       },
       "output": 35
-    },
-    {
-      "name": "case_19",
-      "input": {
-        "n": 30000
-      },
-      "output": 770607143
     },
     {
       "name": "case_20",

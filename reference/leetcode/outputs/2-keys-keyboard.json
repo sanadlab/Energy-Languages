@@ -1,5 +1,5 @@
 {
-  "workload_hash": "3a3c7a1dc4e502f153bb633f1fe9bb447d531a80c272030cbdb6b11bdc9f4c9a",
+  "workload_hash": "8d2d5fb970177a3dbb491a23c50670f9fd7cbba9dc34d6dbad4ff97ea001c151",
   "problem": "2-keys-keyboard",
   "expected": [
     {
@@ -206,13 +206,6 @@
       "output": 15
     },
     {
-      "name": "case_30",
-      "input": {
-        "n": 4096
-      },
-      "output": 24
-    },
-    {
       "name": "case_31",
       "input": {
         "n": 300
@@ -288,13 +281,6 @@
         "n": 819
       },
       "output": 26
-    },
-    {
-      "name": "case_42",
-      "input": {
-        "n": 1024
-      },
-      "output": 20
     },
     {
       "name": "case_43",

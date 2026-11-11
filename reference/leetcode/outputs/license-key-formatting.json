@@ -1,5 +1,5 @@
 {
-  "workload_hash": "a75bd1a7f53034a781bde0b768aff83063fb16e10e54ab1de791937659e363b0",
+  "workload_hash": "4d6707374c74ecbcd754101edec63a7434048081fe5dc9a0bedf1f2b281c9cd4",
   "problem": "license-key-formatting",
   "expected": [
     {
@@ -17,22 +17,6 @@
         "k": 5
       },
       "output": "A-BCDEF-GHIJK-LMNOP-QRSTU-VWXYZ"
-    },
-    {
-      "name": "case_3",
-      "input": {
-        "s": "",
-        "k": 1
-      },
-      "output": ""
-    },
-    {
-      "name": "case_4",
-      "input": {
-        "s": "",
-        "k": 10
-      },
-      "output": ""
     },
     {
       "name": "case_5",

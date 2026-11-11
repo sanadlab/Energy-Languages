@@ -1,5 +1,5 @@
 {
-  "workload_hash": "b9efd62d2f21aff65a35bc6d6e7da83e4ceec96d00840dc1ce546236c94fb68a",
+  "workload_hash": "7c5f94cde2c35918c62743906479da10ad8f75fa5531ebafccc7b98e92a7097e",
   "problem": "scramble-string",
   "expected": [
     {
@@ -73,14 +73,6 @@
         "s2": "ijabcdefgh"
       },
       "output": true
-    },
-    {
-      "name": "case_10",
-      "input": {
-        "s1": "eebaacbcbcadaaedceaaacadccd",
-        "s2": "eadcaacabaddaceacbceaabe"
-      },
-      "output": false
     },
     {
       "name": "case_11",
@@ -243,14 +235,6 @@
       "output": true
     },
     {
-      "name": "case_31",
-      "input": {
-        "s1": "introduction",
-        "s2": "oitrnuduinc"
-      },
-      "output": false
-    },
-    {
       "name": "case_32",
       "input": {
         "s1": "abcdabcd",
@@ -273,14 +257,6 @@
         "s2": "yzabcdx"
       },
       "output": true
-    },
-    {
-      "name": "case_35",
-      "input": {
-        "s1": "abcdefghij",
-        "s2": "efghijklabdc"
-      },
-      "output": false
     },
     {
       "name": "case_36",
@@ -353,14 +329,6 @@
         "s2": "babababa"
       },
       "output": true
-    },
-    {
-      "name": "case_45",
-      "input": {
-        "s1": "backtracking",
-        "s2": "tcgakknbirn"
-      },
-      "output": false
     },
     {
       "name": "case_46",
@@ -475,14 +443,6 @@
       "output": true
     },
     {
-      "name": "case_60",
-      "input": {
-        "s1": "recursion",
-        "s2": "suoncire"
-      },
-      "output": false
-    },
-    {
       "name": "case_61",
       "input": {
         "s1": "abcdefghij",
@@ -539,36 +499,12 @@
       "output": false
     },
     {
-      "name": "case_68",
-      "input": {
-        "s1": "scrambledstring",
-        "s2": "stgimrebldstring"
-      },
-      "output": false
-    },
-    {
-      "name": "case_69",
-      "input": {
-        "s1": "abcdefghij",
-        "s2": "mnopqrjkl"
-      },
-      "output": false
-    },
-    {
       "name": "case_70",
       "input": {
         "s1": "abcdefghijk",
         "s2": "efghijkabcd"
       },
       "output": true
-    },
-    {
-      "name": "case_71",
-      "input": {
-        "s1": "abracadabra",
-        "s2": "carrabbadaba"
-      },
-      "output": false
     },
     {
       "name": "case_72",
@@ -795,14 +731,6 @@
       "output": false
     },
     {
-      "name": "case_100",
-      "input": {
-        "s1": "thisisatest",
-        "s2": "tsaistestihis"
-      },
-      "output": false
-    },
-    {
       "name": "case_101",
       "input": {
         "s1": "abcdefghij",
@@ -811,26 +739,10 @@
       "output": false
     },
     {
-      "name": "case_102",
-      "input": {
-        "s1": "abcdefghij",
-        "s2": "ijklabcdefgh"
-      },
-      "output": false
-    },
-    {
       "name": "case_103",
       "input": {
         "s1": "scramble",
         "s2": "ercmsbal"
-      },
-      "output": false
-    },
-    {
-      "name": "case_104",
-      "input": {
-        "s1": "scramblestring",
-        "s2": "gterinmbscrl"
       },
       "output": false
     },
@@ -857,14 +769,6 @@
         "s2": "abjihgfedc"
       },
       "output": true
-    },
-    {
-      "name": "case_108",
-      "input": {
-        "s1": "abcdefghij",
-        "s2": "abcdefghijab"
-      },
-      "output": false
     },
     {
       "name": "case_109",

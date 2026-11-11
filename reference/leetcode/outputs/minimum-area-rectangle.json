@@ -1,5 +1,5 @@
 {
-  "workload_hash": "00a1eefee465ae00b7f4a6b74c63486df5c9ef12bdbdd78e67e54eaa2c6d1318",
+  "workload_hash": "45506af372153a3a3d888b13e66449bb26f2da536f4e3edfe65582bf7a360eb4",
   "problem": "minimum-area-rectangle",
   "expected": [
     {
@@ -2241,62 +2241,6 @@
         ]
       },
       "output": 9
-    },
-    {
-      "name": "case_39",
-      "input": {
-        "points": [
-          [
-            10,
-            10
-          ],
-          [
-            10,
-            15
-          ],
-          [
-            15,
-            10
-          ],
-          [
-            15,
-            15
-          ],
-          [
-            20,
-            20
-          ],
-          [
-            20,
-            25
-          ],
-          [
-            25,
-            20
-          ],
-          [
-            25,
-            25
-          ],
-          [
-            5,
-            5
-          ],
-          [
-            5,
-            10
-          ],
-          [
-            10,
-            5
-          ],
-          [
-            10,
-            10
-          ]
-        ]
-      },
-      "output": 25
     },
     {
       "name": "case_40",
