@@ -48,7 +48,7 @@ impl MyRandom {
         self.count = count;
     }
 
-    fn gen(&mut self, buf: &mut [u32], cur_thread: u16) -> Result<usize,()> {
+    fn r#gen(&mut self, buf: &mut [u32], cur_thread: u16) -> Result<usize,()> {
 
         if self.next_thread_num != cur_thread {
             return Err(())
@@ -104,7 +104,7 @@ fn make_random(data: &[(char, f32)]) -> Vec<(u32, u8)> {
 fn make_fasta2<I: Iterator<Item=u8>>(header: &str, mut it: I, mut n: usize)
     -> io::Result<()> {
     let mut sysout = BufWriter::new(io::stdout());
-    try!(sysout.write_all(header.as_bytes()));
+    sysout.write_all(header.as_bytes())?;
     let mut line = [0u8; LINE_LENGTH + 1];
     while n > 0 {
         let nb = min(LINE_LENGTH, n);
@@ -113,7 +113,7 @@ fn make_fasta2<I: Iterator<Item=u8>>(header: &str, mut it: I, mut n: usize)
         }
         n -= nb;
         line[nb] = '\n' as u8;
-        try!(sysout.write_all(&line[..(nb+1)]));
+        sysout.write_all(&line[..(nb+1)])?;
     }
     Ok(())
 }
@@ -126,7 +126,7 @@ fn do_fasta(thread_num: u16, rng: Arc<Mutex<MyRandom>>,
     let mut count;
     loop {
         loop {
-            if let Ok(x) = rng.lock().unwrap().gen(&mut rng_buf, thread_num) {
+            if let Ok(x) = rng.lock().unwrap().r#gen(&mut rng_buf, thread_num) {
                 count = x;
                 break;
             }
@@ -162,7 +162,7 @@ fn make_fasta(header: &str, rng: Arc<Mutex<MyRandom>>,
              ) -> io::Result<()> {
 
     let stdout = Arc::new(Mutex::new(MyStdOut::new(num_threads)));
-    try!(io::stdout().write_all(header.as_bytes()));
+    io::stdout().write_all(header.as_bytes())?;
     let mut threads = Vec::new();
     for thread in 0..num_threads {
         let d = data.clone();

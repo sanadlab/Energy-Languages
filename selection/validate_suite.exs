@@ -8,7 +8,7 @@
 Code.require_file("elixir_hns.exs", __DIR__)
 
 defmodule Validate do
-  @unordered ~w(uncommon-words-from-two-sentences remove-invalid-parentheses restore-the-array-from-adjacent-pairs)
+  @unordered ~w(uncommon-words-from-two-sentences remove-invalid-parentheses restore-the-array-from-adjacent-pairs ambiguous-coordinates)
 
   def main do
     cell = File.cwd!()
@@ -21,13 +21,14 @@ defmodule Validate do
       camel = HNS.obj_get(wl, "entry_point") |> to_string() |> String.split(".") |> List.last()
       Code.compiler_options(ignore_module_conflict: true)
       Code.require_file("solution.ex", cell)
-      run(slug, camel, HNS.obj_get(out, "expected"))
+      run(slug, {camel, HNS.char_specs(cell)}, HNS.obj_get(out, "expected"))
     rescue
       e -> IO.puts(:stderr, "VALIDATE slug=#{slug} ERROR load: #{Exception.message(e)}"); System.halt(2)
     end
   end
 
-  defp run(slug, camel, expected) do
+  # fun = {camel, specs}: the entry point's name and the snippet's char types.
+  defp run(slug, fun, expected) do
     total = length(expected)
     randomized = slug == "random-pick-index"
     expected
@@ -35,12 +36,12 @@ defmodule Validate do
     |> Enum.each(fn {c, i} ->
       name = HNS.obj_get(c, "name")
       inp = HNS.obj_get(c, "input")
-      exp = HNS.obj_get(c, "output")
       is_design = HNS.design?(inp)
+      exp = expected_chars(inp, HNS.obj_get(c, "output"), fun)
 
       actual =
         try do
-          run_case(inp, camel, randomized)
+          run_case(inp, fun, randomized)
         rescue
           e -> fail_re(slug, name, i, total, e)
         catch
@@ -51,7 +52,7 @@ defmodule Validate do
         cond do
           is_design -> seq_ok(actual, exp)
           slug in @unordered -> unordered_eq(actual, exp)
-          true -> HNS.canon(actual) == HNS.canon(exp)
+          true -> HNS.eq(actual, exp)
         end
 
       unless ok do
@@ -70,38 +71,39 @@ defmodule Validate do
     System.halt(3)
   end
 
-  defp run_case(inp, camel, randomized) do
+  defp run_case(inp, {camel, specs}, randomized) do
     if HNS.design?(inp) do
       [op0 | rest_ops] = HNS.obj_get(inp, "ops")
       [a0 | rest_args] = HNS.obj_get(inp, "args")
       mod = Module.concat([op0])
       nums = if randomized, do: hd(a0), else: nil
-      apply(mod, :init_, a0)
+      apply(mod, :init_, HNS.op_args(a0, specs, :init_))
       seq =
         Enum.zip(rest_ops, rest_args)
         |> Enum.map(fn {op, a} ->
-          r = apply(mod, resolve(mod, op, length(a)), a)
+          r = apply(mod, HNS.resolve(mod, op, length(a)), HNS.op_args(a, specs, HNS.snake_atom(op)))
           if randomized and op == "pick" and is_integer(r) and nums, do: Enum.at(nums, r), else: r
         end)
       [nil | seq]
     else
-      args = HNS.build_args(inp)
-      apply(Solution, resolve(Solution, camel, length(args)), args)
+      args = HNS.build_args(inp, HNS.param_chars(specs, HNS.snake_atom(camel)))
+      apply(Solution, HNS.resolve(Solution, camel, length(args)), args)
     end
   end
 
-  # snake_case first, camel fallback (both as atoms); default to snake.
-  defp resolve(mod, camel, arity) do
-    snake = HNS.snake_atom(camel)
-    cond do
-      function_exported?(mod, snake, arity) -> snake
-      function_exported?(mod, String.to_atom(camel), arity) -> String.to_atom(camel)
-      true -> snake
+  # The expected output with each char result as its code point.
+  defp expected_chars(inp, exp, {camel, specs}) do
+    if HNS.design?(inp) do
+      [_op0 | rest_ops] = HNS.obj_get(inp, "ops")
+      [e0 | rest_exp] = exp
+      [e0 | Enum.zip_with(rest_ops, rest_exp, fn op, e -> HNS.charify(e, HNS.ret_chars(specs, HNS.snake_atom(op))) end)]
+    else
+      HNS.charify(exp, HNS.ret_chars(specs, HNS.snake_atom(camel)))
     end
   end
 
   defp seq_ok(actual, expected) when is_list(actual) and is_list(expected) and length(actual) == length(expected) do
-    Enum.zip(actual, expected) |> Enum.all?(fn {a, e} -> e == nil or HNS.canon(a) == HNS.canon(e) end)
+    Enum.zip(actual, expected) |> Enum.all?(fn {a, e} -> e == nil or HNS.eq(a, e) end)
   end
   defp seq_ok(_, _), do: false
 

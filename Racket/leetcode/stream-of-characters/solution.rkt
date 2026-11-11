@@ -26,8 +26,7 @@
 
     ; query : char? -> boolean?
     (define/public (query letter)
-      (define ch (if (char? letter) letter (string-ref letter 0)))
-      (set! stream (cons ch stream))
+      (set! stream (cons letter stream))
       (set! cnt (add1 cnt))
       (define nmax (min max-len cnt))
       (let loop ([node trie] [step 0] [lst stream])

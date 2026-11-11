@@ -1,15 +1,14 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc nbody.swift-5.swift -Ounchecked -whole-module-optimization  -o nbody.swift-5.swift_run
+LANG    = Swift
+TEST    = n-body
+SOURCE  = nbody.swift-5.swift
+OUTPUT  = n-body.swift_run
+ARG         = 15000000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./nbody.swift-5.swift_run 50000000" Swift n-body
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./nbody.swift-5.swift_run 50000000
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/n-body.txt
 
-mem:
-	/usr/bin/time -v  ./nbody.swift-5.swift_run 50000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  ./nbody.swift-5.swift_run 50000000
+include ../../../perfarena.mk

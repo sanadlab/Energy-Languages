@@ -1,0 +1,5 @@
+module apr [system] {
+    header "shim.h"
+    link "apr-1"
+    export *
+}

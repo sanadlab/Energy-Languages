@@ -5,7 +5,8 @@ MOD     = revcomp
 OUTPUT  = revcomp.beam
 
 ARG         = 0
-RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+# no erl_crash.dump on a crash
+RUN_CMD     = env ERL_CRASH_DUMP_BYTES=0 erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
 COMPILE_CMD = erlc $(SOURCE)
 
 STDIN_FILE       = ../../../reference/clbg/inputs/fasta-25000000.txt

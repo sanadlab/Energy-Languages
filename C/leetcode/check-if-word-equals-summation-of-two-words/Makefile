@@ -13,7 +13,7 @@ OUTPUT      = driver
 ARG         =
 SEL         = ../../../selection
 RUN_CMD     = python3 $(SEL)/harness_c.py 0.2 0
-COMPILE_CMD = python3 $(SEL)/harness_c.py 0.05 0 >/dev/null
+COMPILE_CMD = python3 $(SEL)/harness_c.py compile
 
 # validate: permanent PASS via empty-stream compare. Real correctness is
 # owned by the arena oracle (run_validate.sh -> harness_c.py validate).

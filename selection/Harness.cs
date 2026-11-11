@@ -206,6 +206,40 @@ public static class Harness {
     static string Snap(object[] a) { var b = new System.Text.StringBuilder(); foreach (var o in a) { b.Append(Canon(o)); b.Append('\u0001'); } return b.ToString(); }
 
     // ---------- canonical string of a result (order-preserving) ----------
+    // Do two canon strings match? Equal strings match; two numbers also match when
+    // they differ by at most 1e-5 and one of them is not an integer: LeetCode
+    // accepts answers within 1e-5 on its float problems.
+    static bool CanonMatch(string a, string b) {
+        if (a == b) return true;
+        int i = 0, j = 0;
+        while (i < a.Length && j < b.Length) {
+            if (NumAt(a, i) && NumAt(b, j)) {
+                int ni = NumEnd(a, i), nj = NumEnd(b, j);
+                string ta = a.Substring(i, ni - i), tb = b.Substring(j, nj - j);
+                if (ta != tb) {
+                    bool frac = ta.IndexOfAny(new[] { '.', 'e', 'E' }) >= 0 || tb.IndexOfAny(new[] { '.', 'e', 'E' }) >= 0;
+                    if (!frac) return false;
+                    if (!double.TryParse(ta, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double x)
+                        || !double.TryParse(tb, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double y)
+                        || !(Math.Abs(x - y) <= 1e-5)) return false;
+                }
+                i = ni; j = nj; continue;
+            }
+            if (a[i] != b[j]) return false;
+            i++; j++;
+        }
+        return i == a.Length && j == b.Length;
+    }
+    static bool NumAt(string s, int k) => char.IsDigit(s[k]) || (s[k] == '-' && k + 1 < s.Length && char.IsDigit(s[k + 1]));
+    static int NumEnd(string s, int k) {
+        int e = k; if (s[e] == '-') e++;
+        while (e < s.Length && (char.IsDigit(s[e]) || s[e] == '.')) e++;
+        if (e < s.Length && (s[e] == 'e' || s[e] == 'E')) {
+            int f = e + 1; if (f < s.Length && (s[f] == '+' || s[f] == '-')) f++;
+            if (f < s.Length && char.IsDigit(s[f])) { e = f; while (e < s.Length && char.IsDigit(s[e])) e++; }
+        }
+        return e;
+    }
     static string Canon(object r) {
         if (r == null) return "null";
         if (r is string s) return s;
@@ -306,7 +340,7 @@ public static class Harness {
     // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
     static readonly HashSet<string> _UNORDERED = new HashSet<string> {
         "uncommon-words-from-two-sentences", "remove-invalid-parentheses",
-        "restore-the-array-from-adjacent-pairs" };
+        "restore-the-array-from-adjacent-pairs", "ambiguous-coordinates" };
     static List<string> ElemCanons(object o) {
         if (o is string) return null;                          // a string is not a flat list-result
         if (o is System.Collections.IEnumerable en) {
@@ -354,7 +388,7 @@ public static class Harness {
                     if (actual.Count != exp.Count) return VFail(slug, name, Canon(exp), Canon(actual), __i, total);
                     for (int i = 0; i < exp.Count; i++) {
                         if (exp[i] == null) continue;                 // void op: not compared
-                        if (Canon(exp[i]) != actual[i]) return VFail(slug, name, Canon(exp), Canon(actual), __i, total);
+                        if (!CanonMatch(actual[i], Canon(exp[i]))) return VFail(slug, name, Canon(exp), Canon(actual), __i, total);
                     }
                 } else {
                     Type sol = FindType("Solution");
@@ -365,7 +399,7 @@ public static class Harness {
                     var baseArgs = new object[pts.Length];
                     int k = 0; foreach (var v in input.Vals) { baseArgs[k] = Marshal(pts[k].ParameterType, v); k++; }
                     object rawResult = mth.Invoke(inst, baseArgs);
-                    bool okc = _UNORDERED.Contains(slug) ? UnorderedEq(rawResult, expected) : (Canon(rawResult) == Canon(expected));
+                    bool okc = _UNORDERED.Contains(slug) ? UnorderedEq(rawResult, expected) : CanonMatch(Canon(rawResult), Canon(expected));
                     if (!okc) return VFail(slug, name, Canon(expected), Canon(rawResult), __i, total);
                 }
             } catch (Exception e) {

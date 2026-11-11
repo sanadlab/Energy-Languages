@@ -1,8 +1,8 @@
 object Solution {
     def removeInvalidParentheses(s: String): List[String] = {
         def valid(t: String): Boolean = {
-            var c = 0
-            for (ch <- t) { if (ch == '(') c += 1 else if (ch == ')') { c -= 1; if (c < 0) return false } }
+            var c = 0; var i = 0
+            while (i < t.length && c >= 0) { val ch = t(i); if (ch == '(') c += 1 else if (ch == ')') c -= 1; i += 1 }
             c == 0
         }
         var level = Set(s)

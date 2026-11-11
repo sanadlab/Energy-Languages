@@ -1,131 +1,402 @@
-import java.io.BufferedOutputStream;
+/*
+ * The Computer Language Benchmarks Game
+ * http://benchmarksgame.alioth.debian.org/
+ * 
+ * modified by Mehmet D. AKIN
+ * modified by Daryl Griffith
+ */
+
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class fasta {
-    private static final int IM = 139968;
-    private static final int IA = 3877;
-    private static final int IC = 29573;
-    private static final int WIDTH = 60;
 
-    private static final String ALU =
-            "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG"
-          + "GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAG"
-          + "ACCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAA"
-          + "TACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCC"
-          + "AGCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGG"
-          + "GAGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTC"
-          + "CAGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA";
+    static final int LINE_LENGTH = 60;
+    static final int LINE_COUNT = 1024;
+    static final NucleotideSelector[] WORKERS 
+            = new NucleotideSelector[
+                    Runtime.getRuntime().availableProcessors() > 1 
+                    ? Runtime.getRuntime().availableProcessors() - 1 
+                    : 1];
+    static final AtomicInteger IN = new AtomicInteger();
+    static final AtomicInteger OUT = new AtomicInteger();
+    static final int BUFFERS_IN_PLAY = 6;
+    static final int IM = 139968;
+    static final int IA = 3877;
+    static final int IC = 29573;
+    static final float ONE_OVER_IM = 1f / IM;
+    static int last = 42;
+
+    public static void main(String[] args) {
+        int n = 1000;
+
+        if (args.length > 0) {
+            n = Integer.parseInt(args[0]);
+        }
+        if (n < LINE_COUNT * LINE_LENGTH * BUFFERS_IN_PLAY) {
+            try {
+                simpleFasta(System.out, n);
+            } catch (IOException ex) {
+            }
+            return;
+        }
+        for (int i = 0; i < WORKERS.length; i++) {
+            WORKERS[i] = new NucleotideSelector();
+            WORKERS[i].setDaemon(true);
+            WORKERS[i].start();
+        }
+        try (OutputStream writer = System.out;) {
+            final int bufferSize = LINE_COUNT * LINE_LENGTH;
+
+            for (int i = 0; i < BUFFERS_IN_PLAY; i++) {
+                lineFillALU(
+                        new AluBuffer(LINE_LENGTH, bufferSize, i * bufferSize));
+            }
+            speciesFillALU(writer, n * 2, ">ONE Homo sapiens alu\n");
+            for (int i = 0; i < BUFFERS_IN_PLAY; i++) {
+                writeBuffer(writer);
+                lineFillRandom(new Buffer(true, LINE_LENGTH, bufferSize));
+            }
+            speciesFillRandom(writer
+                    , n * 3
+                    , ">TWO IUB ambiguity codes\n"
+                    , true);
+            for (int i = 0; i < BUFFERS_IN_PLAY; i++) {
+                writeBuffer(writer);
+                lineFillRandom(new Buffer(false, LINE_LENGTH, bufferSize));
+            }
+            speciesFillRandom(writer
+                    , n * 5
+                    , ">THREE Homo sapiens frequency\n"
+                    , false);
+            for (int i = 0; i < BUFFERS_IN_PLAY; i++) {
+                writeBuffer(writer);
+            }
+        } catch (IOException ex) {
+        }
+     }
+
+    private static void simpleFasta(OutputStream writer, int n) throws IOException {
+        byte[] alu = (
+                "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG"
+                + "GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA"
+                + "CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT"
+                + "ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA"
+                + "GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG"
+                + "AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC"
+                + "AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA").getBytes();
+        byte[] iubChars = new byte[]{'a','c','g','t','B','D','H','K','M','N','R','S','V','W','Y'};
+        double[] iubProbs = new double[]{0.27,0.12,0.12,0.27,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02};
+        byte[] sapienChars = new byte[]{'a','c','g','t'};
+        double[] sapienProbs = new double[]{0.3029549426680,0.1979883004921,0.1975473066391,0.3015094502008};
+
+        writer.write(">ONE Homo sapiens alu\n".getBytes());
+        writeRepeat(writer, alu, n * 2);
+        writer.write(">TWO IUB ambiguity codes\n".getBytes());
+        writeRandom(writer, iubChars, cumulative(iubProbs), n * 3);
+        writer.write(">THREE Homo sapiens frequency\n".getBytes());
+        writeRandom(writer, sapienChars, cumulative(sapienProbs), n * 5);
+    }
 
     private static double[] cumulative(double[] probabilities) {
+        double[] result = new double[probabilities.length];
         double sum = 0.0;
         for (int i = 0; i < probabilities.length; i++) {
             sum += probabilities[i];
-            probabilities[i] = sum;
+            result[i] = sum;
         }
-        probabilities[probabilities.length - 1] = 1.0;
-        return probabilities;
+        return result;
     }
 
-    private static byte select(double value, byte[] symbols, double[] limits) {
-        int i = 0;
-        while (value >= limits[i]) {
-            i++;
+    private static void writeRepeat(OutputStream writer, byte[] sequence, int count) throws IOException {
+        for (int i = 0; i < count; i += LINE_LENGTH) {
+            int line = Math.min(LINE_LENGTH, count - i);
+            for (int j = 0; j < line; j++) {
+                writer.write(sequence[(i + j) % sequence.length]);
+            }
+            writer.write('\n');
         }
-        return symbols[i];
     }
 
-    private static int gcd(int a, int b) {
-        while (b != 0) {
-            int remainder = a % b;
-            a = b;
-            b = remainder;
+    private static void writeRandom(OutputStream writer, byte[] chars, double[] probs, int count) throws IOException {
+        for (int i = 0; i < count; i += LINE_LENGTH) {
+            int line = Math.min(LINE_LENGTH, count - i);
+            for (int j = 0; j < line; j++) {
+                double r = nextRandom();
+                int k = 0;
+                while (probs[k] < r) {
+                    k++;
+                }
+                writer.write(chars[k]);
+            }
+            writer.write('\n');
         }
-        return a;
     }
 
-    private static void writeRepeated(
-            OutputStream out, byte[] pattern, int offset, long length)
-            throws IOException {
-        // Align the block to both the sequence period and the line width.
-        int charactersPerBlock =
-                (pattern.length / gcd(pattern.length, WIDTH)) * WIDTH;
-        byte[] block =
-                new byte[charactersPerBlock + charactersPerBlock / WIDTH];
+    private static double nextRandom() {
+        last = (last * IA + IC) % IM;
+        return last * (1.0 / IM);
+    }
 
-        int source = offset;
-        int destination = 0;
-        for (int line = 0; line < charactersPerBlock / WIDTH; line++) {
-            for (int column = 0; column < WIDTH; column++) {
-                block[destination++] = pattern[source++];
-                if (source == pattern.length) {
-                    source = 0;
+    private static void lineFillALU(AbstractBuffer buffer) {
+        WORKERS[OUT.incrementAndGet() % WORKERS.length].put(buffer);
+    }
+
+    private static void bufferFillALU(OutputStream writer
+            , int buffers) throws IOException {
+        AbstractBuffer buffer;
+
+        for (int i = 0; i < buffers; i++) {
+            buffer = WORKERS[IN.incrementAndGet() % WORKERS.length].take();
+            writer.write(buffer.nucleotides);
+            lineFillALU(buffer);
+        }
+    }
+
+    private static void speciesFillALU(final OutputStream writer
+            , final int nChars
+            , final String name) throws IOException {
+        final int bufferSize = LINE_COUNT * LINE_LENGTH;
+        final int bufferCount = nChars / bufferSize;
+        final int bufferLoops = bufferCount - BUFFERS_IN_PLAY;
+        final int charsLeftover = nChars - (bufferCount * bufferSize);
+
+        writer.write(name.getBytes());
+        bufferFillALU(writer, bufferLoops);
+        if (charsLeftover > 0) {
+            writeBuffer(writer);
+            lineFillALU(
+                    new AluBuffer(LINE_LENGTH
+                            , charsLeftover
+                            , nChars - charsLeftover));
+        }
+    }
+
+    private static void lineFillRandom(Buffer buffer) {
+        for (int i = 0; i < buffer.randoms.length; i++) {
+            last = (last * IA + IC) % IM;
+            buffer.randoms[i] = last * ONE_OVER_IM;
+        }
+        WORKERS[OUT.incrementAndGet() % WORKERS.length].put(buffer);
+    }
+
+    private static void bufferFillRandom(OutputStream writer
+            , int loops) throws IOException {
+        AbstractBuffer buffer;
+
+        for (int i = 0; i < loops; i++) {
+            buffer = WORKERS[IN.incrementAndGet() % WORKERS.length].take();
+            writer.write(buffer.nucleotides);
+            lineFillRandom((Buffer) buffer);
+        }
+    }
+
+    private static void speciesFillRandom(final OutputStream writer
+            , final int nChars
+            , final String name
+            , final boolean isIUB) throws IOException {
+        final int bufferSize = LINE_COUNT * LINE_LENGTH;
+        final int bufferCount = nChars / bufferSize;
+        final int bufferLoops = bufferCount - BUFFERS_IN_PLAY;
+        final int charsLeftover = nChars - (bufferCount * bufferSize);
+
+        writer.write(name.getBytes());
+        bufferFillRandom(writer, bufferLoops);
+        if (charsLeftover > 0) {
+            writeBuffer(writer);    
+            lineFillRandom(new Buffer(isIUB, LINE_LENGTH, charsLeftover));
+        }
+    }
+
+    private static void writeBuffer(OutputStream writer) throws IOException {
+        writer.write(
+                WORKERS[IN.incrementAndGet() % WORKERS.length]
+                        .take()
+                        .nucleotides);
+    }
+
+    public static class NucleotideSelector extends Thread {
+
+        private final BlockingQueue<AbstractBuffer> 
+                in = new ArrayBlockingQueue<>(BUFFERS_IN_PLAY);
+        private final BlockingQueue<AbstractBuffer> 
+                out = new ArrayBlockingQueue<>(BUFFERS_IN_PLAY);
+
+        public void put(AbstractBuffer line) {
+            try {
+                in.put(line);
+            } catch (InterruptedException ex) {
+            }
+        }
+
+        @Override
+        public void run() {
+            AbstractBuffer line;
+
+            try {
+                for (;;) {
+                    line = in.take();
+                    line.selectNucleotides();
+                    out.put(line);
+                }
+            } catch (InterruptedException ex) {
+            }
+        }
+
+        public AbstractBuffer take() {
+            try {
+                return out.take();
+            } catch (InterruptedException ex) {
+            }
+            return null;
+        }
+    }
+
+    public abstract static class AbstractBuffer {
+
+        final int LINE_LENGTH;
+        final int LINE_COUNT;
+        byte[] chars;
+        final byte[] nucleotides;
+        final int CHARS_LEFTOVER;
+
+        public AbstractBuffer(final int lineLength, final int nChars) {
+            LINE_LENGTH = lineLength;
+            final int outputLineLength = lineLength + 1;
+            LINE_COUNT = nChars / lineLength;
+            CHARS_LEFTOVER = nChars % lineLength;
+            final int nucleotidesSize 
+                    = nChars + LINE_COUNT + (CHARS_LEFTOVER == 0 ? 0 : 1);
+            final int lastNucleotide = nucleotidesSize - 1;
+
+            nucleotides = new byte[nucleotidesSize];
+            for (int i = lineLength
+                    ; i < lastNucleotide
+                    ; i += outputLineLength) {
+                nucleotides[i] = '\n';
+            }
+            nucleotides[nucleotides.length - 1] = '\n';
+        }
+
+        public abstract void selectNucleotides();
+    }
+
+    public static class AluBuffer extends AbstractBuffer {
+
+        final String ALU =
+                "GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG"
+                + "GAGGCCGAGGCGGGCGGATCACCTGAGGTCAGGAGTTCGAGA"
+                + "CCAGCCTGGCCAACATGGTGAAACCCCGTCTCTACTAAAAAT"
+                + "ACAAAAATTAGCCGGGCGTGGTGGCGCGCGCCTGTAATCCCA"
+                + "GCTACTCGGGAGGCTGAGGCAGGAGAATCGCTTGAACCCGGG"
+                + "AGGCGGAGGTTGCAGTGAGCCGAGATCGCGCCACTGCACTCC"
+                + "AGCCTGGGCGACAGAGCGAGACTCCGTCTCAAAAA";
+        final int MAX_ALU_INDEX = ALU.length() - LINE_LENGTH;
+        final int ALU_ADJUST = LINE_LENGTH - ALU.length();
+        final int nChars;
+        int charIndex;
+        int nucleotideIndex;
+
+        public AluBuffer(final int lineLength
+                , final int nChars
+                , final int offset) {
+            super(lineLength, nChars);
+            this.nChars = nChars;
+            chars = (ALU + ALU.substring(0, LINE_LENGTH)).getBytes();
+            charIndex = offset % ALU.length();
+        }
+
+        @Override
+        public void selectNucleotides() {
+            nucleotideIndex = 0;
+            for (int i = 0; i < LINE_COUNT; i++) {
+                ALUFillLine(LINE_LENGTH);
+            }
+            if (CHARS_LEFTOVER > 0) {
+                ALUFillLine(CHARS_LEFTOVER);
+            }
+            charIndex = (charIndex + (nChars * (BUFFERS_IN_PLAY - 1))) 
+                    % ALU.length();
+        }
+
+        private void ALUFillLine(final int charCount) {
+            System.arraycopy(chars
+                    , charIndex
+                    , nucleotides
+                    , nucleotideIndex
+                    , charCount);
+            charIndex += charIndex < MAX_ALU_INDEX ? charCount : ALU_ADJUST;
+            nucleotideIndex += charCount + 1;
+        }
+    }
+
+    public static class Buffer extends AbstractBuffer {
+
+        final byte[] iubChars = new byte[]{
+            'a', 'c', 'g', 't',
+            'B', 'D', 'H', 'K',
+            'M', 'N', 'R', 'S',
+            'V', 'W', 'Y'};
+        final double[] iubProbs = new double[]{
+            0.27, 0.12, 0.12, 0.27,
+            0.02, 0.02, 0.02, 0.02,
+            0.02, 0.02, 0.02, 0.02,
+            0.02, 0.02, 0.02,};
+        final byte[] sapienChars = new byte[]{
+            'a',
+            'c',
+            'g',
+            't'};
+        final double[] sapienProbs = new double[]{
+            0.3029549426680,
+            0.1979883004921,
+            0.1975473066391,
+            0.3015094502008};
+        final float[] probs;
+        final float[] randoms;
+        final int charsInFullLines;
+
+        public Buffer(final boolean isIUB
+                , final int lineLength
+                , final int nChars) {
+            super(lineLength, nChars);
+            double cp = 0;
+            final double[] dblProbs = isIUB ? iubProbs : sapienProbs;
+
+            chars = isIUB ? iubChars : sapienChars;
+            probs = new float[dblProbs.length];
+            for (int i = 0; i < probs.length; i++) {
+                cp += dblProbs[i];
+                probs[i] = (float) cp;
+            }
+            probs[probs.length - 1] = 2f;
+            randoms = new float[nChars];
+            charsInFullLines = (nChars / lineLength) * lineLength;
+        }
+
+        @Override
+        public void selectNucleotides() {
+            int i, j, m;
+            float r;
+            int k;
+
+            for (i = 0, j = 0; i < charsInFullLines; j++) {
+                for (k = 0; k < LINE_LENGTH; k++) {
+                    r = randoms[i++];
+                    for (m = 0; probs[m] < r; m++) {
+                    }
+                    nucleotides[j++] = chars[m];
                 }
             }
-            block[destination++] = '\n';
-        }
-
-        while (length >= charactersPerBlock) {
-            out.write(block);
-            length -= charactersPerBlock;
-        }
-
-        int remaining = (int) length;
-        if (remaining != 0) {
-            out.write(block, 0, remaining + remaining / WIDTH);
-            if (remaining % WIDTH != 0) {
-                out.write('\n');
+            for (k = 0; k < CHARS_LEFTOVER; k++) {
+                r = randoms[i++];
+                for (m = 0; probs[m] < r; m++) {
+                }
+                nucleotides[j++] = chars[m];
             }
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        int n = Integer.parseInt(args[0]);
-
-        byte[] iubSymbols =
-                "acgtBDHKMNRSVWY".getBytes(StandardCharsets.US_ASCII);
-        double[] iubLimits = cumulative(new double[] {
-                0.27, 0.12, 0.12, 0.27,
-                0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
-                0.02, 0.02, 0.02, 0.02, 0.02
-        });
-
-        byte[] humanSymbols = "acgt".getBytes(StandardCharsets.US_ASCII);
-        double[] humanLimits = cumulative(new double[] {
-                0.3029549426680,
-                0.1979883004921,
-                0.1975473066391,
-                0.3015094502008
-        });
-
-        // This LCG has a full period of IM. Cache one exact period under
-        // each distribution, then stream repetitions without changing results.
-        byte[] iubPeriod = new byte[IM];
-        byte[] humanPeriod = new byte[IM];
-        int seed = 42;
-        for (int i = 0; i < IM; i++) {
-            seed = (seed * IA + IC) % IM;
-            double value = (double) seed / IM;
-            iubPeriod[i] = select(value, iubSymbols, iubLimits);
-            humanPeriod[i] = select(value, humanSymbols, humanLimits);
-        }
-
-        OutputStream out = new BufferedOutputStream(System.out, 65536);
-
-        out.write(">ONE Homo sapiens alu\n"
-                .getBytes(StandardCharsets.US_ASCII));
-        writeRepeated(out, ALU.getBytes(StandardCharsets.US_ASCII), 0, 2L * n);
-
-        out.write(">TWO IUB ambiguity codes\n"
-                .getBytes(StandardCharsets.US_ASCII));
-        writeRepeated(out, iubPeriod, 0, 3L * n);
-
-        out.write(">THREE Homo sapiens frequency\n"
-                .getBytes(StandardCharsets.US_ASCII));
-        int humanOffset = (int) ((3L * n) % IM);
-        writeRepeated(out, humanPeriod, humanOffset, 5L * n);
-
-        out.flush();
     }
 }

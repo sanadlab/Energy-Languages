@@ -1,15 +1,15 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc revcomp.swift -Ounchecked -whole-module-optimization  -o revcomp.swift_run
+LANG    = Swift
+TEST    = reverse-complement
+SOURCE  = revcomp.swift
+OUTPUT  = reverse-complement.swift_run
+ARG         = 0
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./revcomp.swift_run 0 < ../../revcomp-input25000000.txt" Swift reverse-complement
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./revcomp.swift_run 0 < ../../revcomp-input25000000.txt
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/reverse-complement.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-25000000.txt
 
-mem:
-	/usr/bin/time -v  ./revcomp.swift_run 0 < ../../revcomp-input25000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  ./revcomp.swift_run 0 < ../../revcomp-input25000000.txt
+include ../../../perfarena.mk

@@ -106,21 +106,25 @@
     (string-downcase s)))
 
 ;; ---- node construction (compact LeetCode level-order) -----------------------
+;; The BFS queues are two lists (front, and back in reverse), so building and
+;; walking a tree takes linear time.
 (define (build-tree a)
   (cond
     [(or (eq? a 'null) (null? a) (eq? (car a) 'null)) #f]
     [else
      (define root (make-tree-node (car a)))
-     (let loop ([q (list root)] [rest (cdr a)])
+     (let loop ([front (list root)] [back '()] [rest (cdr a)])
        (cond
-         [(or (null? q) (null? rest)) root]
+         [(null? rest) root]
+         [(null? front) (if (null? back) root (loop (reverse back) '() rest))]
          [else
-          (define node (car q))
+          (define node (car front))
           (define-values (lchild rest1) (take-child rest))
           (define-values (rchild rest2) (take-child rest1))
           (when lchild (set-tree-node-left! node lchild))
           (when rchild (set-tree-node-right! node rchild))
-          (loop (append (cdr q) (filter values (list lchild rchild))) rest2)]))]))
+          (define back1 (if lchild (cons lchild back) back))
+          (loop (cdr front) (if rchild (cons rchild back1) back1) rest2)]))]))
 
 (define (take-child rest)
   (cond
@@ -136,12 +140,13 @@
 
 (define (tree->list root)
   (if (not root) '()
-      (let loop ([q (list root)] [acc '()])
+      (let loop ([front (list root)] [back '()] [acc '()])
         (cond
-          [(null? q) (trim-trailing (reverse acc))]
-          [(not (car q)) (loop (cdr q) (cons 'null acc))]
-          [else (define n (car q))
-                (loop (append (cdr q) (list (tree-node-left n) (tree-node-right n)))
+          [(null? front)
+           (if (null? back) (trim-trailing (reverse acc)) (loop (reverse back) '() acc))]
+          [(not (car front)) (loop (cdr front) back (cons 'null acc))]
+          [else (define n (car front))
+                (loop (cdr front) (list* (tree-node-right n) (tree-node-left n) back)
                       (cons (tree-node-val n) acc))]))))
 
 (define (trim-trailing lst)
@@ -189,12 +194,109 @@
 (define (fold acc r) (bitwise-and (+ (* acc 1000003) (strhash (canon r))) MASK64))
 
 ;; ---- build positional args from an ordered input object --------------------
-(define (build-args o)
-  (for/list ([p (in-list (jobj-pairs o))])
-    (define k (car p)) (define v (cdr p))
-    (cond [(string=? k "root") (build-tree v)]
-          [(string=? k "head") (build-list v)]
-          [else v])))
+;; Every call builds fresh values (strings are mutable in Racket); `convs` are
+;; the per-argument converters from the snippet's contract (see arg-convs).
+(define (build-args o [convs '()])
+  (apply-convs convs
+    (for/list ([p (in-list (jobj-pairs o))])
+      (define k (car p)) (define v (cdr p))
+      (cond [(string=? k "root") (build-tree v)]
+            [(string=? k "head") (build-list v)]
+            [else (fresh v)]))))
+
+(define (fresh v)
+  (cond [(string? v) (string-copy v)]
+        [(pair? v) (map fresh v)]
+        [else v]))
+
+(define (apply-convs convs vals)
+  (cond [(or (null? convs) (null? vals)) vals]
+        [else (cons (if (car convs) ((car convs) (car vals)) (car vals))
+                    (apply-convs (cdr convs) (cdr vals)))]))
+
+;; ---- LeetCode's Racket snippet (code_snippets.racket in the cell's problem.json)
+;; LeetCode passes a char where the snippet's contract says char? (the shared
+;; JSON holds a 1-char string), and builds a design object with named init
+;; arguments, (new custom-stack% [max-size 3]), not by position.
+(define (cell-snippet)
+  (with-handlers ([exn:fail? (lambda (_) #f)])
+    (define s (obj-ref (obj-ref (parse-ordered (file->string "problem.json")) "code_snippets") "racket"))
+    (and (string? s) s)))
+
+(define (snippet-forms s)
+  (with-handlers ([exn:fail? (lambda (_) '())])
+    (parameterize ([read-accept-reader #f] [read-accept-lang #f])
+      (define in (open-input-string s))
+      (let loop ([acc '()])
+        (define f (read in))
+        (if (eof-object? f) (reverse acc) (loop (cons f acc)))))))
+
+;; contract -> converter of one argument, or #f when the value passes unchanged
+(define (contract-conv c)
+  (cond [(eq? c 'char?)
+         (lambda (v) (if (and (string? v) (= (string-length v) 1)) (string-ref v 0) v))]
+        [(and (pair? c) (memq (car c) '(listof non-empty-listof)) (pair? (cdr c))
+              (contract-conv (cadr c)))
+         => (lambda (f) (lambda (v) (if (list? v) (map f v) v)))]
+        [else #f]))
+
+(define (convs-of ctcs) (let ([cs (map contract-conv ctcs)]) (if (ormap values cs) cs '())))
+
+;; Converters of the arguments of `name` (a symbol): the domain of its
+;; define/contract, or of a `; name : dom ... -> rng` comment (a design
+;; method), or the `; name : ctc` comment of an init field. '() = none.
+;; Cached: the validator asks once per design operation.
+(define convs-cache (make-hash))
+(define (arg-convs snippet name)
+  (hash-ref! convs-cache (cons snippet name) (lambda () (arg-convs* snippet name))))
+(define (arg-convs* snippet name)
+  (cond
+    [(not (and snippet (regexp-match? #rx"char[?]" snippet))) '()]
+    [(for/first ([f (in-list (snippet-forms snippet))]
+                 #:when (and (pair? f) (eq? (car f) 'define/contract) (pair? (cdr f))
+                             (pair? (cadr f)) (eq? (car (cadr f)) name) (pair? (cddr f))))
+       (caddr f))
+     => (lambda (ctc) (if (and (pair? ctc) (eq? (car ctc) '->) (pair? (cdr ctc)))
+                          (convs-of (drop-right (cdr ctc) 1)) '()))]
+    [(for/first ([line (in-list (string-split snippet "\n"))]
+                 #:when (regexp-match? (pregexp (string-append "^\\s*;+\\s*" (regexp-quote (symbol->string name)) "\\s*:")) line))
+       (cadr (regexp-match #px":(.*)$" line)))
+     => (lambda (sig)
+          (define dom (car (string-split (string-append sig " ") "->" #:trim? #f)))
+          (with-handlers ([exn:fail? (lambda (_) '())])
+            (convs-of (read (open-input-string (string-append "(" dom ")"))))))]
+    [else '()]))
+
+;; Init-field names of the snippet's class `cls` (a symbol such as
+;; custom-stack%), in order, or #f when the snippet does not define it.
+(define (init-names snippet cls)
+  (and snippet
+       (for/first ([f (in-list (snippet-forms snippet))]
+                   #:when (and (pair? f) (eq? (car f) 'define) (pair? (cdr f)) (eq? (cadr f) cls)
+                               (pair? (cddr f)) (pair? (caddr f))))
+         (append*
+          (for/list ([g (in-list (caddr f))]
+                     #:when (and (pair? g) (memq (car g) '(init-field init))))
+            (for/list ([x (in-list (cdr g))])
+              (cond [(not (pair? x)) x] [(pair? (car x)) (cadr (car x))] [else (car x)])))))))
+
+(define-namespace-anchor hns-anchor)
+;; (ctor cls arg ...) -> a new object: (new cls [init-name arg] ...) with the
+;; snippet's init-field names, by position when the names are unknown.
+(define (design-ctor snippet cls)
+  (define names (init-names snippet cls))
+  (if (not names)
+      (lambda (c . args) (apply make-object c args))
+      (let ([ids (for/list ([i (in-range (length names))]) (string->symbol (format "a~a" i)))])
+        (eval `(lambda (c ,@ids) (new c ,@(map list names ids)))
+              (namespace-anchor->namespace hns-anchor)))))
+
+;; Converters of the init arguments of `cls`, from the init fields' comments.
+(define (ctor-convs snippet cls)
+  (define names (or (init-names snippet cls) '()))
+  (define cs (for/list ([n (in-list names)])
+               (let ([c (arg-convs snippet n)]) (and (pair? c) (car c)))))
+  (if (ormap values cs) cs '()))
 
 (define (design? o)
   (and (jobj? o) (assoc "ops" (jobj-pairs o)) (assoc "args" (jobj-pairs o)) #t))

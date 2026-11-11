@@ -2,7 +2,7 @@
 (require "../../../selection/nodes.rkt")
 
 (define/contract (slowest-key releaseTimes keysPressed)
-  (-> (listof exact-integer?) string? string?)
+  (-> (listof exact-integer?) string? char?)
   (define rt (list->vector releaseTimes))
   (define n (vector-length rt))
   (define best-idx 0)
@@ -14,6 +14,6 @@
                    (char>? (string-ref keysPressed i) (string-ref keysPressed best-idx))))
       (set! best-dur dur)
       (set! best-idx i)))
-  (substring keysPressed best-idx (add1 best-idx)))
+  (string-ref keysPressed best-idx))
 
 (provide (all-defined-out))

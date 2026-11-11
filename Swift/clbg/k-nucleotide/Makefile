@@ -1,15 +1,15 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc knucleotide.swift-2.swift -Ounchecked -whole-module-optimization  -o knucleotide.swift-2.swift_run
+LANG    = Swift
+TEST    = k-nucleotide
+SOURCE  = knucleotide.swift-2.swift
+OUTPUT  = k-nucleotide.swift_run
+ARG         = 0
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./knucleotide.swift-2.swift_run 0 < knucleotide-input25000000.txt" Swift k-nucleotide
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./knucleotide.swift-2.swift_run 0 < knucleotide-input25000000.txt
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/k-nucleotide.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-2500000.txt
 
-mem:
-	/usr/bin/time -v ./knucleotide.swift-2.swift_run 0 < knucleotide-input25000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./knucleotide.swift-2.swift_run 0 < knucleotide-input25000000.txt
+include ../../../perfarena.mk

@@ -77,14 +77,27 @@ PROJ
   swift)      python3 "$SEL/harness_swift.py" validate ;;
   scala)      python3 "$SEL/harness_scala.py" validate ;;
   dart)       python3 "$SEL/harness_dart.py" validate ;;
-  elixir)     elixir "$SEL/validate_suite.exs" ;;
+  elixir)
+    # BEAM: no erl_crash.dump in the cell. The validator prints a FAIL line for
+    # a wrong answer; exit 1 without one means the VM itself stopped (an
+    # uncaught exit signal, memory exhausted): a crash, so Runtime Error.
+    export ERL_CRASH_DUMP_BYTES=0
+    work="$(mktemp -d)"
+    elixir "$SEL/validate_suite.exs" 2>"$work/err"; rc=$?
+    cat "$work/err" >&2
+    [ "$rc" = 1 ] && ! grep -q '^VALIDATE slug=.* FAIL ' "$work/err" && rc=3
+    rm -rf "$work"; exit $rc ;;
   racket)     racket "$SEL/validate_suite.rkt" ;;
   erlang)
+    # as for elixir: no crash dump; exit 1 without a FAIL line is a crash
+    export ERL_CRASH_DUMP_BYTES=0
     work="$(mktemp -d)"
-    if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >/tmp/leetval_erlc.log 2>&1; then
-      erl -noshell -pa "$work" -eval 'perf_harness:validate()' -s init stop; rc=$?
+    if erlc -I "$SEL" -o "$work" "$SEL/perf_harness.erl" solution.erl >"$work/erlc.log" 2>&1; then
+      erl -noshell -pa "$work" -eval 'perf_harness:validate()' -s init stop 2>"$work/err"; rc=$?
+      cat "$work/err" >&2
+      [ "$rc" = 1 ] && ! grep -q '^VALIDATE slug=.* FAIL ' "$work/err" && rc=3
     else
-      echo "validate: erlc failed for erlang" >&2; cat /tmp/leetval_erlc.log >&2; rc=2
+      echo "validate: erlc failed for erlang" >&2; cat "$work/erlc.log" >&2; rc=2
     fi
     rm -rf "$work"; exit $rc ;;
   rust)       python3 "$SEL/harness_rust.py" validate ;;

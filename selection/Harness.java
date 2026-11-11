@@ -152,6 +152,39 @@ public class Harness {
             return String.valueOf((long)d);
         return String.valueOf(d);
     }
+    // Do two canon strings match? Equal strings match; two numbers also match when
+    // they differ by at most 1e-5 and one of them is not an integer: LeetCode
+    // accepts answers within 1e-5 on its float problems.
+    static boolean canonMatch(String a, String b){
+        if(a.equals(b)) return true;
+        int i=0, j=0;
+        while(i<a.length() && j<b.length()){
+            if(numAt(a,i) && numAt(b,j)){
+                int ni=numEnd(a,i), nj=numEnd(b,j);
+                String ta=a.substring(i,ni), tb=b.substring(j,nj);
+                if(!ta.equals(tb)){
+                    boolean frac = ta.matches(".*[.eE].*") || tb.matches(".*[.eE].*");
+                    if(!frac) return false;
+                    try { if(!(Math.abs(Double.parseDouble(ta)-Double.parseDouble(tb))<=1e-5)) return false; }
+                    catch(NumberFormatException ex){ return false; }
+                }
+                i=ni; j=nj; continue;
+            }
+            if(a.charAt(i)!=b.charAt(j)) return false;
+            i++; j++;
+        }
+        return i==a.length() && j==b.length();
+    }
+    static boolean numAt(String s, int k){ char c=s.charAt(k); return Character.isDigit(c) || (c=='-' && k+1<s.length() && Character.isDigit(s.charAt(k+1))); }
+    static int numEnd(String s, int k){
+        int e=k; if(s.charAt(e)=='-') e++;
+        while(e<s.length() && (Character.isDigit(s.charAt(e)) || s.charAt(e)=='.')) e++;
+        if(e<s.length() && (s.charAt(e)=='e' || s.charAt(e)=='E')){
+            int f=e+1; if(f<s.length() && (s.charAt(f)=='+' || s.charAt(f)=='-')) f++;
+            if(f<s.length() && Character.isDigit(s.charAt(f))){ e=f; while(e<s.length() && Character.isDigit(s.charAt(e))) e++; }
+        }
+        return e;
+    }
     static String canon(Object r){
         if(r==null) return "null";
         if(r instanceof ListNode){ StringBuilder b=new StringBuilder("["); for(ListNode n=(ListNode)r; n!=null; n=n.next){ if(b.length()>1) b.append(", "); b.append(n.val); } return b.append("]").toString(); }
@@ -234,7 +267,7 @@ public class Harness {
     // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
     static final java.util.Set<String> _UNORDERED = new java.util.HashSet<>(Arrays.asList(
         "uncommon-words-from-two-sentences", "remove-invalid-parentheses",
-        "restore-the-array-from-adjacent-pairs"));
+        "restore-the-array-from-adjacent-pairs", "ambiguous-coordinates"));
     static List<String> elemCanons(Object o){
         List<String> r=new ArrayList<>();
         if(o instanceof List){ for(Object e:(List<?>)o) r.add(canon(e)); return r; }
@@ -281,7 +314,7 @@ public class Harness {
                     if(actual.size()!=exp.size()) vfail(slug,name,exp,actual,__i,total);
                     for(int i=0;i<exp.size();i++){
                         if(exp.get(i)==null) continue;                        // void op: not compared
-                        if(!canon(exp.get(i)).equals(actual.get(i))) vfail(slug,name,exp,actual,__i,total);
+                        if(!canonMatch(actual.get(i), canon(exp.get(i)))) vfail(slug,name,exp,actual,__i,total);
                     }
                 } else {                                                      // generic single call
                     Class<?> sol=Class.forName("Solution");
@@ -294,7 +327,7 @@ public class Harness {
                     Object rawResult=mth.invoke(inst, base);
                     boolean okc = _UNORDERED.contains(slug)
                             ? unorderedEq(rawResult, expected)
-                            : canon(rawResult).equals(canon(expected));
+                            : canonMatch(canon(rawResult), canon(expected));
                     if(!okc) vfail(slug,name,canon(expected),canon(rawResult),__i,total);
                 }
             } catch(Throwable e){

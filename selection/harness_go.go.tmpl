@@ -4,7 +4,8 @@ package main
 // Go has no way to look up a top-level function by name at runtime, so this
 // file is a TEMPLATE: harness_go.sh substitutes __METHOD__ with the cell's
 // entry-point (for design classes the Constructor factory) and compiles it
-// together with the (package-stripped) solution.go into one throwaway binary.
+// together with the (package-stripped) solution.go into one binary (its build
+// mode keeps it in .perf_build/driver for the measurement).
 //
 // It reads the SAME shared JSON inputs as the JS/Java harnesses, marshals each
 // value into the function's typed parameters via reflection, and loops the call
@@ -45,7 +46,8 @@ import (
 
 // TreeNode / ListNode mirror the definitions LeetCode injects for Go cells.
 // Defined here (not in solution.go) so the generic driver compiles for the
-// tree/list problems; unused for plain/design problems, which is legal in Go.
+// tree/list problems. For the other problems harness_go.sh renames them
+// (hzTreeNode / hzListNode), as LeetCode declares neither there.
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -162,6 +164,122 @@ func hzBuildList(l []interface{}) *ListNode {
 		cur = cur.Next
 	}
 	return head
+}
+
+// hzCopy returns a deep copy of a marshalled argument: slices get new backing
+// arrays, trees and lists get new nodes. Numbers, bools and strings are values
+// a callee cannot change, so they are returned as they are.
+func hzCopy(v reflect.Value) reflect.Value {
+	t := v.Type()
+	if t == hzTreePtr {
+		return reflect.ValueOf(hzCopyTree(v.Interface().(*TreeNode)))
+	}
+	if t == hzListPtr {
+		return reflect.ValueOf(hzCopyList(v.Interface().(*ListNode)))
+	}
+	if t.Kind() != reflect.Slice || v.IsNil() {
+		return v
+	}
+	out := reflect.MakeSlice(t, v.Len(), v.Len())
+	if ek := t.Elem().Kind(); ek == reflect.Slice || ek == reflect.Ptr {
+		for i := 0; i < v.Len(); i++ {
+			out.Index(i).Set(hzCopy(v.Index(i)))
+		}
+	} else {
+		reflect.Copy(out, v)
+	}
+	return out
+}
+
+// hzCopyTree copies a tree in level order (the order hzBuildTree allocates
+// the nodes in), with a queue, so a 1e5-node chain needs no deep recursion.
+func hzCopyTree(r *TreeNode) *TreeNode {
+	if r == nil {
+		return nil
+	}
+	root := &TreeNode{Val: r.Val}
+	q := [][2]*TreeNode{{r, root}}
+	for i := 0; i < len(q); i++ {
+		s, d := q[i][0], q[i][1]
+		if s.Left != nil {
+			d.Left = &TreeNode{Val: s.Left.Val}
+			q = append(q, [2]*TreeNode{s.Left, d.Left})
+		}
+		if s.Right != nil {
+			d.Right = &TreeNode{Val: s.Right.Val}
+			q = append(q, [2]*TreeNode{s.Right, d.Right})
+		}
+	}
+	return root
+}
+
+func hzCopyList(h *ListNode) *ListNode {
+	if h == nil {
+		return nil
+	}
+	head := &ListNode{Val: h.Val}
+	d := head
+	for s := h.Next; s != nil; s = s.Next {
+		d.Next = &ListNode{Val: s.Val}
+		d = d.Next
+	}
+	return head
+}
+
+// hzSame reports whether b (a copy after one call) still equals the base a:
+// slices element by element, trees in level order with nil markers, lists
+// value by value. The walks follow the base, which has no cycles, so they end
+// even when the solution leaves a cycle in the copy.
+func hzSame(a, b reflect.Value) bool {
+	t := a.Type()
+	if t == hzTreePtr {
+		return hzSameTree(a.Interface().(*TreeNode), b.Interface().(*TreeNode))
+	}
+	if t == hzListPtr {
+		return hzSameList(a.Interface().(*ListNode), b.Interface().(*ListNode))
+	}
+	if t.Kind() == reflect.Slice {
+		if ek := t.Elem().Kind(); ek == reflect.Slice || ek == reflect.Ptr {
+			if a.Len() != b.Len() {
+				return false
+			}
+			for i := 0; i < a.Len(); i++ {
+				if !hzSame(a.Index(i), b.Index(i)) {
+					return false
+				}
+			}
+			return true
+		}
+	}
+	// flat slices and plain values (a NaN never equals itself: copy mode)
+	return reflect.DeepEqual(a.Interface(), b.Interface())
+}
+
+func hzSameTree(a, b *TreeNode) bool {
+	q := [][2]*TreeNode{{a, b}}
+	for i := 0; i < len(q); i++ {
+		x, y := q[i][0], q[i][1]
+		if x == nil || y == nil {
+			if x != y {
+				return false
+			}
+			continue
+		}
+		if x.Val != y.Val {
+			return false
+		}
+		q = append(q, [2]*TreeNode{x.Left, y.Left}, [2]*TreeNode{x.Right, y.Right})
+	}
+	return true
+}
+
+func hzSameList(a, b *ListNode) bool {
+	for ; a != nil; a, b = a.Next, b.Next {
+		if b == nil || b.Val != a.Val {
+			return false
+		}
+	}
+	return b == nil
 }
 
 // hzMarshal converts a generic parsed JSON value into a reflect.Value of type t.
@@ -473,11 +591,87 @@ func hzCanonV(v reflect.Value) string {
 	return string(b)
 }
 
+// hzNumAt reports whether a JSON number starts at s[k].
+func hzNumAt(s string, k int) bool {
+	return k < len(s) && (s[k] >= '0' && s[k] <= '9' ||
+		s[k] == '-' && k+1 < len(s) && s[k+1] >= '0' && s[k+1] <= '9')
+}
+
+// hzNumEnd returns the end of the JSON number that starts at s[k].
+func hzNumEnd(s string, k int) int {
+	k++
+	for k < len(s) {
+		c := s[k]
+		if c >= '0' && c <= '9' || c == '.' || c == 'e' || c == 'E' ||
+			(c == '+' || c == '-') && (s[k-1] == 'e' || s[k-1] == 'E') {
+			k++
+			continue
+		}
+		break
+	}
+	return k
+}
+
+// hzCanonMatch reports whether two canonical strings match. Equal strings
+// match. Outside quoted strings, two numbers also match when they differ by at
+// most 1e-5 and one of them is not an integer: LeetCode accepts answers within
+// 1e-5 on its float problems. The same rule as hz::canon_match (harness_cpp.py).
+func hzCanonMatch(a, b string) bool {
+	if a == b {
+		return true
+	}
+	i, j, inq := 0, 0, false
+	for i < len(a) && j < len(b) {
+		if !inq && hzNumAt(a, i) && hzNumAt(b, j) {
+			ei, ej := hzNumEnd(a, i), hzNumEnd(b, j)
+			ta, tb := a[i:ei], b[j:ej]
+			if ta != tb {
+				x, e1 := strconv.ParseFloat(ta, 64)
+				y, e2 := strconv.ParseFloat(tb, 64)
+				frac := strings.ContainsAny(ta, ".eE") || strings.ContainsAny(tb, ".eE")
+				if e1 != nil || e2 != nil || !frac || !(math.Abs(x-y) <= 1e-5) {
+					return false
+				}
+			}
+			i, j = ei, ej
+			continue
+		}
+		if a[i] != b[j] {
+			return false
+		}
+		if a[i] == '\\' {
+			if i+1 >= len(a) || j+1 >= len(b) || a[i+1] != b[j+1] {
+				return false
+			}
+			i, j = i+2, j+2
+			continue
+		}
+		if a[i] == '"' {
+			inq = !inq
+		}
+		i, j = i+1, j+1
+	}
+	return i == len(a) && j == len(b)
+}
+
+// hzInstance returns a pointer to the object a design Constructor returned.
+// LeetCode's snippet returns the struct by value; a solution may return a
+// pointer instead. The methods are looked up on the pointer in both cases.
+func hzInstance(inst reflect.Value) reflect.Value {
+	if inst.Kind() == reflect.Ptr {
+		return inst
+	}
+	ptr := reflect.New(inst.Type())
+	ptr.Elem().Set(inst)
+	return ptr
+}
+
 // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
 var hzUnordered = map[string]bool{
 	"uncommon-words-from-two-sentences":     true,
 	"remove-invalid-parentheses":            true,
 	"restore-the-array-from-adjacent-pairs": true,
+	"ambiguous-coordinates":                 true,
 }
 
 // hzUnorderedEq multiset-compares a slice result to the expected slice;
@@ -546,9 +740,7 @@ func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool
 			}
 			cargs[i] = av
 		}
-		inst := ctorFn.Call(cargs)[0]
-		ptr := reflect.New(inst.Type())
-		ptr.Elem().Set(inst)
+		ptr := hzInstance(ctorFn.Call(cargs)[0])
 		actual := []string{"null"} // constructor slot
 		for i := 1; i < len(ops); i++ {
 			opName, _ := ops[i].(string)
@@ -587,7 +779,7 @@ func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool
 			if exp[i] == nil { // void op: not compared
 				continue
 			}
-			if hzCanonJSON(exp[i]) != actual[i] {
+			if !hzCanonMatch(actual[i], hzCanonJSON(exp[i])) {
 				return 1, fmt.Sprintf("pos=%d exp=%s act=%s", i, hzCanonJSON(exp[i]), actual[i])
 			}
 		}
@@ -617,7 +809,7 @@ func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool
 	if len(res) > 0 {
 		actual = hzCanonV(res[0])
 	}
-	if hzCanonJSON(expected) != actual {
+	if !hzCanonMatch(actual, hzCanonJSON(expected)) {
 		return 1, fmt.Sprintf("exp=%s act=%s", hzCanonJSON(expected), actual)
 	}
 	return 0, ""
@@ -626,6 +818,7 @@ func hzCheckCase(c hzCase, expected interface{}, randomized bool, unordered bool
 func hzValidate(slug string, cases []json.RawMessage) {
 	randomized := slug == "random-pick-index"
 	total := len(cases)
+	prog := os.Getenv("HZ_PROGRESS")
 	for __i, raw := range cases {   // __i = cases passed before this one
 		var full struct {
 			Name   string          `json:"name"`
@@ -640,6 +833,11 @@ func hzValidate(slug string, cases []json.RawMessage) {
 		dec := json.NewDecoder(bytes.NewReader(full.Output))
 		dec.UseNumber()
 		dec.Decode(&expected)
+		// The case we are on, for harness_go.sh to name when the process dies
+		// of a fatal error that recover() cannot catch (stack overflow, deadlock).
+		if prog != "" {
+			os.WriteFile(prog, []byte(fmt.Sprintf("case=%s passed=%d ncases=%d", full.Name, __i, total)), 0o644)
+		}
 		status, detail := hzCheckCase(hzCase{Name: full.Name, Input: full.Input}, expected, randomized, hzUnordered[slug])
 		if status == 3 {
 			fmt.Fprintf(os.Stderr, "VALIDATE slug=%s RE case=%s passed=%d ncases=%d %s\n", slug, full.Name, __i, total, hzTrunc(detail, 200))
@@ -728,10 +926,8 @@ func main() {
 				}
 				cargs[i] = av
 			}
-			inst := ctorFn.Call(cargs)[0]
 			// Methods use a pointer receiver; make the instance addressable.
-			ptr := reflect.New(inst.Type())
-			ptr.Elem().Set(inst)
+			ptr := hzInstance(ctorFn.Call(cargs)[0])
 			var acc int64
 			for i := 1; i < len(ops); i++ {
 				opName, _ := ops[i].(string)
@@ -801,33 +997,53 @@ func main() {
 		os.Exit(3)
 	}
 
-	build := func() []reflect.Value {
-		args := make([]reflect.Value, ft.NumIn())
-		for i := 0; i < ft.NumIn(); i++ {
-			av, err := hzMarshal(ft.In(i), kvs[i].Val)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "ERR marshal arg %d (%s): %v\n", i, kvs[i].Key, err)
-				os.Exit(3)
-			}
-			args[i] = av
+	// The inputs are marshalled ONCE (the base). One call on a fresh copy shows
+	// whether the solution changes its input. If it does not, every call gets
+	// the base itself ("shared" mode). If it does, every call gets its own copy
+	// of the base, made outside the timed region ("copy" mode).
+	base := make([]reflect.Value, ft.NumIn())
+	for i := 0; i < ft.NumIn(); i++ {
+		av, err := hzMarshal(ft.In(i), kvs[i].Val)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "ERR marshal arg %d (%s): %v\n", i, kvs[i].Key, err)
+			os.Exit(3)
+		}
+		base[i] = av
+	}
+	fresh := func() []reflect.Value {
+		args := make([]reflect.Value, len(base))
+		for i, b := range base {
+			args[i] = hzCopy(b)
 		}
 		return args
 	}
-	call := func() reflect.Value {
-		res := fn.Call(build())
+	call := func(args []reflect.Value) reflect.Value {
+		res := fn.Call(args)
 		if len(res) == 0 {
 			return reflect.Value{}
 		}
 		return res[0]
 	}
 
-	beacon := hzCanon(call())
+	first := fresh()
+	beacon := hzCanon(call(first))
+	shared := true
+	for i := range base {
+		if !hzSame(base[i], first[i]) {
+			shared = false
+		}
+	}
+	first = nil
 	var acc, iters int64
 
 	var warmIters int64
 	t0 := time.Now()
 	for time.Since(t0).Seconds() < warm {
-		call()
+		if shared {
+			call(base)
+		} else {
+			call(fresh())
+		}
 		warmIters++
 	}
 	// Estimate per-iteration cost and read the wall clock only every ~2ms
@@ -844,14 +1060,41 @@ func main() {
 	if batch > 4096 {
 		batch = 4096
 	}
-	tm := time.Now()
-	for time.Since(tm).Seconds() < budget-warm {
-		for k := int64(0); k < batch; k++ {
-			acc = hzFoldVal(acc, call())
-		}
-		iters += batch
+	// The memory pass makes one copy at a time, so its peak RSS holds one copy.
+	if !shared && os.Getenv("PERFARENA_MEM_PASS") != "" {
+		batch = 1
 	}
-	meas := time.Since(tm).Seconds()
+	// MEAS_S is the sum of the timed segments: the solution calls and the fold
+	// only. The measured phase also stops at 4x its target in wall time, which
+	// only matters when the copies are expensive.
+	target := budget - warm
+	capS := 4 * target
+	var meas float64
+	var copies [][]reflect.Value
+	if !shared {
+		copies = make([][]reflect.Value, batch)
+	}
+	tm := time.Now()
+	for meas < target && time.Since(tm).Seconds() < capS {
+		for k := range copies {
+			copies[k] = fresh()
+		}
+		t := time.Now()
+		if shared {
+			for k := int64(0); k < batch; k++ {
+				acc = hzFoldVal(acc, call(base))
+			}
+		} else {
+			for k := int64(0); k < batch; k++ {
+				acc = hzFoldVal(acc, call(copies[k]))
+			}
+		}
+		meas += time.Since(t).Seconds()
+		iters += batch
+		for k := range copies {
+			copies[k] = nil
+		}
+	}
 	if len(beacon) > 80 {
 		beacon = beacon[:80]
 	}

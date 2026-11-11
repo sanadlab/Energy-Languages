@@ -6,7 +6,7 @@
     (if (= x 0) c (loop (arithmetic-shift x -1) (+ c (bitwise-and x 1))))))
 
 (define/contract (max-students seats)
-  (-> (listof (listof string?)) exact-integer?)
+  (-> (listof (listof char?)) exact-integer?)
   (define rows (list->vector (map list->vector seats)))
   (define m (vector-length rows))
   (cond
@@ -18,7 +18,7 @@
        (define row (vector-ref rows i))
        (define rn (vector-length row))
        (for ([j (in-range n)])
-         (when (and (< j rn) (string=? (vector-ref row j) "."))
+         (when (and (< j rn) (char=? (vector-ref row j) #\.))
            (vector-set! avail i (bitwise-ior (vector-ref avail i) (arithmetic-shift 1 j))))))
      (define full (arithmetic-shift 1 n))
      (define best (make-vector full -1))

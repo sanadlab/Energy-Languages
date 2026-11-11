@@ -1,7 +1,7 @@
 defmodule Solution do
   @spec slowest_key(release_times :: [integer], keys_pressed :: String.t) :: char
   def slowest_key(release_times, keys_pressed) do
-    keys = String.graphemes(keys_pressed)
+    keys = String.to_charlist(keys_pressed)
 
     durs =
       release_times
@@ -11,7 +11,7 @@ defmodule Solution do
 
     {_dur, best} =
       Enum.zip(durs, keys)
-      |> Enum.reduce({-1, ""}, fn {dur, key}, {bd, bk} ->
+      |> Enum.reduce({-1, 0}, fn {dur, key}, {bd, bk} ->
         if dur > bd or (dur == bd and key > bk) do
           {dur, key}
         else

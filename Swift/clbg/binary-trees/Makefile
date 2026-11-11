@@ -1,15 +1,18 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc binarytrees.swift-9.swift -Ounchecked -whole-module-optimization -I Include/swift/apr -o binarytrees.swift-9.swift_run
+LANG    = Swift
+TEST    = binary-trees
+SOURCE  = binarytrees.swift-9.swift
+OUTPUT  = binary-trees.swift_run
+ARG         = 18
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-xmeasure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./binarytrees.swift-9.swift_run 21" Swift binary-trees
+SWIFTC ?= swiftc
+# apr comes from the system (Linux: libapr1-dev) or Homebrew (keg-only on macOS)
+APR_INC ?= $(firstword $(wildcard /usr/include/apr-1.0 /usr/include/apr-1 \
+             /opt/homebrew/opt/apr/include/apr-1 /usr/local/opt/apr/include/apr-1))
+APR_FLAGS = $(if $(APR_INC),-Xcc -I$(APR_INC)) $(if $(findstring /opt/apr/,$(APR_INC)),-L$(APR_INC:/include/apr-1=/lib))
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo -I Include/apr $(APR_FLAGS) $(SOURCE) -o $(OUTPUT)
 
-run:
-	./binarytrees.swift-9.swift_run 21
+VALIDATION_N       = 10
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/binary-trees.txt
 
-mem:
-	/usr/bin/time -v ./binarytrees.swift-9.swift_run 21
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./binarytrees.swift-9.swift_run 21
+include ../../../perfarena.mk

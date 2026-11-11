@@ -4,7 +4,11 @@
  converted to Swift 3 by Daniel Muellenborn
  */
 
+#if canImport(Darwin)
+import Darwin
+#else
 import Glibc
+#endif
 import Dispatch
 
 // Get number of elements to permute
@@ -136,9 +140,9 @@ struct Fannkuch {
       }
       maxFlips[task] = maxflips
       chkSums[task] = chksum
-      p.deallocate(capacity: n)
-      pp.deallocate(capacity: n)
-      count.deallocate(capacity: n)
+      p.deallocate()
+      pp.deallocate()
+      count.deallocate()
    }
 }
 
@@ -170,4 +174,4 @@ for chk in chkSums {
 
 printResult(n, res: res, chk: chksum)
 
-fact.deallocate(capacity: n+1)
+fact.deallocate()

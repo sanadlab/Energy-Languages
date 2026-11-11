@@ -41,7 +41,8 @@ def compile_flags(default):
 
 # Problems LeetCode judges order-insensitively (special judge): multiset compare.
 _UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
-              "restore-the-array-from-adjacent-pairs"}
+              "restore-the-array-from-adjacent-pairs",
+              "ambiguous-coordinates"}
 
 # ---------------------------------------------------------------- signature parse
 def _method_sig(src, method):
@@ -387,7 +388,7 @@ static string canon(long long x) { return to_string(x); }
 static string canon(int x)       { return to_string(x); }
 static string canon(bool x)      { return x ? "true" : "false"; }
 static string canon(char x)      { return string("\"") + x + "\""; }
-static string canon(double x)    { if (std::isfinite(x) && x == std::floor(x) && std::fabs(x) < 9.007199254740992e15) return to_string((long long)x); char buf[64]; snprintf(buf, sizeof buf, "%.6g", x); return buf; }
+static string canon(double x)    { if (std::isfinite(x) && x == std::floor(x) && std::fabs(x) < 9.007199254740992e15) return to_string((long long)x); char buf[64]; snprintf(buf, sizeof buf, "%.17g", x); return buf; }
 static string canon(const string& s) {
     string o = "\"";
     for (char c : s) { if (c == '"' || c == '\\') o += '\\'; o += c; }
@@ -415,7 +416,7 @@ static double secs_since(const std::chrono::steady_clock::time_point& t) {
             if (r.find('.') != std::string::npos || r.find('e') != std::string::npos || r.find('E') != std::string::npos) {
                 double d = r.empty() ? 0.0 : std::stod(r);
                 if (std::isfinite(d) && d == std::floor(d) && std::fabs(d) < 9.007199254740992e15) return std::to_string((long long)d);
-                char buf[64]; snprintf(buf, sizeof buf, "%.6g", d); return buf;
+                char buf[64]; snprintf(buf, sizeof buf, "%.17g", d); return buf;
             }
             return std::to_string(r.empty() ? 0LL : std::stoll(r));
         }
@@ -443,12 +444,45 @@ template <class T> std::string canon_multiset(const std::vector<T>& v) {
     std::sort(parts.begin(), parts.end());
     std::string o = "["; for (size_t i = 0; i < parts.size(); i++) { if (i) o += ','; o += parts[i]; } return o + "]";
 }
+// Do two canon strings match? Equal strings match. Outside quoted strings, two
+// numbers also match when they differ by at most 1e-5 and one of them is not an
+// integer: LeetCode accepts answers within 1e-5 on its float problems.
+[[maybe_unused]] static bool canon_match(const std::string& a, const std::string& b) {
+    if (a == b) return true;
+    auto num_at = [](const std::string& s, size_t k) {
+        return k < s.size() && (isdigit((unsigned char)s[k]) ||
+               (s[k] == '-' && k + 1 < s.size() && isdigit((unsigned char)s[k + 1])));
+    };
+    size_t i = 0, j = 0; bool inq = false;
+    while (i < a.size() && j < b.size()) {
+        if (!inq && num_at(a, i) && num_at(b, j)) {
+            char* ea; char* eb;
+            double x = strtod(a.c_str() + i, &ea), y = strtod(b.c_str() + j, &eb);
+            size_t ni = (size_t)(ea - a.c_str()), nj = (size_t)(eb - b.c_str());
+            std::string ta = a.substr(i, ni - i), tb = b.substr(j, nj - j);
+            if (ta != tb) {
+                bool frac = ta.find_first_of(".eE") != std::string::npos || tb.find_first_of(".eE") != std::string::npos;
+                if (!frac || !(std::fabs(x - y) <= 1e-5)) return false;
+            }
+            i = ni; j = nj; continue;
+        }
+        if (a[i] != b[j]) return false;
+        if (a[i] == '\\') { if (i + 1 >= a.size() || j + 1 >= b.size() || a[i + 1] != b[j + 1]) return false; i += 2; j += 2; continue; }
+        if (a[i] == '"') inq = !inq;
+        i++; j++;
+    }
+    return i == a.size() && j == b.size();
+}
 } // namespace hz
 '''
 
 # ---------------------------------------------------------------- mains
-# Plain / tree / list share this main: __BUILD_ARGS__ defines a `do_call` lambda
-# returning the (canon/cs-able) result; the loop folds it into a checksum.
+# Plain / tree / list share this main (C uses it too). __BUILD_ARGS__ (see
+# _build_args) defines `struct Args` (the inputs of one call), `base` (the
+# inputs, parsed once) and four lambdas: copy_of(a) puts a fresh copy of `base`
+# in `a`, release(a) frees that copy, unchanged(a) tells if `a` still equals
+# `base`, and do_call(a) calls the solution on `a` and returns the
+# (canon/cs-able) result. The loop folds that result into a checksum.
 MAIN_PLAIN = r'''
 int main(int argc, char** argv) {
     if (argc < 3) { fprintf(stderr, "usage: driver <budget_seconds> <case_index>\n"); return 2; }
@@ -468,19 +502,45 @@ int main(int argc, char** argv) {
 
 __BUILD_ARGS__
 
+    // Mutation check, once: one call on a fresh copy. If the copy is unchanged
+    // after the call, every call gets `base` itself (shared mode). If not, every
+    // call gets its own fresh copy, made outside the timed region (copy mode).
+    bool copy_mode;
+    { Args c; copy_of(c); volatile long long z = hz::cs(do_call(c)); (void)z; copy_mode = !unchanged(c); release(c); }
+
     long long acc = 0, iters = 0;
     double warm = budget * 0.3;
     long long wi = 0;
     auto t0 = std::chrono::steady_clock::now();
-    while (secs_since(t0) < warm) { volatile long long z = hz::cs(do_call()); (void)z; wi++; }
+    while (secs_since(t0) < warm) {
+        if (copy_mode) { Args c; copy_of(c); volatile long long z = hz::cs(do_call(c)); (void)z; release(c); }
+        else { volatile long long z = hz::cs(do_call(base)); (void)z; }
+        wi++;
+    }
     double per = wi ? (secs_since(t0) / wi) : warm;    // (3) batch the clock read
     long long batch = 4096; if (per > 0) { long long bb = (long long)(0.002 / per); batch = bb < 1 ? 1 : (bb > 4096 ? 4096 : bb); }
+    const char* mem_pass = getenv("PERFARENA_MEM_PASS");
+    if (copy_mode && mem_pass && *mem_pass) batch = 1;   // memory pass: one copy at a time
+    // Only the calls and the fold are timed. The copies of a batch are made
+    // before its timed segment and freed after it. The wall cap (4x the target)
+    // stops a run whose copies cost much more than its calls; MEAS_S can then
+    // be below the target.
+    std::vector<Args> pool(copy_mode ? batch : 0);
+    double target = budget - warm, meas = 0;
     auto tm = std::chrono::steady_clock::now();
-    while (secs_since(tm) < budget - warm) { for (long long b = 0; b < batch; b++) { acc = acc * 1000003 + hz::cs(do_call()); } iters += batch; }
-    double meas = secs_since(tm);
+    while (meas < target && secs_since(tm) < 4 * target) {
+        if (copy_mode) for (auto& c : pool) copy_of(c);
+        auto ts = std::chrono::steady_clock::now();
+        if (copy_mode) { for (auto& c : pool) acc = acc * 1000003 + hz::cs(do_call(c)); }
+        else { for (long long b = 0; b < batch; b++) acc = acc * 1000003 + hz::cs(do_call(base)); }
+        meas += secs_since(ts);
+        iters += batch;
+        if (copy_mode) for (auto& c : pool) release(c);
+    }
     volatile long long sink = acc; (void)sink;   // defeat dead-code elimination
 
-    std::string beacon = hz::canon(do_call());
+    std::string beacon;
+    { Args c; copy_of(c); beacon = hz::canon(do_call(c)); release(c); }
     fprintf(stderr, "CASE=%s ITERS=%lld ACC=%lld MEAS_S=%.6f BEACON=%s\n",
             name.c_str(), iters, acc, meas, beacon.c_str());
     return 0;
@@ -568,7 +628,7 @@ __BUILD_INLINE__
             return 3;
         }
         std::string exp = outV ? __EXP_EXPR__ : std::string("null");
-        if (exp != actual) {
+        if (!hz::canon_match(actual, exp)) {
             fprintf(stderr, "VALIDATE slug=%s FAIL case=%s passed=%zu ncases=%zu expected=%s actual=%s\n",
                     slug.c_str(), name.c_str(), ci, expected->arr.size(), exp.substr(0, 120).c_str(), actual.substr(0, 120).c_str());
             return 1;
@@ -627,7 +687,7 @@ __DISPATCH__
         for (size_t i = 0; i < exp.size(); i++) {
             if (exp[i].t == hz::JVal::NUL) continue;   // void op: not compared
             std::string e2 = canonJVal(exp[i]);
-            if (e2 != resVec[i]) {
+            if (!hz::canon_match(resVec[i], e2)) {
                 fprintf(stderr, "VALIDATE slug=%s FAIL case=%s passed=%zu ncases=%zu pos=%zu expected=%s actual=%s\n",
                         slug.c_str(), name.c_str(), ci, expected->arr.size(), i, e2.c_str(), resVec[i].c_str());
                 return 1;
@@ -675,6 +735,55 @@ static void freeList(ListNode* n) { while (n) { ListNode* nx = n->next; delete n
 static std::vector<int> listVals(ListNode* n) { std::vector<int> r; while (n) { r.push_back(n->val); n = n->next; } return r; }
 '''
 
+# Node allocation of the C++ measure driver (the C driver uses malloc).
+HZ_TREE_NEW = "static TreeNode* new_tnode(int v) { TreeNode* n = new TreeNode(v); n->left = n->right = nullptr; return n; }\n"
+HZ_LIST_NEW = "static ListNode* new_lnode(int v) { ListNode* n = new ListNode(v); n->next = nullptr; return n; }\n"
+
+# Copy and shape of a built tree / list, for the C++ and the C driver (each
+# defines new_tnode / new_lnode). The copy comes from the built nodes, not from
+# the JSON. The shape is what the mutation check compares. Both walk the nodes
+# without recursion, so a 1e5-node chain cannot overflow the stack.
+HZ_TREE_COPY = r'''
+static TreeNode* cloneTree(TreeNode* r) {
+    if (!r) return nullptr;
+    TreeNode* c = new_tnode(r->val);
+    std::queue<std::pair<TreeNode*, TreeNode*>> q; q.push({r, c});
+    while (!q.empty()) {
+        TreeNode* s = q.front().first; TreeNode* d = q.front().second; q.pop();
+        if (s->left)  { d->left  = new_tnode(s->left->val);  q.push({s->left,  d->left});  }
+        if (s->right) { d->right = new_tnode(s->right->val); q.push({s->right, d->right}); }
+    }
+    return c;
+}
+// level order, LLONG_MIN for a missing child; after `cap` nodes it adds
+// LLONG_MAX and stops (so a cycle made by the solution cannot loop forever)
+static std::vector<long long> treeShape(TreeNode* r, size_t cap) {
+    std::vector<long long> o; std::queue<TreeNode*> q; q.push(r); size_t n = 0;
+    while (!q.empty()) {
+        TreeNode* x = q.front(); q.pop();
+        if (!x) { o.push_back(LLONG_MIN); continue; }
+        if (n++ == cap) { o.push_back(LLONG_MAX); break; }
+        o.push_back(x->val); q.push(x->left); q.push(x->right);
+    }
+    return o;
+}
+'''
+
+HZ_LIST_COPY = r'''
+static ListNode* cloneList(ListNode* h) {
+    if (!h) return nullptr;
+    ListNode* c = new_lnode(h->val); ListNode* t = c;
+    for (h = h->next; h; h = h->next) { t->next = new_lnode(h->val); t = t->next; }
+    return c;
+}
+// values in order; after `cap` nodes it adds LLONG_MAX and stops (a cycle)
+static std::vector<long long> listShape(ListNode* h, size_t cap) {
+    std::vector<long long> o;
+    for (; h; h = h->next) { if (o.size() == cap) { o.push_back(LLONG_MAX); break; } o.push_back(h->val); }
+    return o;
+}
+'''
+
 # ---------------------------------------------------------------- code generation
 def _prelude(sol, pre="", hz_extra=""):
     return (PRELUDE
@@ -682,21 +791,70 @@ def _prelude(sol, pre="", hz_extra=""):
             .replace("__HZ_EXTRA__", hz_extra)
             .replace("__SOLUTION__", sol))
 
+def _build_args(members, parse, copies, frees, same, call, views=()):
+    """The __BUILD_ARGS__ code of MAIN_PLAIN (C++ and C).
+
+    `members` declare `struct Args` (the inputs of one call); `parse` fills
+    `base` from the JSON, once, before the warm-up; `copies` fill an Args `a`
+    from `base`; `frees` free the nodes that `copies` built; `same` are the
+    checks that `a` still equals `base` (the mutation check); `call` is the
+    body of do_call(a); `views` (C only) point the C pointers of an Args into
+    its own containers, after it is filled. An Args is never moved once
+    filled, so these pointers stay valid."""
+    L = ["    struct Args { %s };" % " ".join(members),
+         "    Args base;                      // the inputs, parsed once"]
+    L += parse
+    fill = " ".join(copies)
+    if views:
+        L.append("    auto set_views = [&](Args& a) { %s };" % " ".join(views))
+        L.append("    set_views(base);")
+        fill += " set_views(a);"
+    L.append("    auto copy_of = [&](Args& a) { %s };" % fill)
+    L.append("    auto release = [&](Args& a) { %s };" % " ".join(list(frees) + ["a = Args();"]))
+    if same:
+        L.append("    auto unchanged = [&](Args& a) -> bool { return %s; };" % " && ".join(same))
+    else:
+        L.append("    auto unchanged = [&](Args&) -> bool { return true; };")
+    L.append("    auto do_call = [&](Args& a) {")
+    L += call
+    L.append("    };")
+    return "\n".join(L)
+
+
+def _cpp_inputs(fns):
+    """(members, parse, copies, frees, same) for C++ params marshalled by
+    `fns` (one hz marshaller per param). Param i is `a.a<i>`."""
+    members, parse, copies, frees, same = [], [], [], [], []
+    for i, fn in enumerate(fns):
+        members.append("decltype(hz::%s(hz::JVal{})) a%d{};" % (fn, i))
+        parse.append("    base.a%d = hz::%s(E[%d].second);" % (i, fn, i))
+        if fn in ("to_tree", "to_list"):
+            node = "Tree" if fn == "to_tree" else "List"
+            parse.append("    auto shape%d = hz::%sShape(base.a%d, (size_t)-1);" % (i, node.lower(), i))
+            copies.append("a.a%d = hz::clone%s(base.a%d);" % (i, node, i))
+            frees.append("hz::free%s(a.a%d);" % (node, i))
+            same.append("hz::%sShape(a.a%d, shape%d.size()) == shape%d" % (node.lower(), i, i, i))
+        else:
+            copies.append("a.a%d = base.a%d;" % (i, i))
+            same.append("a.a%d == base.a%d" % (i, i))
+    return members, parse, copies, frees, same
+
+
+def _opaque_args(n):
+    """The barrier line of do_call: each argument `a.a<i>` passes through
+    hz::opaque before the call. The solution gets `base` itself in shared
+    mode, so without it -O2 could compute the call once and reuse it."""
+    return ["        " + " ".join("hz::opaque(a.a%d);" % i for i in range(n))]
+
+
 def gen_driver(slug, info):
     sol = os.path.join(ROOT, "C++", "leetcode", slug, "solution.cpp")
     outs = os.path.join(REF, "outputs", slug + ".json")
-    lines, callargs = [], []
-    for i, t in enumerate(info["ptypes"]):
-        fn = MARSHAL[t]
-        lines.append("    auto base%d = hz::%s(E[%d].second);" % (i, fn, i))
-        callargs.append("a%d" % i)
-    copies = " ".join("auto a%d = base%d; hz::opaque(a%d);" % (i, i, i) for i in range(len(callargs)))
-    build = "\n".join(lines) + "\n\n"
-    build += "    auto do_call = [&]() {\n"
-    build += "        Solution sol;\n"
-    build += "        " + copies + "\n"
-    build += "        return sol.%s(%s);\n" % (info["method"], ", ".join(callargs))
-    build += "    };"
+    fns = [MARSHAL[t] for t in info["ptypes"]]
+    callargs = ", ".join("a.a%d" % i for i in range(len(fns)))
+    call = (["        Solution sol;"] + _opaque_args(len(fns))
+            + ["        return sol.%s(%s);" % (info["method"], callargs)])
+    build = _build_args(*_cpp_inputs(fns), call)
     return _prelude(sol) + MAIN_PLAIN.replace("__OUTPUTS__", outs).replace("__BUILD_ARGS__", build)
 
 def gen_driver_treelist(slug, info):
@@ -707,34 +865,24 @@ def gen_driver_treelist(slug, info):
     pre = ""
     if kind == "tree" and not _defines_struct(src_txt, "TreeNode"): pre = STD_TREENODE
     if kind == "list" and not _defines_struct(src_txt, "ListNode"): pre = STD_LISTNODE
-    hz_extra = HZ_TREE if kind == "tree" else HZ_LIST
+    hz_extra = (HZ_TREE + HZ_TREE_NEW + HZ_TREE_COPY) if kind == "tree" else (HZ_LIST + HZ_LIST_NEW + HZ_LIST_COPY)
 
-    lines, callargs, frees = [], [], []
-    for i, raw in enumerate(praw):
-        lines.append("        auto a%d = hz::%s(E[%d].second);" % (i, _marshal_for(raw), i))
-        callargs.append("a%d" % i)
-        if 'TreeNode' in raw: frees.append("        hz::freeTree(a%d);" % i)
-        elif 'ListNode' in raw: frees.append("        hz::freeList(a%d);" % i)
-    call = "sol.%s(%s)" % (info["method"], ", ".join(callargs))
-    lines += ["        hz::opaque(%s);" % a for a in callargs]
+    fns = [_marshal_for(raw) for raw in praw]
+    call = "sol.%s(%s)" % (info["method"], ", ".join("a.a%d" % i for i in range(len(fns))))
 
-    body = ["    auto do_call = [&]() {", "        Solution sol;"] + lines
+    body = ["        Solution sol;"] + _opaque_args(len(fns))
     if 'ListNode' in ret:               # result is a node -> serialise sublist -> int array
         body.append("        ListNode* _r = %s;" % call)
         body.append("        std::vector<int> _res = hz::listVals(_r);")
-        body += frees
         body.append("        return _res;")
-    elif 'TreeNode' in ret:             # serialise before freeing the input tree (as C does);
+    elif 'TreeNode' in ret:             # serialise the result (as C does);
         body.append("        TreeNode* _r = %s;" % call)     # folding the pointer gave 1
         body.append("        std::vector<int> _res = hz::treeVals_level(_r);")
-        body += frees
         body.append("        return _res;")
-    else:                               # scalar result (bool/int/...); free the built structure
+    else:                               # scalar result (bool/int/...)
         body.append("        auto _r = %s;" % call)
-        body += frees
         body.append("        return _r;")
-    body.append("    };")
-    build = "\n".join(body)
+    build = _build_args(*_cpp_inputs(fns), body)
     return (_prelude(sol, pre, hz_extra)
             + MAIN_PLAIN.replace("__OUTPUTS__", outs).replace("__BUILD_ARGS__", build))
 
@@ -914,6 +1062,11 @@ def build_and_validate(slug, keep=False):
     if not keep:
         try: os.remove(cpp); os.remove(binp); os.rmdir(tmp)
         except OSError: pass
+    if rr.returncode < 0:
+        # A signal (for example SIGSEGV) killed the solution: Runtime Error.
+        # sys.exit(-11) would exit with 245, which reads as Wrong Answer.
+        sys.stderr.write("VALIDATE slug=%s RE signal=%d\n" % (slug, -rr.returncode))
+        return 3
     return rr.returncode
 
 

@@ -35,7 +35,7 @@ final class BlockReader {
     }
     
     deinit {
-        block.deallocate(capacity: blockSize+1)
+        block.deallocate()
     }
     
     private func readBlock() {

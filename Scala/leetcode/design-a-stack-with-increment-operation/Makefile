@@ -8,7 +8,8 @@ OUTPUT      = out
 ARG         =
 SEL         = ../../../selection
 RUN_CMD     = python3 $(SEL)/harness_scala.py 0.2 0
-COMPILE_CMD = python3 $(SEL)/harness_scala.py 0.05 0 >/dev/null
+# `make compile` only compiles the solution; it runs nothing.
+COMPILE_CMD = python3 $(SEL)/harness_scala.py compile
 
 VALIDATION_N     = $(ARG)
 REFERENCE_OUTPUT = /dev/null

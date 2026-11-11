@@ -108,6 +108,18 @@ module HNS
     return camel if obj.respond_to?(camel, true)
     snake
   end
+
+  # Receiver and method name of a plain (non-design) problem. A `def self.x`
+  # inside `class Solution` is a method of the class, not of an instance:
+  # LeetCode's dispatch lifts the class body to top level, so it works there.
+  def receiver(has_sol, camel)
+    recv = has_sol ? Solution.new : Object.new
+    if has_sol && !recv.respond_to?(resolve(recv, camel), true) &&
+       Solution.respond_to?(resolve(Solution, camel), true)
+      recv = Solution
+    end
+    [recv, resolve(recv, camel)]
+  end
 end
 
 # --------------------------------------------------------------------------- #
@@ -180,8 +192,7 @@ else
   keys   = input.is_a?(Hash) ? input.keys : []
 
   has_sol = defined?(Solution) && Solution.is_a?(Class)
-  recv    = has_sol ? Solution.new : Object.new
-  meth    = HNS.resolve(recv, camel)
+  recv, meth = HNS.receiver(has_sol, camel)
 
   build_args = lambda do
     keys.map do |k|
@@ -192,26 +203,37 @@ else
       end
     end
   end
-  # (1) detect mutation once; reuse deep-copied args when the solution leaves
-  #     them untouched (HNS.deep per iteration was the dominant Ruby overhead).
+  # (1) detect mutation once: one call on a fresh copy. When the copy is
+  #     unchanged, every call reuses the built args ("shared" mode); otherwise
+  #     every call gets its own fresh copy, made OUTSIDE the timed region.
   pristine = build_args.call
   snap = pristine.map { |x| HNS.canon(x) }.join("\x1e")
   probe = build_args.call
   beacon = recv.send(meth, *probe)
   mutated = probe.map { |x| HNS.canon(x) }.join("\x1e") != snap
-  one = mutated ? lambda { recv.send(meth, *build_args.call) } : lambda { recv.send(meth, *pristine) }
 
   STDERR.puts "RESULT=#{HNS.canon(beacon)}" if echo
   # (3) estimate per-iter cost during warmup, then batch the wall-clock read
   wi = 0; t0 = now
-  while now - t0 < warm; one.call; wi += 1; end
+  while now - t0 < warm
+    recv.send(meth, *(mutated ? build_args.call : pristine)); wi += 1
+  end
   per = wi > 0 ? (now - t0) / wi : warm
   batch = per > 0 ? [[1, (0.002 / per).to_i].max, 4096].min : 4096
-  tm = now
-  while now - tm < budget - warm
-    batch.times { acc = HNS.fold(acc, one.call) }
+  batch = 1 if mutated && !ENV['PERFARENA_MEM_PASS'].to_s.empty?   # memory pass: one copy at a time
+  target = budget - warm; cap = 4 * target
+  meas = 0.0; tm = now
+  while meas < target && now - tm < cap
+    pool = mutated ? Array.new(batch) { build_args.call } : nil      # untimed
+    t = now
+    if mutated
+      pool.each { |a| acc = HNS.fold(acc, recv.send(meth, *a)) }
+    else
+      batch.times { acc = HNS.fold(acc, recv.send(meth, *pristine)) }
+    end
+    meas += now - t
     iters += batch
+    pool = nil
   end
-  meas = now - tm
   STDERR.puts "CASE=#{name} ITERS=#{iters} ACC=#{acc} MEAS_S=#{'%.6f' % meas} BEACON=#{HNS.canon(beacon)[0, 80]}"
 end

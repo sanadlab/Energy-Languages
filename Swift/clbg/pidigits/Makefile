@@ -1,15 +1,17 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc pidigits.swift-2.swift -Ounchecked -whole-module-optimization -I Include/swift/gmp -o pidigits.swift-2.swift_run
+LANG    = Swift
+TEST    = pidigits
+SOURCE  = pidigits.swift-2.swift
+OUTPUT  = pidigits.swift_run
+ARG         = 10000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-xmeasure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./pidigits.swift-2.swift_run 10000" Swift pidigits
+SWIFTC ?= swiftc
+# gmp comes from the system (Linux: libgmp-dev) or Homebrew on macOS
+GMP_PREFIX ?= $(firstword $(foreach p,/opt/homebrew /usr/local,$(if $(wildcard $(p)/include/gmp.h),$(p))))
+GMP_FLAGS = $(if $(GMP_PREFIX),-Xcc -I$(GMP_PREFIX)/include -L$(GMP_PREFIX)/lib)
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo -I Include/gmp $(GMP_FLAGS) $(SOURCE) -o $(OUTPUT)
 
-run:
-	./pidigits.swift-2.swift_run 10000
+VALIDATION_N       = 28
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/pidigits.txt
 
-mem:
-	/usr/bin/time -v ./pidigits.swift-2.swift_run 10000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./pidigits.swift-2.swift_run 10000
+include ../../../perfarena.mk

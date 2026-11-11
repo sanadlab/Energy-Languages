@@ -74,6 +74,18 @@ if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
       [ "$MODE" = build ] && exec python3 "$SEL/harness_c.py" build
       [ -x .perf_build/driver ] || { echo "run mode: no prebuilt C driver; run the build mode first" >&2; exit 2; }
       launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
+    golang)
+      [ "$MODE" = build ] && exec bash "$SEL/harness_go.sh" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt Go driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
+    rust)
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_rust.py" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt Rust driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
+    swift)
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_swift.py" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt Swift driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
     java)
       if [ "$MODE" = build ]; then
         rm -rf .perf_build && mkdir -p .perf_build \
@@ -97,31 +109,69 @@ if [ "$MODE" = build ] || [ "$MODE" = run ] || [ "$MODE" = argv ]; then
         || { echo "run mode: no prebuilt Kotlin classes; run the build mode first" >&2; exit 2; }
       launch java -cp .perf_build:.perf_build/solution.jar Harness "$BUDGET" "$IDX" ;;
     elixir)
-      # the solution and the harness helpers compiled once; plain BEAM defaults, as for Erlang
+      # The harness (HNS, the node structs, Harness) and the solution compiled
+      # once; the run only starts Harness.main(). Two compiler calls: a solution
+      # that defines its own TreeNode/ListNode then replaces the helper's module
+      # instead of clashing with it in one compile. Plain BEAM defaults, as for
+      # Erlang; a crash leaves no erl_crash.dump in the cell.
       if [ "$MODE" = build ]; then
         rm -rf .perf_build && mkdir -p .perf_build \
-          && elixirc -o .perf_build "$SEL/elixir_hns.exs" solution.ex >/dev/null 2>&1
+          && elixirc -o .perf_build "$SEL/elixir_hns.exs" "$SEL/harness.exs" >/dev/null \
+          && elixirc -pa .perf_build -o .perf_build solution.ex >/dev/null
         exit $?
       fi
-      [ -d .perf_build ] || { echo "run mode: no prebuilt Elixir modules; run the build mode first" >&2; exit 2; }
-      launch elixir -pa .perf_build "$SEL/harness.exs" "$BUDGET" "$IDX" ;;
+      [ -f .perf_build/Elixir.Harness.beam ] || { echo "run mode: no prebuilt Elixir modules; run the build mode first" >&2; exit 2; }
+      launch elixir --erl "-env ERL_CRASH_DUMP_BYTES 0" -pa .perf_build -e "Harness.main()" "$BUDGET" "$IDX" ;;
     erlang)
       if [ "$MODE" = build ]; then
         rm -rf .perf_build && mkdir -p .perf_build \
-          && erlc -I "$SEL" -o .perf_build "$SEL/perf_harness.erl" solution.erl >/dev/null 2>&1
+          && erlc -I "$SEL" -o .perf_build "$SEL/perf_harness.erl" solution.erl >/dev/null
         exit $?
       fi
       [ -f .perf_build/perf_harness.beam ] || { echo "run mode: no prebuilt Erlang modules; run the build mode first" >&2; exit 2; }
-      launch erl -noshell -pa .perf_build -eval "perf_harness:run(\"$BUDGET\", \"$IDX\")" -s init stop ;;
+      # a crash leaves no erl_crash.dump in the cell
+      launch erl -env ERL_CRASH_DUMP_BYTES 0 -noshell -pa .perf_build -eval "perf_harness:run(\"$BUDGET\", \"$IDX\")" -s init stop ;;
+    dart)
+      # The driver compiled once, ahead of time (dart compile exe, as the Dart
+      # CLBG cells do); the run only starts it.
+      [ "$MODE" = build ] && exec python3 "$SEL/harness_dart.py" build
+      [ -x .perf_build/driver ] || { echo "run mode: no prebuilt Dart driver; run the build mode first" >&2; exit 2; }
+      launch "$PWD/.perf_build/driver" "$BUDGET" "$IDX" ;;
     scala)
       # plain `java` with the Scala library on the class path, as for Java
       [ "$MODE" = build ] && exec python3 "$SEL/harness_scala.py" build
       [ -f .perf_build/cp ] || { echo "run mode: no prebuilt Scala classes; run the build mode first" >&2; exit 2; }
+      # The class path names the library jars of the scalac that built the
+      # classes. When scalac is another one now (an upgrade) or a jar is gone,
+      # refuse them, so the handler builds again with the current Scala.
+      stale=0
+      [ "$(cat .perf_build/scalac 2>/dev/null)" = "$(readlink -f "$(command -v scalac)" 2>/dev/null)" ] || stale=1
+      IFS=: read -r -a cp_parts < .perf_build/cp
+      for f in "${cp_parts[@]}"; do [ -e "$f" ] || stale=1; done
+      [ "$stale" = 0 ] || { echo "run mode: the prebuilt Scala classes are from another Scala installation; run the build mode again" >&2; exit 2; }
       launch java -cp "$(cat .perf_build/cp)" Main "$BUDGET" "$IDX" ;;
     csharp)
       if [ "$MODE" = build ]; then cs_build; exit $?; fi
       [ -f out/bench.dll ] || { echo "run mode: no prebuilt C# assembly; run the build mode first" >&2; exit 2; }
       launch dotnet out/bench.dll "$BUDGET" "$IDX" ;;
+    racket)
+      # raco make compiles the harness, its helpers and the solution ONCE into
+      # .perf_build/ (PLTCOMPILEDROOTS: the .zo files go there under their source
+      # paths, so harness and solution still share one nodes.rkt). The run loads
+      # only those .zo files: PLT_COMPILED_FILE_CHECK=exists, because the handler
+      # rewrites solution.rkt (then newer than its .zo) before it measures, and
+      # Racket would otherwise compile it again in memory on every run. The stamp
+      # makes the run refuse a build of other code or of another Racket.
+      rkt_stamp() { { racket --version; cat solution.rkt "$SEL/harness.rkt" "$SEL/rkt_hns.rkt" "$SEL/nodes.rkt"; } | cksum; }
+      if [ "$MODE" = build ]; then
+        rm -rf .perf_build && mkdir -p .perf_build \
+          && PLTCOMPILEDROOTS="$PWD/.perf_build:" raco make "$SEL/harness.rkt" solution.rkt >/dev/null \
+          && rkt_stamp > .perf_build/stamp
+        exit $?
+      fi
+      [ "$(cat .perf_build/stamp 2>/dev/null)" = "$(rkt_stamp)" ] \
+        || { echo "run mode: no prebuilt Racket modules for this code; run the build mode first" >&2; exit 2; }
+      launch env PLT_COMPILED_FILE_CHECK=exists racket -R "$PWD/.perf_build:" "$SEL/harness.rkt" "$BUDGET" "$IDX" ;;
     *)
       echo "no build/run split for $LANG_ARG: not measured, because its run would include compilation" >&2
       exit 3 ;;
@@ -140,7 +190,7 @@ case "$LANG_ARG" in
   scala)      python3 "$SEL/harness_scala.py" "$BUDGET" "$IDX" ;; # JVM scalac driver
   rust)       python3 "$SEL/harness_rust.py" "$BUDGET" "$IDX" ;;
   dart)       python3 "$SEL/harness_dart.py" "$BUDGET" "$IDX" ;; # dart run (JIT) driver
-  elixir)     elixir "$SEL/harness.exs" "$BUDGET" "$IDX" ;;       # BEAM, dynamic apply
+  elixir)     elixir -r "$SEL/elixir_hns.exs" -r "$SEL/harness.exs" -r solution.ex -e "Harness.main()" "$BUDGET" "$IDX" ;;  # BEAM, dynamic apply
   racket)     racket "$SEL/harness.rkt" "$BUDGET" "$IDX" ;;       # Racket VM, dynamic-require
   erlang)
     work="$(mktemp -d)"

@@ -4,7 +4,11 @@
  converted to Swift 3 by Daniel Muellenborn
  */
 
+#if canImport(Darwin)
+import Darwin
+#else
 import Glibc
+#endif
 import Dispatch
 
 // Get matrix dimension

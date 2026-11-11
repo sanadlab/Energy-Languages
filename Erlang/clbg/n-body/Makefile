@@ -5,7 +5,8 @@ MOD     = nbody
 OUTPUT  = nbody.beam
 
 ARG         = 15000000
-RUN_CMD     = erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
+# no erl_crash.dump on a crash
+RUN_CMD     = env ERL_CRASH_DUMP_BYTES=0 erl -noshell -pa . -run $(MOD) main $(ARG) -s init stop
 COMPILE_CMD = erlc $(SOURCE)
 
 VALIDATION_N     = 1000

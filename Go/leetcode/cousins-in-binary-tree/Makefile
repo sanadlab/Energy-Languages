@@ -2,10 +2,10 @@
 LANG        = Go
 TEST        = cousins-in-binary-tree
 SOURCE      = solution.go
-OUTPUT      = test_suite
+OUTPUT      = driver
 ARG         =
-RUN_CMD     = ./test_suite
-COMPILE_CMD = { printf 'package main\n\n' ; grep -v '^package ' solution.go ; } > sol_combined.go && $(GO) build -o test_suite sol_combined.go test_suite.go
+RUN_CMD     = bash ../../../selection/harness_go.sh 0.2 0
+COMPILE_CMD = bash ../../../selection/harness_go.sh compile
 
 VALIDATION_N     = $(ARG)
 REFERENCE_OUTPUT = /dev/null

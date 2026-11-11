@@ -1,15 +1,14 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc fasta.swift-3.swift -Ounchecked -whole-module-optimization  -o fasta.swift-3.swift_run
+LANG    = Swift
+TEST    = fasta
+SOURCE  = fasta.swift-3.swift
+OUTPUT  = fasta.swift_run
+ARG         = 12000000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./fasta.swift-3.swift_run 25000000" Swift fasta
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./fasta.swift-3.swift_run 25000000
+VALIDATION_N       = 1000
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fasta.txt
 
-mem:
-	/usr/bin/time -v  ./fasta.swift-3.swift_run 25000000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  ./fasta.swift-3.swift_run 25000000
+include ../../../perfarena.mk

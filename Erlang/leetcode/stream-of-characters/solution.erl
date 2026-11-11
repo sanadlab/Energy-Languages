@@ -17,9 +17,8 @@ stream_checker_init_(Words) ->
 
 -spec stream_checker_query(Letter :: char()) -> boolean().
 stream_checker_query(Letter) ->
-  C = letter_byte(Letter),
   Max = get(sc_maxlen),
-  Stream = lists:sublist([C | get(sc_stream)], Max),
+  Stream = lists:sublist([Letter | get(sc_stream)], Max),
   put(sc_stream, Stream),
   walk(Stream, get(sc_trie)).
 
@@ -46,7 +45,3 @@ walk([C | Rest], Node) ->
               false -> walk(Rest, Child)
           end
   end.
-
-letter_byte(B) when is_binary(B) -> binary:first(B);
-letter_byte(C) when is_integer(C) -> C;
-letter_byte([C | _]) -> C.

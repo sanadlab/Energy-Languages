@@ -88,7 +88,7 @@ func readInputAndRewrite() -> [Int8] {
     // Read until sequence THREE
     let buf = UnsafeMutablePointer<Int8>.allocate(capacity: 100)
     defer {
-        buf.deallocate(capacity: 100)
+        buf.deallocate()
     }
     let three = ">THREE".utf8.map{Int8($0)}
     while let res = fgets(buf, 100, stdin) {
@@ -102,8 +102,8 @@ func readInputAndRewrite() -> [Int8] {
         seq.append(contentsOf: UnsafeMutableBufferPointer(start: res, count: linewidth))
     }
     // Locate newline from at the end
-    var nl = seq.count - 1
-    var pos = nl
+    var nl = seq.count
+    var pos = nl - 1
     while pos > seq.count - linewidth {
         if seq[pos] == 10 { // "\n"
             nl = pos

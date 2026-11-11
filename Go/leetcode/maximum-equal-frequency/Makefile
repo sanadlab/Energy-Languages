@@ -8,10 +8,10 @@
 LANG        = Go
 TEST        = maximum-equal-frequency
 SOURCE      = solution.go
-OUTPUT      = test_suite
+OUTPUT      = driver
 ARG         =
-RUN_CMD     = ./test_suite
-COMPILE_CMD = { printf 'package main\n\n' ; grep -v '^package ' solution.go ; } > sol_combined.go && $(GO) build -o test_suite sol_combined.go test_suite.go
+RUN_CMD     = bash ../../../selection/harness_go.sh 0.2 0
+COMPILE_CMD = bash ../../../selection/harness_go.sh compile
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

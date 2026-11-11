@@ -7,7 +7,8 @@
 #
 # LeetCode Elixir uses %TreeNode{}/%ListNode{} structs (nil = empty) and
 # snake_case function names; the shared entry_point / design ops are camelCase,
-# so names are converted with underscore/1.
+# so names are converted with underscore/1. A `char` is an integer code point,
+# as LeetCode's specs say (see char_specs/1).
 
 defmodule TreeNode do
   defstruct val: 0, left: nil, right: nil
@@ -224,25 +225,130 @@ defmodule HNS do
   def fold(acc, r), do: band(acc * 1_000_003 + :erlang.phash2(norm(r)), @mask64)
 
   # ---- build positional args from an ordered input object ---------------------
-  # root -> tree, head -> list, everything else passes through unchanged.
-  def build_args({:object, pairs}) do
-    Enum.map(pairs, fn {k, v} ->
+  # root -> tree, head -> list, a char parameter -> its code point (depths come
+  # from param_chars/2), everything else passes through unchanged.
+  def build_args({:object, pairs}, depths \\ []) do
+    pairs
+    |> Enum.zip(pad(depths, length(pairs)))
+    |> Enum.map(fn {{k, v}, d} ->
       cond do
         k == "root" -> build_tree(v)
         k == "head" -> build_list(v)
-        true -> v
+        true -> charify(v, d)
       end
     end)
   end
+
+  # ---- char types ---------------------------------------------------------------
+  # LeetCode's Elixir `char` is an integer (a code point), but the shared JSON
+  # holds a 1-char string. char_specs/1 reads the @spec lines of the cell's
+  # LeetCode snippet (problem.json) and maps each function name to the char
+  # depth of its parameters and of its result: 0 = char, 1 = [char],
+  # 2 = [[char]], nil = no char type. charify/2 converts a value.
+  def char_specs(cell) do
+    snip =
+      try do
+        snippet(File.read!(Path.join(cell, "problem.json")), ~s("elixir"))
+      rescue
+        _ -> ""
+      end
+
+    Regex.scan(~r/^\s*@spec\s+([a-z0-9_?!]+)\((.*)\)\s*::\s*(.*?)\s*$/m, snip)
+    |> Map.new(fn [_, name, params, ret] ->
+      {String.to_atom(name), {Enum.map(split_top(params), &char_depth(spec_type(&1))), char_depth(ret)}}
+    end)
+  end
+
+  # The JSON string value of `key` in `bin` (a code_snippets entry), decoded.
+  defp snippet(bin, key) do
+    {pos, len} = :binary.match(bin, key)
+    <<?:, r1::binary>> = skip_ws(binary_part(bin, pos + len, byte_size(bin) - pos - len))
+    <<?", r2::binary>> = skip_ws(r1)
+    {s, _} = pstr(r2, [])
+    s
+  end
+
+  # Split a parameter list at its top-level commas.
+  defp split_top(s) do
+    {parts, cur, _} =
+      s
+      |> String.to_charlist()
+      |> Enum.reduce({[], [], 0}, fn
+        ?,, {ps, cur, 0} -> {[cur | ps], [], 0}
+        c, {ps, cur, d} when c in [?(, ?[, ?{] -> {ps, [c | cur], d + 1}
+        c, {ps, cur, d} when c in [?), ?], ?}] -> {ps, [c | cur], d - 1}
+        c, {ps, cur, d} -> {ps, [c | cur], d}
+      end)
+
+    [cur | parts]
+    |> Enum.reverse()
+    |> Enum.map(&(&1 |> Enum.reverse() |> to_string() |> String.trim()))
+    |> Enum.reject(&(&1 == ""))
+  end
+
+  # `name :: type` -> type
+  defp spec_type(p) do
+    case String.split(p, "::", parts: 2) do
+      [_name, t] -> t
+      [t] -> t
+    end
+  end
+
+  defp char_depth(t) do
+    case Regex.run(~r/^(\[*)char(\]*)$/, String.trim(t)) do
+      [_, l, r] when byte_size(l) == byte_size(r) -> byte_size(l)
+      _ -> nil
+    end
+  end
+
+  def param_chars(specs, f) do
+    case Map.fetch(specs, f) do
+      {:ok, {ps, _}} -> ps
+      :error -> []
+    end
+  end
+
+  def ret_chars(specs, f) do
+    case Map.fetch(specs, f) do
+      {:ok, {_, r}} -> r
+      :error -> nil
+    end
+  end
+
+  # The args of the call to `f`, with its char parameters converted.
+  def op_args(a, specs, f), do: Enum.zip_with(a, pad(param_chars(specs, f), length(a)), &charify/2)
+
+  defp pad(l, n), do: Enum.take(l ++ List.duplicate(nil, n), n)
+
+  def charify(v, 0) when is_binary(v) do
+    case String.to_charlist(v) do
+      [c] -> c
+      _ -> v
+    end
+  end
+  def charify(v, d) when is_list(v) and is_integer(d) and d > 0, do: Enum.map(v, &charify(&1, d - 1))
+  def charify(v, _), do: v
+
+  # Exact equality (the canon form), except that two numbers match within 1e-5
+  # when one of them is a float: LeetCode accepts answers within 1e-5 on its
+  # float problems.
+  def eq(a, e) when is_list(a) and is_list(e),
+    do: length(a) == length(e) and Enum.all?(Enum.zip(a, e), fn {x, y} -> eq(x, y) end)
+  def eq(a, e) when is_number(a) and is_number(e) and (is_float(a) or is_float(e)),
+    do: a == e or abs(a - e) <= 1.0e-5
+  def eq(a, e), do: canon(a) == canon(e)
 
   def design?({:object, pairs}), do: List.keymember?(pairs, "ops", 0) and List.keymember?(pairs, "args", 0)
   def design?(_), do: false
 
   # Resolve the actual function name: snake_case first, camel fallback (both as
-  # atoms), defaulting to snake. `mod` must already be loaded.
+  # atoms), defaulting to snake. function_exported?/3 is false for a module that
+  # is not loaded yet (the run mode loads the prebuilt modules on first use), so
+  # load it first.
   def resolve(mod, camel, arity) do
     snake = snake_atom(camel)
     camel_atom = String.to_atom(to_string(camel))
+    Code.ensure_loaded(mod)
     cond do
       function_exported?(mod, snake, arity) -> snake
       function_exported?(mod, camel_atom, arity) -> camel_atom

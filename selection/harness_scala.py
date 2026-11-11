@@ -18,10 +18,12 @@ The driver carries its own ordered, lossless JSON parser so ordering + big-int
 precision match the C++/C/Swift harnesses exactly.
 
 Contract (run FROM the cell dir):
-    python3 harness_scala.py validate      -> exit 0/1/3 (Accepted/WA/RE), 2 setup
+    python3 harness_scala.py validate      -> exit 0/1/3 (Accepted/WA/RE), 2 compile
+    python3 harness_scala.py compile       -> compile the solution only, run nothing
+    python3 harness_scala.py build         -> classes + class path into .perf_build/
     python3 harness_scala.py <budget> <idx> -> perf line on stderr
 """
-import json, os, subprocess, sys, tempfile
+import json, os, signal, subprocess, sys, tempfile
 import harness_cpp as cpp
 
 ROOT = cpp.ROOT
@@ -336,24 +338,12 @@ def _canon_result(retn, callexpr):
     return "H.cv(%s)" % callexpr
 
 
-def _sol_receiver(slug):
-    """LeetCode's Scala template is `object Solution`, but models routinely write
-    `class Solution` (the "Solution class" system prompt). `Solution.m` only
-    resolves for an object, so pick the receiver from what the solution actually
-    defines: `object Solution` -> `Solution`, `class Solution` -> `(new Solution)`."""
-    p = os.path.join(ROOT, "Scala", "leetcode", slug, "solution.scala")
-    src = open(p).read() if os.path.exists(p) else ""
-    if _re.search(r'\bobject\s+Solution\b', src):
-        return "Solution"
-    if _re.search(r'\bclass\s+Solution\b', src):
-        return "(new Solution)"
-    return "Solution"
-
-
 def gen_validate(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
     args = _marshal_call(info["stypes"], lambda i: "E(%d)._2" % i)
-    call = "%s.%s(%s)" % (_sol_receiver(slug), info["method"], ", ".join(args))
+    # LeetCode's driver calls `Solution.m(...)`, so only an `object Solution`
+    # works (a `class Solution` is rejected before the build, see _build)
+    call = "Solution.%s(%s)" % (info["method"], ", ".join(args))
     unordered = slug in _UNORDERED
     if unordered and info["retn"] in _ARR:
         actual = "H.mset(%s)" % call; exp = "H.canonJSONmset(outV)"
@@ -370,7 +360,11 @@ object Main {
       val name = H.field(kase, "name") match { case H.JStr(s) => s; case _ => "case" }
       val E = H.entries(H.field(kase, "input")); val _ = E
       val outV = H.field(kase, "output")
-      val actual = __ACTUAL__
+      // a crash in the solution (any exception or error, a stack overflow too)
+      // is a Runtime Error of this case
+      val actual = try { __ACTUAL__ } catch { case e: Throwable =>
+        H.eprint(s"VALIDATE slug=$slug RE case=$name passed=$ci ncases=${cases.length} ${e.getClass.getName}: ${e.getMessage}\n")
+        System.exit(3); "" }
       val exp = __EXP__
       if (exp != actual) {
         H.eprint(s"VALIDATE slug=$slug FAIL case=$name passed=$ci ncases=${cases.length} expected=${exp.take(120)} actual=${actual.take(120)}\n")
@@ -392,15 +386,15 @@ def gen_measure(slug, info):
     """As the Java harness measures: the arguments are parsed once, before
     timing; one call on them shows whether the solution changes its input, and
     only then does each call get a fresh copy; one receiver (the `object
-    Solution`, or one `new Solution`) serves every call; each result folds as
-    the hash of Java's canon string."""
+    Solution`) serves every call; each result folds as the hash of Java's
+    canon string."""
     outs = os.path.join(REF, "outputs", slug + ".json")
     st = info["stypes"]
     parse = "\n".join("    val b%d: %s = H.%s(E(%d)._2)" % (i, t, _SMAR[t], i) for i, t in enumerate(st))
     bases = ", ".join("b%d" % i for i in range(len(st)))
     on_base = ", ".join("b%d" % i for i in range(len(st)))
     on_copy = ", ".join("H.cl(pristine(%d)).asInstanceOf[%s]" % (i, t) for i, t in enumerate(st))
-    recv = "new Solution" if _sol_receiver(slug) == "(new Solution)" else "Solution"
+    recv = "Solution"
     m = info["method"]
     body = r'''
 object Main {
@@ -478,6 +472,8 @@ object Main {
       val ARG = H.items(H.field(H.field(kase, "input"), "args"))
       val AR = ARG
       val res = scala.collection.mutable.ArrayBuffer[String]()
+      // a crash in the solution is a Runtime Error of this case
+      try {
       __CONSTRUCT__
       res += "null"
       var i = 1
@@ -487,6 +483,9 @@ object Main {
 __DISPATCH__
         i += 1
       }
+      } catch { case e: Throwable =>
+        H.eprint(s"VALIDATE slug=$slug RE case=$name passed=$ci ncases=${cases.length} ${e.getClass.getName}: ${e.getMessage}\n")
+        System.exit(3) }
       if (randomized) {
         val nums = H.items(H.items(ARG(0))(0))
         var j = 1
@@ -627,81 +626,203 @@ def _run_cmd(outd, extra):
     return ["scala", "run", "--classpath", outd, "--main-class", "Main"] + (["--"] + extra if extra else [])
 
 
-def _build(slug, mode):
+def _strip_comments(src):
+    """src without its // and /* */ comments. LeetCode's snippet keeps the node
+    class definitions in a comment, and a comment defines nothing."""
+    src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
+    return _re.sub(r"//[^\n]*", "", src)
+
+
+def _node_defs(code):
+    """The node classes that the (comment-free) solution does not define itself.
+    The marshal helpers always use TreeNode and ListNode, so both must be in
+    scope; LeetCode's judge provides them, so solutions usually have neither."""
+    inject = ""
+    if not _re.search(r"\bclass\s+TreeNode\b", code): inject += NODES.split("class ListNode")[0]
+    if not _re.search(r"\bclass\s+ListNode\b", code): inject += "\nclass ListNode" + NODES.split("class ListNode")[1]
+    return inject
+
+
+def _class_solution_error(info, code):
+    """LeetCode's Scala template is `object Solution` and its driver calls
+    `Solution.m(...)`, so it rejects a `class Solution` (Compile Error "value m
+    is not a member of object Solution"). Give the same verdict, with a clear
+    message, before compiling. Design problems name their own class."""
+    if info["kind"] in ("design", "unsupported"):
+        return None
+    if _re.search(r"\bclass\s+Solution\b", code) and not _re.search(r"\bobject\s+Solution\b", code):
+        return ("scalac: error: value %s is not a member of object Solution: LeetCode's Scala "
+                "solution must be `object Solution { def %s(...) }`; LeetCode rejects a "
+                "`class Solution`" % (info["method"], info["method"]))
+    return None
+
+
+def _scalac(files, outd, cwd):
+    """scalac with LeetCode's settings: a warning is an error (-Werror; LeetCode
+    rejects code that gets a warning), and the Scala 3.3 language level
+    (-source:3.3): LeetCode's Scala is older than 3.7, so it does not give the
+    warnings that only 3.7+ gives (it accepted `nums.sorted(Ordering.Int.reverse)`,
+    which 3.7+ warns about), but it does give the older ones (a non-local
+    return, a match that may not be exhaustive). No color codes in the errors."""
+    return subprocess.run(["scalac", "-color:never", *cpp.compile_flags(["-Werror", "-source:3.3"]),
+                           "-d", outd, *files], capture_output=True, text=True, timeout=300, cwd=cwd)
+
+
+def _scalac_error(stderr):
+    """One summary line (the first error, or under -Werror the first warning,
+    with its message), then the compiler's whole message."""
+    stderr = (stderr or "").strip()
+    lines = stderr.splitlines()
+    heads = [i for i, l in enumerate(lines) if l.startswith("-- ")]
+    pick = next((i for i in heads if "Error" in lines[i]), None)
+    if pick is None:
+        pick = next((i for i in heads if "Warning" in lines[i]), None)
+    if pick is None:
+        errs = [l for l in lines if "error" in l.lower()]
+        return "scalac: " + (errs[0] if errs else stderr[:200]) + "\n" + stderr[-4000:]
+    msg = ""
+    for l in lines[pick + 1:pick + 10]:   # "  |<message>", not "7 |<code>" or "  |  ^^^"
+        left, bar, text = l.partition("|")
+        if bar and not left.strip() and text.strip().strip("^").strip():
+            msg = text.strip(); break
+    return ("scalac: error: " + lines[pick].strip("- ") + (": " + msg if msg else "")
+            + "\n" + stderr[-4000:])
+
+
+def _build(slug, mode, tmp):
+    """Generate the `mode` driver (validate or measure) and compile it with the
+    solution into <tmp>/out. Returns (out dir, None) or (None, error)."""
     info = analyze(slug)
     if info["kind"] == "unsupported":
-        return None, info, info.get("reason", "unsupported")
+        return None, info.get("reason", "unsupported")
+    sol = open(os.path.join(ROOT, "Scala", "leetcode", slug, "solution.scala")).read()
+    code = _strip_comments(sol)
+    err = _class_solution_error(info, code)
+    if err:
+        return None, err
     if info["kind"] == "design":
         src = gen_validate_design(slug, info) if mode == "validate" else gen_measure_design(slug, info)
     else:
         src = gen_validate(slug, info) if mode == "validate" else gen_measure(slug, info)
-    cell = os.path.join(ROOT, "Scala", "leetcode", slug)
-    sol = open(os.path.join(cell, "solution.scala")).read()
-    inject = ""
-    if "class TreeNode" not in sol: inject += NODES.split("class ListNode")[0]
-    if "class ListNode" not in sol: inject += "\nclass ListNode" + NODES.split("class ListNode")[1]
-    tmp = tempfile.mkdtemp(prefix="hz_scala_%s_" % mode)
-    driver = os.path.join(tmp, "Main.scala"); open(driver, "w").write(inject + src)
+    driver = os.path.join(tmp, "Main.scala"); open(driver, "w").write(_node_defs(code) + src)
     soltmp = os.path.join(tmp, "solution.scala"); open(soltmp, "w").write(sol)
     outd = os.path.join(tmp, "out"); os.makedirs(outd)
-    cc = subprocess.run(["scalac", *cpp.compile_flags([]), "-d", outd, soltmp, driver],
-                        capture_output=True, text=True, timeout=300)
+    cc = _scalac(["solution.scala", "Main.scala"], outd, tmp)
     if cc.returncode != 0:
-        errs = [l for l in (cc.stderr or "").splitlines() if "error" in l.lower()]
-        return None, info, "scalac: " + (errs[0] if errs else (cc.stderr or "").strip()[:200])
-    return outd, info, tmp
+        return None, _scalac_error(cc.stderr + cc.stdout)
+    return outd, None
+
+
+def compile_only(slug):
+    """`make compile`: compile the solution file alone (with the node classes it
+    does not define) and run nothing. A mistake that only the driver shows (a
+    wrong method name or signature) is a Compile Error of the validator."""
+    sol = open(os.path.join(ROOT, "Scala", "leetcode", slug, "solution.scala")).read()
+    code = _strip_comments(sol)
+    err = _class_solution_error(analyze(slug), code)
+    if err:
+        sys.stderr.write(err + "\n")
+        return 1
+    tmp = tempfile.mkdtemp(prefix="hz_scala_compile_")
+    try:
+        open(os.path.join(tmp, "Nodes.scala"), "w").write(_node_defs(code))
+        open(os.path.join(tmp, "solution.scala"), "w").write(sol)
+        os.makedirs(os.path.join(tmp, "out"))
+        cc = _scalac(["Nodes.scala", "solution.scala"], "out", tmp)
+    finally:
+        _shutil.rmtree(tmp, ignore_errors=True)
+    if cc.returncode != 0:
+        sys.stderr.write(_scalac_error(cc.stderr + cc.stdout) + "\n")
+        return 1
+    return 0
+
+
+_FAIL_OR_RE = _re.compile(r"^VALIDATE slug=\S+ (FAIL|RE)\b", _re.M)
 
 
 def build_and_validate(slug):
-    outd, info, tmp = _build(slug, "validate")
-    if outd is None:
-        sys.stderr.write("VALIDATE slug=%s ERROR %s\n" % (slug, tmp)); return 2
-    cell = os.path.join(ROOT, "Scala", "leetcode", slug)
-    rr = subprocess.run(_run_cmd(outd, []), capture_output=True, text=True, cwd=cell, timeout=300)
+    tmp = tempfile.mkdtemp(prefix="hz_scala_validate_")
+    try:
+        outd, err = _build(slug, "validate", tmp)
+        if outd is None:
+            sys.stderr.write("VALIDATE slug=%s ERROR %s\n" % (slug, err)); return 2
+        cell = os.path.join(ROOT, "Scala", "leetcode", slug)
+        rr = subprocess.run(_run_cmd(outd, []), capture_output=True, text=True, errors="replace",
+                            cwd=cell, timeout=300)
+    finally:
+        _shutil.rmtree(tmp, ignore_errors=True)
     if rr.stderr: sys.stderr.write(rr.stderr)
-    return rr.returncode
+    m = _FAIL_OR_RE.search(rr.stderr or "")
+    if rr.returncode == 0 or (m and rr.returncode == {"FAIL": 1, "RE": 3}[m.group(1)]):
+        return rr.returncode
+    # The driver catches the solution's exceptions; anything else (an exit() of
+    # the solution's own, a signal) is a crash too. Never return a negative
+    # code: sys.exit(-n) would exit with 256-n.
+    how = ("signal=" + signal.Signals(-rr.returncode).name if rr.returncode < 0
+           else "exit=%d" % rr.returncode)
+    sys.stderr.write("VALIDATE slug=%s RE %s\n" % (slug, how))
+    return 3
 
 
 def build_and_run(slug, budget, idx):
-    outd, info, tmp = _build(slug, "measure")
-    if outd is None:
-        return "compile_error", tmp, None
-    cell = os.path.join(ROOT, "Scala", "leetcode", slug)
-    rr = subprocess.run(_run_cmd(outd, [str(budget), str(idx)]),
-                        capture_output=True, text=True, cwd=cell, timeout=max(60, budget * 4 + 40))
-    if rr.returncode != 0:
-        return "runtime_error", (rr.stderr.strip().splitlines()[-1] if rr.stderr else "rc=%d" % rr.returncode), None
-    return "ok", rr.stderr.strip(), None
-
-
-def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "validate":
-        sys.exit(build_and_validate(os.path.basename(os.getcwd())))
-    if len(sys.argv) > 1 and sys.argv[1] == "build":
-        # Prebuild the classes into <cell>/.perf_build/out and the class path into
-        # .perf_build/cp for run_harness.sh run mode, which starts plain `java`,
-        # as for Java, so a measured run never includes scalac.
-        slug = os.path.basename(os.getcwd())
-        outd, _info, tmp = _build(slug, "measure")
+    tmp = tempfile.mkdtemp(prefix="hz_scala_measure_")
+    try:
+        outd, err = _build(slug, "measure", tmp)
         if outd is None:
-            print("TODO/compile_error %s: %s" % (slug, tmp), file=sys.stderr)
-            sys.exit(1)
-        libs = _scala_libs()
-        if not libs:
-            print("TODO/setup %s: scala library jars not found" % slug, file=sys.stderr)
-            sys.exit(1)
+            return "compile_error", err
+        cell = os.path.join(ROOT, "Scala", "leetcode", slug)
+        rr = subprocess.run(_run_cmd(outd, [str(budget), str(idx)]),
+                            capture_output=True, text=True, cwd=cell, timeout=max(60, budget * 4 + 40))
+    finally:
+        _shutil.rmtree(tmp, ignore_errors=True)
+    if rr.returncode != 0:
+        return "runtime_error", (rr.stderr.strip().splitlines()[-1] if rr.stderr else "rc=%d" % rr.returncode)
+    return "ok", rr.stderr.strip()
+
+
+def build_prebuilt(slug):
+    """Prebuild the classes into <cell>/.perf_build/out, the class path into
+    .perf_build/cp, and the scalac that built them into .perf_build/scalac,
+    for run_harness.sh run mode, which starts plain `java`, as for Java, so a
+    measured run never includes scalac. The class path names the Scala library
+    jars of that scalac; run_harness.sh refuses the prebuilt classes (and the
+    handler builds again) once scalac is another one or a jar is gone."""
+    libs = _scala_libs()
+    if not libs:
+        print("TODO/setup %s: scala library jars not found" % slug, file=sys.stderr)
+        return 1
+    tmp = tempfile.mkdtemp(prefix="hz_scala_build_")
+    try:
+        outd, err = _build(slug, "measure", tmp)
+        if outd is None:
+            print("TODO/compile_error %s: %s" % (slug, err), file=sys.stderr)
+            return 1
         dest = os.path.join(os.getcwd(), ".perf_build")
         _shutil.rmtree(dest, ignore_errors=True)
         _shutil.copytree(outd, os.path.join(dest, "out"))
-        open(os.path.join(dest, "cp"), "w").write(os.pathsep.join([os.path.join(dest, "out")] + libs))
-        sys.exit(0)
+    finally:
+        _shutil.rmtree(tmp, ignore_errors=True)
+    open(os.path.join(dest, "cp"), "w").write(os.pathsep.join([os.path.join(dest, "out")] + libs))
+    open(os.path.join(dest, "scalac"), "w").write(os.path.realpath(_shutil.which("scalac")) + "\n")
+    return 0
+
+
+def main():
+    slug = os.path.basename(os.getcwd())
+    mode = sys.argv[1] if len(sys.argv) > 1 else ""
+    if mode == "validate":
+        sys.exit(build_and_validate(slug))
+    if mode == "compile":
+        sys.exit(compile_only(slug))
+    if mode == "build":
+        sys.exit(build_prebuilt(slug))
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx = int(sys.argv[2]) if len(sys.argv) > 2 else 0
-    status, msg, _ = build_and_run(os.path.basename(os.getcwd()), budget, idx)
+    status, msg = build_and_run(slug, budget, idx)
     if status == "ok":
         print(msg, file=sys.stderr)
     else:
-        print("TODO/%s %s: %s" % (status, os.path.basename(os.getcwd()), msg), file=sys.stderr)
+        print("TODO/%s %s: %s" % (status, slug, msg), file=sys.stderr)
         sys.exit(1)
 
 

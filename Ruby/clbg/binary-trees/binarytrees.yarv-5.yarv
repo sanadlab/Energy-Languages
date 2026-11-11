@@ -40,6 +40,7 @@ module MiniParallel
 
     def self.work_in_processes(array, count, &block)
         index = -1
+        lock = Mutex.new
         results, threads = [], []
 
         workers = create_workers(array, count, &block)
@@ -47,9 +48,9 @@ module MiniParallel
         workers.each do |worker|
             threads << Thread.new do
               loop do
-                Thread.exclusive{ index += 1 }
-                break if index >= array.size
-                results[index] = worker.work(index)
+                i = lock.synchronize { index += 1 }
+                break if i >= array.size
+                results[i] = worker.work(i)
               end
               worker.close_pipes
             end

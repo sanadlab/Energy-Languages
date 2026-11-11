@@ -46,6 +46,24 @@ function canon($r) {
     $s = json_encode($r);
     return $s === false ? strval($r) : $s;
 }
+// Equal canonical JSON, except that two numbers match within 1e-5 when one of
+// them is not an integer: LeetCode accepts answers within 1e-5 on its float problems.
+function near($a, $b) {
+    if (is_array($a) && is_array($b)) {
+        if (count($a) !== count($b) || array_keys($a) !== array_keys($b)) return false;
+        foreach ($a as $k => $v) if (!near($v, $b[$k])) return false;
+        return true;
+    }
+    if ((is_int($a) || is_float($a)) && (is_int($b) || is_float($b)))
+        return $a == $b || ((is_float($a) || is_float($b)) && abs($a - $b) <= 1e-5);
+    return json_encode($a) === json_encode($b);
+}
+function same_result($actual, $expected) {
+    $ca = canon($actual); $ce = canon($expected);
+    if ($ca === $ce) return true;
+    $a = json_decode($ca, true); $e = json_decode($ce, true);
+    return $a !== null && $e !== null && near($a, $e);
+}
 // design/trace: a null in expected marks a void op (LeetCode discards its
 // return); compare strictly only at value-returning positions.
 function seq_ok($actual, $expected) {
@@ -70,7 +88,7 @@ $ep = strval($wl['entry_point'] ?? '');
 $parts = explode('.', $ep); $method = end($parts);
 $randomized = ($slug === 'random-pick-index');
 // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
-$UNORDERED = ['uncommon-words-from-two-sentences', 'remove-invalid-parentheses', 'restore-the-array-from-adjacent-pairs'];
+$UNORDERED = ['uncommon-words-from-two-sentences', 'remove-invalid-parentheses', 'restore-the-array-from-adjacent-pairs', 'ambiguous-coordinates'];
 function unordered_eq($a, $e) {
     if (!is_array($a) || !is_array($e)) return canon($a) === canon($e);
     $ka = array_map('canon', $a); sort($ka);
@@ -130,7 +148,7 @@ foreach ($out['expected'] as $__i => $c) {
         exit(3);
     }
     $ok = $is_design ? seq_ok($actual, $c['output'])
-         : (in_array($slug, $UNORDERED, true) ? unordered_eq($actual, $c['output']) : (canon($actual) === canon($c['output'])));
+         : (in_array($slug, $UNORDERED, true) ? unordered_eq($actual, $c['output']) : same_result($actual, $c['output']));
     if (!$ok) {
         fwrite(STDERR, "VALIDATE slug=$slug FAIL case=$name passed=$__i ncases=$__total "
             . "expected=" . substr(canon($c['output']), 0, 120) . " "

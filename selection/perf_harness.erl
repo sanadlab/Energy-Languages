@@ -10,8 +10,10 @@
 %%   erl -noshell -pa <tmp> -eval 'perf_harness:run("1.0","0")'    -s init stop
 %%
 %% CONVENTIONS: empty tree/list child = atom `null`; strings (input AND result)
-%% are BINARIES (so they match JSON-decoded expected values); design/stateful
-%% problems hold state in the process dictionary and reset it in *_init_.
+%% are BINARIES (so they match JSON-decoded expected values); a char() is an
+%% integer code point, as LeetCode's specs say (see char_specs/1);
+%% design/stateful problems hold state in the process dictionary and reset it
+%% in *_init_.
 -module(perf_harness).
 -export([validate/0, run/2]).
 -include("node.hrl").
@@ -27,7 +29,7 @@ validate() ->
         Expected = obj_get(Out, <<"expected">>),
         Total = length(Expected),
         Randomized = (Slug == "random-pick-index"),
-        check(Expected, 0, Total, Slug, Camel, Randomized),
+        check(Expected, 0, Total, Slug, {Camel, char_specs(Cwd)}, Randomized),
         io:format(standard_error, "VALIDATE slug=~s PASS ncases=~p passed=~p~n", [Slug, Total, Total]),
         halt(0)
     catch
@@ -46,21 +48,22 @@ load(Cwd, Slug) ->
     Camel = lists:last(string:split(binary_to_list(obj_get(Wl, <<"entry_point">>)), ".", all)),
     {Out, Camel}.
 
-check([], _I, _Total, _Slug, _Camel, _Rnd) -> ok;
-check([C | Rest], I, Total, Slug, Camel, Rnd) ->
+%% Fn = {Camel, Specs}: the entry point's name and the snippet's char() types.
+check([], _I, _Total, _Slug, _Fn, _Rnd) -> ok;
+check([C | Rest], I, Total, Slug, Fn, Rnd) ->
     Name = obj_get(C, <<"name">>),
     Inp = obj_get(C, <<"input">>),
-    Exp = obj_get(C, <<"output">>),
+    Exp = expected_chars(Inp, obj_get(C, <<"output">>), Fn),
     Actual =
-        try run_case(Inp, Camel, Rnd)
+        try run_case(Inp, Fn, Rnd)
         catch K:R -> throw({re, Name, I, Total, {K, R}}) end,
     Ok = case {design(Inp), lists:member(Slug, unordered())} of
              {true, _} -> seq_ok(Actual, Exp);
              {false, true} -> unordered_eq(Actual, Exp);
-             {false, false} -> canon(Actual) == canon(Exp)
+             {false, false} -> eq(Actual, Exp)
          end,
     case Ok of
-        true -> check(Rest, I + 1, Total, Slug, Camel, Rnd);
+        true -> check(Rest, I + 1, Total, Slug, Fn, Rnd);
         false ->
             io:format(standard_error,
                 "VALIDATE slug=~s FAIL case=~s passed=~p ncases=~p expected=~s actual=~s~n",
@@ -68,7 +71,7 @@ check([C | Rest], I, Total, Slug, Camel, Rnd) ->
             halt(1)
     end.
 
-unordered() -> ["uncommon-words-from-two-sentences", "remove-invalid-parentheses", "restore-the-array-from-adjacent-pairs"].
+unordered() -> ["uncommon-words-from-two-sentences", "remove-invalid-parentheses", "restore-the-array-from-adjacent-pairs", "ambiguous-coordinates"].
 
 %% ----------------------------------------------------------------- entry: run (measure)
 run(BudgetStr, IdxStr) ->
@@ -82,13 +85,14 @@ run(BudgetStr, IdxStr) ->
     Name = obj_get(Case, <<"name">>),
     Input = obj_get(Case, <<"input">>),
     Warm = Budget * 0.3,
+    Specs = char_specs(Cwd),
     {One, Beacon} =
         case design(Input) of
-            true -> {design_closure(Input, obj_get(Case, <<"output">>)), "design"};
+            true -> {design_closure(Input, obj_get(Case, <<"output">>), Specs), "design"};
             false ->
                 Wl = parse_ordered(readf(filename:join([Ref, "workloads", Slug ++ ".json"]))),
                 Camel = lists:last(string:split(binary_to_list(obj_get(Wl, <<"entry_point">>)), ".", all)),
-                Args = build_args(Input),
+                Args = build_args(Input, param_chars(Specs, snake_atom(Camel))),
                 Meth = resolve(solution, Camel, length(Args)),
                 B = apply(solution, Meth, Args),
                 {fun() -> apply(solution, Meth, Args) end, binary_to_list(slice(canon(B), 80))}
@@ -108,14 +112,15 @@ run(BudgetStr, IdxStr) ->
 %% Every op's function is resolved once, before timing, and an op whose expected
 %% output is null (a void op; its return value is the solution's choice) folds
 %% null, as in the other languages.
-design_closure(Input, Expected) ->
+design_closure(Input, Expected, Specs) ->
     [Op0 | RestOps] = obj_get(Input, <<"ops">>),
     [A0 | RestArgs] = obj_get(Input, <<"args">>),
     Init = design_func(Op0, init),
-    Calls = [{design_func(Op0, Op), A, E == null}
+    Calls = [begin F = design_func(Op0, Op), {F, op_args(A, Specs, F), E == null} end
              || {Op, A, E} <- lists:zip3(RestOps, RestArgs, tl(Expected))],
+    A0c = op_args(A0, Specs, Init),
     fun() ->
-        apply(solution, Init, A0),
+        apply(solution, Init, A0c),
         lists:foldl(fun({F, A, Void}, Acc) ->
                             R = apply(solution, F, A),
                             fold(Acc, case Void of true -> null; false -> R end)
@@ -140,15 +145,17 @@ do_batch(_One, Acc, 0) -> Acc;
 do_batch(One, Acc, K) -> do_batch(One, fold(Acc, One()), K - 1).
 
 %% ----------------------------------------------------------------- run one case (validate)
-run_case(Input, Camel, Rnd) ->
+run_case(Input, {Camel, Specs}, Rnd) ->
     case design(Input) of
         true ->
             [Op0 | RestOps] = obj_get(Input, <<"ops">>),
             [A0 | RestArgs] = obj_get(Input, <<"args">>),
             Nums = case Rnd of true -> hd(A0); false -> undefined end,
-            apply(solution, design_func(Op0, init), A0),
+            Init = design_func(Op0, init),
+            apply(solution, Init, op_args(A0, Specs, Init)),
             Seq = [begin
-                       R = apply(solution, design_func(Op0, Op), A),
+                       F = design_func(Op0, Op),
+                       R = apply(solution, F, op_args(A, Specs, F)),
                        case Rnd andalso Op == <<"pick">> andalso is_integer(R) of
                            true -> lists:nth(R + 1, Nums);
                            false -> R
@@ -156,8 +163,19 @@ run_case(Input, Camel, Rnd) ->
                    end || {Op, A} <- lists:zip(RestOps, RestArgs)],
             [null | Seq];
         false ->
-            Args = build_args(Input),
+            Args = build_args(Input, param_chars(Specs, snake_atom(Camel))),
             apply(solution, resolve(solution, Camel, length(Args)), Args)
+    end.
+
+%% The expected output with each char() result as its code point.
+expected_chars(Input, Exp, {Camel, Specs}) ->
+    case design(Input) of
+        true ->
+            [Op0 | RestOps] = obj_get(Input, <<"ops">>),
+            [E0 | RestExp] = Exp,
+            [E0 | [charify(E, ret_chars(Specs, design_func(Op0, Op)))
+                   || {Op, E} <- lists:zip(RestOps, RestExp)]];
+        false -> charify(Exp, ret_chars(Specs, snake_atom(Camel)))
     end.
 
 %% design function names: snake(class)++"_init_" for the ctor, snake(class)++"_"++snake(op) otherwise.
@@ -165,8 +183,11 @@ design_func(Class, init) -> list_to_atom(underscore(Class) ++ "_init_");
 design_func(Class, Op) -> list_to_atom(underscore(Class) ++ "_" ++ underscore(Op)).
 
 resolve(Mod, Camel, Arity) ->
-    Snake = list_to_atom(underscore(Camel)),
+    Snake = snake_atom(Camel),
     CamelA = to_atom(Camel),
+    %% function_exported/3 is false for a module that is not loaded yet (the
+    %% run mode loads modules on first use), so load it first.
+    _ = code:ensure_loaded(Mod),
     case erlang:function_exported(Mod, Snake, Arity) of
         true -> Snake;
         false ->
@@ -251,12 +272,78 @@ design({object, Pairs}) ->
     lists:keymember(<<"ops">>, 1, Pairs) andalso lists:keymember(<<"args">>, 1, Pairs);
 design(_) -> false.
 
-build_args({object, Pairs}) ->
+%% Depths: the char() depth of each parameter, from param_chars/2.
+build_args({object, Pairs}, Depths) ->
     [case K of
          <<"root">> -> build_tree(V);
          <<"head">> -> build_list(V);
-         _ -> V
-     end || {K, V} <- Pairs].
+         _ -> charify(V, D)
+     end || {{K, V}, D} <- lists:zip(Pairs, pad(Depths, length(Pairs)))].
+
+%% ----------------------------------------------------------------- char() types
+%% LeetCode's Erlang char() is an integer (a code point), but the shared JSON
+%% holds a 1-char string. char_specs/1 reads the -spec lines of the cell's
+%% LeetCode snippet (problem.json) and maps each function name to the char()
+%% depth of its parameters and of its result: 0 = char(), 1 = [char()],
+%% 2 = [[char()]], none = no char() type. charify/2 converts a value.
+char_specs(Cwd) ->
+    Snip = try snippet(readf(filename:join(Cwd, "problem.json")), <<"\"erlang\"">>)
+           catch _:_ -> "" end,
+    case re:run(Snip, "^-spec\\s+([a-z0-9_]+)\\s*\\((.*)\\)\\s*->\\s*(.*)\\.\\s*$",
+                [multiline, global, {capture, all_but_first, list}]) of
+        {match, Ms} ->
+            maps:from_list([{list_to_atom(N), {[char_depth(spec_type(P)) || P <- split_top(Ps)], char_depth(R)}}
+                            || [N, Ps, R] <- Ms]);
+        nomatch -> #{}
+    end.
+
+%% The JSON string value of Key in Bin (a code_snippets entry), decoded.
+snippet(Bin, Key) ->
+    {Pos, Len} = binary:match(Bin, Key),
+    R0 = binary:part(Bin, Pos + Len, byte_size(Bin) - Pos - Len),
+    <<$:, R1/binary>> = skip_ws(R0),
+    <<$", R2/binary>> = skip_ws(R1),
+    {S, _} = pstr(R2, []),
+    binary_to_list(S).
+
+%% Split a parameter list at its top-level commas.
+split_top(S) -> split_top(S, 0, [], []).
+split_top([], _D, Cur, Acc) ->
+    lists:reverse([lists:reverse(Cur) | Acc]) -- [[]];
+split_top([$, | T], 0, Cur, Acc) -> split_top(T, 0, [], [lists:reverse(Cur) | Acc]);
+split_top([C | T], D, Cur, Acc) when C =:= $(; C =:= $[; C =:= ${ -> split_top(T, D + 1, [C | Cur], Acc);
+split_top([C | T], D, Cur, Acc) when C =:= $); C =:= $]; C =:= $} -> split_top(T, D - 1, [C | Cur], Acc);
+split_top([C | T], D, Cur, Acc) -> split_top(T, D, [C | Cur], Acc).
+
+%% `Name :: Type` -> Type
+spec_type(P) ->
+    case string:split(P, "::") of
+        [_Name, T] -> T;
+        [T] -> T
+    end.
+
+char_depth(T) ->
+    case re:run(string:trim(T), "^(\\[*)char\\(\\)(\\]*)$", [{capture, all_but_first, list}]) of
+        {match, [L, R]} when length(L) == length(R) -> length(L);
+        _ -> none
+    end.
+
+param_chars(Specs, F) -> case maps:find(F, Specs) of {ok, {Ps, _}} -> Ps; error -> [] end.
+ret_chars(Specs, F) -> case maps:find(F, Specs) of {ok, {_, R}} -> R; error -> none end.
+
+op_args(A, Specs, F) ->
+    [charify(V, D) || {V, D} <- lists:zip(A, pad(param_chars(Specs, F), length(A)))].
+
+pad(L, N) when length(L) >= N -> lists:sublist(L, N);
+pad(L, N) -> L ++ lists:duplicate(N - length(L), none).
+
+charify(V, 0) when is_binary(V) ->
+    case unicode:characters_to_list(V) of
+        [C] -> C;
+        _ -> V
+    end;
+charify(V, D) when is_list(V), is_integer(D), D > 0 -> [charify(E, D - 1) || E <- V];
+charify(V, _) -> V.
 
 %% ----------------------------------------------------------------- nodes
 build_tree(null) -> null;
@@ -358,8 +445,16 @@ norm(V) -> V.
 fold(Acc, R) -> (Acc * 1000003 + erlang:phash2(norm(R))) band ?MASK64.
 
 %% ----------------------------------------------------------------- compare helpers
+%% Exact equality, except that two numbers match within 1e-5 when one of them is
+%% a float: LeetCode accepts answers within 1e-5 on its float problems.
+eq(A, E) when is_list(A), is_list(E) ->
+    length(A) == length(E) andalso lists:all(fun({X, Y}) -> eq(X, Y) end, lists:zip(A, E));
+eq(A, E) when is_number(A), is_number(E), (is_float(A) orelse is_float(E)) ->
+    A == E orelse abs(A - E) =< 1.0e-5;
+eq(A, E) -> canon(A) == canon(E).
+
 seq_ok(A, E) when is_list(A), is_list(E), length(A) == length(E) ->
-    lists:all(fun({Av, Ev}) -> Ev == null orelse canon(Av) == canon(Ev) end, lists:zip(A, E));
+    lists:all(fun({Av, Ev}) -> Ev == null orelse eq(Av, Ev) end, lists:zip(A, E));
 seq_ok(_, _) -> false.
 
 unordered_eq(A, E) when is_list(A), is_list(E) ->
@@ -373,6 +468,8 @@ underscore(S) ->
     S1 = re:replace(S, "([A-Z]+)([A-Z][a-z])", "\\1_\\2", [global, {return, list}]),
     S2 = re:replace(S1, "([a-z0-9])([A-Z])", "\\1_\\2", [global, {return, list}]),
     string:lowercase(S2).
+
+snake_atom(S) -> list_to_atom(underscore(S)).
 
 to_atom(S) when is_binary(S) -> binary_to_atom(S, utf8);
 to_atom(S) when is_list(S) -> list_to_atom(S).

@@ -38,6 +38,7 @@ module MiniParallel
 
     def self.work_in_processes(array, count, &block)
         index = -1
+        lock = Mutex.new
         results, threads = [], []
 
         workers = create_workers(array, count, &block)
@@ -45,9 +46,9 @@ module MiniParallel
         workers.each do |worker|
             threads << Thread.new do
                 loop do
-                    Thread.exclusive{ index += 1 }
-                    break if index >= array.size
-                    results[index] = worker.work(index)
+                    i = lock.synchronize { index += 1 }
+                    break if i >= array.size
+                    results[i] = worker.work(i)
                 end
                 worker.close_pipes
             end
@@ -166,11 +167,15 @@ class Fannkuch
     end
 end
 
-abort "Usage: #{__FILE__} n\n(n > 6)" if (n = ARGV[0].to_i) < 6
+n = ARGV[0].to_i
 
+total = (1..n).reduce(:*)
 core_count = MiniParallel.core_count
 core_count -= 1 if core_count > 1 && core_count.odd?
-chunk_size = (1..n).reduce(:*) / core_count
+# At most 20 chunks (with more, the weights below reach 1 and a chunk's size
+# turns negative) and never more chunks than permutations.
+core_count = [core_count, 20, total].min
+chunk_size = total / core_count
 
 sum, flips =
     if core_count > 1
@@ -185,12 +190,19 @@ sum, flips =
                       [0]
                   end
 
-        # Generate start position for each chunk
-        chunks = core_count.times.zip(weights).map do |count, weight|
-            [count * chunk_size +
-             (count > 0 ? (weights[0,count].reduce(:+) * chunk_size).round : 0),
-             chunk_size + (weight * chunk_size).round]
+        # Generate start position for each chunk. Chunk k covers
+        # [bounds[k], bounds[k+1]): the boundaries are cumulative and strictly
+        # increasing, and the last one is n!, so every permutation index is in
+        # exactly one non-empty chunk.
+        bounds = (0...core_count).map do |count|
+            count * chunk_size +
+            (count > 0 ? (weights[0,count].reduce(:+) * chunk_size).round : 0)
         end
+        bounds << total
+        (1...core_count).each do |k|
+            bounds[k] = [[bounds[k], bounds[k - 1] + 1].max, total - (core_count - k)].min
+        end
+        chunks = (0...core_count).map { |k| [bounds[k], bounds[k + 1] - bounds[k]] }
 
         chunk_results =
             if RUBY_PLATFORM == 'java'

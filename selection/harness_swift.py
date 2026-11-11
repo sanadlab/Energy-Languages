@@ -17,10 +17,12 @@ The driver carries its own ordered, lossless JSON parser (numbers kept as raw
 text) so ordering + big-int precision match the C++/C harnesses exactly.
 
 Contract (run FROM the cell dir):
-    python3 harness_swift.py validate      -> exit 0/1/3 (Accepted/WA/RE), 2 setup
+    python3 harness_swift.py validate      -> exit 0/1/3 (Accepted/WA/RE), 2 compile
+    python3 harness_swift.py compile       -> compile the solution only, run nothing
+    python3 harness_swift.py build         -> measure driver into .perf_build/driver
     python3 harness_swift.py <budget> <idx> -> perf line on stderr
 """
-import json, os, subprocess, sys, tempfile
+import hashlib, json, os, re, shutil, signal, subprocess, sys, tempfile
 import harness_cpp as cpp
 
 ROOT = cpp.ROOT
@@ -265,6 +267,10 @@ func canonJSONmset(_ j: J) -> String {
     return canonJSON(j)
 }
 func eprint(_ s: String) { fputs(s, stderr) }
+// validate: names the case that runs next on stdout, so that when a crash in
+// the solution kills the driver (a trap gives a signal, not an exit code),
+// harness_swift.py can still report the case
+func markCase(_ ci: Int, _ n: Int, _ name: String) { fputs("@@PERFARENA_CASE \(ci) \(n) \(name)\n", stdout); fflush(stdout) }
 func fmtG(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); snprintf(ptr: &b, 64, "%.6g", d); return String(cString: b) }
 func fmtF6(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); snprintf(ptr: &b, 64, "%.6f", d); return String(cString: b) }
 func nowS() -> Double { var ts = timespec(); clock_gettime(CLOCK_MONOTONIC, &ts); return Double(ts.tv_sec) + Double(ts.tv_nsec) / 1e9 }
@@ -332,6 +338,7 @@ let slug = "__SLUG__"
 let cases = items(field(doc, "expected")!)
 for (ci, kase) in cases.enumerated() {
     let name = { if case .str(let s)? = field(kase, "name") { return s }; return "case" }()
+    markCase(ci, cases.count, name)
     let E = entries(field(kase, "input")!)
     _ = E
     let outV = field(kase, "output") ?? .null
@@ -350,11 +357,75 @@ exit(0)
     return PRELUDE + body
 
 
+# Node copy and compare helpers for the measure driver. They use a queue or a
+# loop, so a 1e5-node chain needs no deep recursion.
+NODE_COPY = r"""
+func copyTree(_ r: TreeNode?) -> TreeNode? {   // level order, as toTree builds it
+    guard let r = r else { return nil }
+    let root = TreeNode(r.val); var q: [(TreeNode, TreeNode)] = [(r, root)]; var i = 0
+    while i < q.count {
+        let (s, d) = q[i]; i += 1
+        if let l = s.left { let c = TreeNode(l.val); d.left = c; q.append((l, c)) }
+        if let rr = s.right { let c = TreeNode(rr.val); d.right = c; q.append((rr, c)) }
+    }
+    return root
+}
+func copyList(_ h: ListNode?) -> ListNode? {
+    guard let h = h else { return nil }
+    let head = ListNode(h.val); var d = head; var s = h.next
+    while let n = s { let c = ListNode(n.val); d.next = c; d = c; s = n.next }
+    return head
+}
+// Does b (a copy after one call) still equal the base a? Level order with nil
+// markers for trees, value by value for lists. The walks follow the base,
+// which has no cycles, so they end even when the solution leaves one in b.
+func sameTree(_ a: TreeNode?, _ b: TreeNode?) -> Bool {
+    var q: [(TreeNode?, TreeNode?)] = [(a, b)]; var i = 0
+    while i < q.count {
+        let (x, y) = q[i]; i += 1
+        if x == nil && y == nil { continue }
+        guard let n = x, let m = y, n.val == m.val else { return false }
+        q.append((n.left, m.left)); q.append((n.right, m.right))
+    }
+    return true
+}
+func sameList(_ a: ListNode?, _ b: ListNode?) -> Bool {
+    var x = a, y = b
+    while let n = x { guard let m = y, m.val == n.val else { return false }; x = n.next; y = m.next }
+    return y == nil
+}
+"""
+
+
 def gen_measure(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
-    args = _marshal_call(info["norm"], lambda i: "E[%d].1" % i)
-    call = "Solution().%s(%s)" % (info["method"], ", ".join(args))
-    beacon = _canon_result(info["retn"], call)
+    norm = info["norm"]
+    bases = _marshal_call(norm, lambda i: "E[%d].1" % i)
+    params = ", ".join("_ x%d: %s" % (i, _swift_type(n)) for i, n in enumerate(norm))
+    call = "Solution().%s(%s)" % (info["method"], ", ".join("x%d" % i for i in range(len(norm))))
+    nodes = [i for i, n in enumerate(norm) if n in ("TreeNode*", "ListNode*")]
+    kind = {i: "Tree" if norm[i] == "TreeNode*" else "List" for i in nodes}
+    base_args = ", ".join("b%d" % i for i in range(len(norm)))
+    fresh_args = ", ".join("copy%s(b%d)" % (kind[i], i) if i in nodes else "b%d" % i
+                           for i in range(len(norm)))
+    copy_args = ", ".join("p%d[k]" % i if i in nodes else "b%d" % i for i in range(len(norm)))
+    if nodes:
+        check = ("let sharedInput: Bool = {   // one call on fresh copies: does it change a node argument?\n"
+                 + "".join("    let c%d = copy%s(b%d)\n" % (i, kind[i], i) for i in nodes)
+                 + "    _ = doCall(%s)\n" % ", ".join("c%d" % i if i in nodes else "b%d" % i
+                                                     for i in range(len(norm)))
+                 + "    return " + " && ".join("same%s(b%d, c%d)" % (kind[i], i, i) for i in nodes)
+                 + "\n}()")
+        pools = "\n".join("var p%d = [%s]()" % (i, _swift_type(norm[i])) for i in nodes)
+        fill = "; ".join("p%d.removeAll(keepingCapacity: true); for _ in 0..<batch { p%d.append(copy%s(b%d)) }"
+                         % (i, i, kind[i], i) for i in nodes)
+        timed = ("if sharedInput { __SHARED__ } else {\n"
+                 "        for k in 0..<batch { for b in doCall(%s).utf8 { acc = acc &* 1000003 &+ UInt64(b) } } }"
+                 % copy_args)
+    else:
+        check, pools, fill, timed = "let sharedInput = true", "", "", "__SHARED__"
+    shared_loop = ("for _ in 0..<batch { for b in doCall(%s).utf8 { acc = acc &* 1000003 &+ UInt64(b) } }"
+                   % base_args)
     body = r'''
 let doc = loadDoc("__OUTS__")
 let budget = Double(CommandLine.arguments[1]) ?? 1.0
@@ -364,21 +435,47 @@ let kase = cases[idx]
 let name = { if case .str(let s)? = field(kase, "name") { return s }; return "case" }()
 let E = entries(field(kase, "input")!)
 _ = E
-func doCall() -> String { return __BEACON__ }
+// The inputs are marshalled ONCE (b0, b1, ...). Arrays and strings are value
+// types, so a call cannot change them and every call gets the base. Tree and
+// list nodes are classes: if one call on fresh copies shows that the solution
+// changes them, every call gets its own copies, made outside the timed region.
+__BASES__
+func doCall(__PARAMS__) -> String { return __BEACON__ }
+__CHECK__
 var acc: UInt64 = 0; var iters = 0
 let warm = budget * 0.3
 let t0 = nowS(); var wi = 0
-while nowS() - t0 < warm { _ = doCall(); wi += 1 }
+while nowS() - t0 < warm { _ = sharedInput ? doCall(__BASE_ARGS__) : doCall(__FRESH_ARGS__); wi += 1 }
 let per = wi > 0 ? (nowS() - t0) / Double(wi) : warm
 var batch = 4096; if per > 0 { let bb = Int(0.002 / per); batch = bb < 1 ? 1 : (bb > 4096 ? 4096 : bb) }
+// the memory pass makes one copy at a time, so its peak RSS holds one copy
+if !sharedInput, let mp = getenv("PERFARENA_MEM_PASS"), mp.pointee != 0 { batch = 1 }
+// MEAS_S is the sum of the timed segments (the calls and the fold only); the
+// measured phase also stops at 4x its target, which only matters when the
+// copies are expensive.
+let measTarget = budget - warm
+let measCap = 4 * measTarget
+var meas = 0.0
+__POOLS__
 let tm = nowS()
-while nowS() - tm < budget - warm { for _ in 0..<batch { for b in doCall().utf8 { acc = acc &* 1000003 &+ UInt64(b) } }; iters += batch }
-let meas = nowS() - tm
-let beacon = doCall()
+while meas < measTarget && nowS() - tm < measCap {
+    if !sharedInput { __FILL__ }
+    let t = nowS()
+    __TIMED__
+    meas += nowS() - t
+    iters += batch
+}
+let beacon = doCall(__FRESH_ARGS__)
 eprint("CASE=\(name) ITERS=\(iters) ACC=\(acc) MEAS_S=\(fmtF6(meas)) BEACON=\(beacon)\n")
 '''
-    body = body.replace("__OUTS__", outs).replace("__BEACON__", beacon)
-    return PRELUDE + body
+    body = (body.replace("__OUTS__", outs)
+                .replace("__BASES__", "\n".join("let b%d = %s" % (i, a) for i, a in enumerate(bases)))
+                .replace("__PARAMS__", params)
+                .replace("__BEACON__", _canon_result(info["retn"], call))
+                .replace("__CHECK__", check).replace("__POOLS__", pools).replace("__FILL__", fill)
+                .replace("__TIMED__", timed).replace("__SHARED__", shared_loop)
+                .replace("__BASE_ARGS__", base_args).replace("__FRESH_ARGS__", fresh_args))
+    return PRELUDE + (NODE_COPY if nodes else "") + body
 
 
 # ── design mains ────────────────────────────────────────────────────────────────
@@ -417,6 +514,7 @@ let randomized = __RAND__
 let cases = items(field(doc, "expected")!)
 for (ci, kase) in cases.enumerated() {
     let name = { if case .str(let s)? = field(kase, "name") { return s }; return "case" }()
+    markCase(ci, cases.count, name)
     let OPS = items(field(kase, "input")!.arrField("ops"))
     let ARG = items(field(kase, "input")!.arrField("args"))
     let AR = ARG
@@ -512,72 +610,224 @@ def _design_helpers():
 
 
 # ── build (swiftc) & run ────────────────────────────────────────────────────────
-def _build(slug, mode):
+_FOUNDATION = None
+
+
+def _foundation_ok():
+    """True when this swiftc can `import Foundation`. LeetCode compiles a Swift
+    solution with Foundation (sqrt, pow, String(format:) and DateFormatter need
+    no import there), but some toolchains cannot import it (macOS
+    CommandLineTools 26: "redefinition of module 'SwiftBridging'"). A check
+    costs about 1.5 s, so its result is kept in a file in the temp dir, one per
+    swiftc version."""
+    global _FOUNDATION
+    if _FOUNDATION is None:
+        tmp = tempfile.mkdtemp(prefix="hz_swift_foundation_")
+        try:
+            v = subprocess.run(["swiftc", "--version"], capture_output=True, text=True,
+                               env=_swiftc_env(tmp))
+            key = "\0".join([shutil.which("swiftc") or "", v.stdout, v.stderr,
+                             os.environ.get("DEVELOPER_DIR", ""), os.environ.get("SDKROOT", "")])
+            stamp = os.path.join(tempfile.gettempdir(), "perfarena_swift_foundation_"
+                                 + hashlib.sha256(key.encode()).hexdigest()[:16])
+            try:
+                _FOUNDATION = open(stamp).read().strip() == "1"
+            except OSError:
+                f = os.path.join(tmp, "f.swift")
+                open(f, "w").write("import Foundation\n")
+                _FOUNDATION = subprocess.run(["swiftc", "-typecheck", f], capture_output=True,
+                                             env=_swiftc_env(tmp)).returncode == 0
+                part = "%s.%d" % (stamp, os.getpid())
+                open(part, "w").write("1" if _FOUNDATION else "0")
+                os.replace(part, stamp)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    return _FOUNDATION
+
+
+def _swiftc_env(tmp):
+    """swiftc leaves an empty TemporaryDirectory.* in TMPDIR on every run: point
+    it at our own temp dir, which is removed after the build."""
+    return {**os.environ, "TMPDIR": tmp}
+
+
+def _solution_header():
+    """Put before the solution: `import Foundation` when the toolchain has it,
+    as on LeetCode; otherwise the C library (Darwin or Glibc), which still has
+    sqrt, pow and the other math functions. #sourceLocation keeps the
+    compiler's line numbers equal to the solution's own."""
+    if _foundation_ok():
+        imp = "import Foundation\n"
+    else:
+        # (as in PRELUDE: `canImport(Glibc)` on macOS loads every module map
+        # and hits the same SwiftBridging error)
+        imp = "#if canImport(Darwin)\nimport Darwin\n#else\nimport Glibc\n#endif\n"
+    return imp + '#sourceLocation(file: "solution.swift", line: 1)\n'
+
+
+def _strip_comments(src):
+    """src without its // and /* */ comments. LeetCode's snippet keeps the node
+    class definitions in a comment, and a comment defines nothing."""
+    src = re.sub(r"/\*.*?\*/", "", src, flags=re.S)
+    return re.sub(r"//[^\n]*", "", src)
+
+
+def _node_defs(sol):
+    """The node classes that the solution does not define itself. The marshal
+    helpers (toTree/toList/…) always use TreeNode and ListNode, so both must be
+    in scope; LeetCode's judge provides them, so solutions usually have neither."""
+    code = _strip_comments(sol)
+    inject = ""
+    if not re.search(r"\bclass\s+TreeNode\b", code):
+        inject += NODES.split("final class ListNode")[0]
+    if not re.search(r"\bclass\s+ListNode\b", code):
+        inject += "\nfinal class ListNode" + NODES.split("final class ListNode")[1]
+    return inject
+
+
+def _swiftc_error(stderr):
+    """The first `error:` line, then the compiler's whole message."""
+    stderr = (stderr or "").strip()
+    errs = [l for l in stderr.splitlines() if " error: " in l]
+    return "swiftc: " + (errs[0] if errs else stderr[:200]) + "\n" + stderr[-4000:]
+
+
+def _build(slug, mode, tmp):
+    """Generate the `mode` driver (validate or measure) and compile it with the
+    solution in the directory `tmp`. Returns (binary, None) or (None, error)."""
     info = analyze(slug)
     if info["kind"] == "unsupported":
-        return None, info, info.get("reason", "unsupported")
+        return None, info.get("reason", "unsupported")
     if info["kind"] == "design":
         src = gen_validate_design(slug, info) if mode == "validate" else gen_measure_design(slug, info)
     else:
         src = gen_validate(slug, info) if mode == "validate" else gen_measure(slug, info)
-    cell = os.path.join(ROOT, "Swift", "leetcode", slug)
-    sol = open(os.path.join(cell, "solution.swift")).read()
-    # The marshal helpers (toTree/toList/…) always reference TreeNode/ListNode,
-    # so both must be in scope. LeetCode Swift solutions don't define them (the
-    # judge provides them), so inject both — unless the model defined them.
-    treedef = NODES.split("final class ListNode")[0]
-    listdef = "\nfinal class ListNode" + NODES.split("final class ListNode")[1]
-    inject = ""
-    if "class TreeNode" not in sol: inject += treedef
-    if "class ListNode" not in sol: inject += listdef
-    tmp = tempfile.mkdtemp(prefix="hz_swift_%s_" % mode)
+    sol = open(os.path.join(ROOT, "Swift", "leetcode", slug, "solution.swift")).read()
     # top-level executable code must live in a file called main.swift
     driver = os.path.join(tmp, "main.swift")
-    open(driver, "w").write(inject + src)
-    soltmp = os.path.join(tmp, "solution.swift"); open(soltmp, "w").write(sol)
+    open(driver, "w").write(_node_defs(sol) + src)
+    soltmp = os.path.join(tmp, "solution.swift")
+    open(soltmp, "w").write(_solution_header() + sol)
     binp = os.path.join(tmp, "driver")
     cc = subprocess.run(["swiftc", *cpp.compile_flags(["-O"]), driver, soltmp, "-o", binp],
-                        capture_output=True, text=True)
+                        capture_output=True, text=True, env=_swiftc_env(tmp))
     if cc.returncode != 0:
-        # surface the first real "error:" line, not swiftc's source-context tail
-        errs = [l for l in (cc.stderr or "").splitlines() if " error: " in l]
-        return None, info, "swiftc: " + (errs[0] if errs else (cc.stderr or "").strip()[:200])
-    return binp, info, tmp
+        return None, _swiftc_error(cc.stderr)
+    return binp, None
+
+
+def compile_only(slug):
+    """`make compile`: compile the solution file alone (with the node classes it
+    does not define, as a library, so top-level code is an error as in the real
+    build) and run nothing. A mistake that only the driver shows (a wrong
+    method name or signature) is a Compile Error of the validator."""
+    sol = open(os.path.join(ROOT, "Swift", "leetcode", slug, "solution.swift")).read()
+    tmp = tempfile.mkdtemp(prefix="hz_swift_compile_")
+    try:
+        open(os.path.join(tmp, "nodes.swift"), "w").write(_node_defs(sol))
+        open(os.path.join(tmp, "solution.swift"), "w").write(_solution_header() + sol)
+        cc = subprocess.run(["swiftc", *cpp.compile_flags(["-O"]), "-parse-as-library", "-wmo", "-c",
+                             "-module-name", "PerfArenaCheck", "nodes.swift", "solution.swift",
+                             "-o", "check.o"], capture_output=True, text=True, cwd=tmp,
+                            env=_swiftc_env(tmp))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    if cc.returncode != 0:
+        sys.stderr.write(_swiftc_error(cc.stderr) + "\n")
+        return 1
+    return 0
+
+
+_FAIL_LINE = re.compile(r"^VALIDATE slug=\S+ FAIL\b", re.M)
+_CASE_MARK = re.compile(r"^@@PERFARENA_CASE (\d+) (\d+) (.*)$", re.M)
+
+
+def _how(rc):
+    if rc < 0:
+        try:
+            return "signal=" + signal.Signals(-rc).name
+        except ValueError:
+            return "signal=%d" % -rc
+    return "exit=%d" % rc
 
 
 def build_and_validate(slug):
-    binp, info, tmp = _build(slug, "validate")
-    if binp is None:
-        sys.stderr.write("VALIDATE slug=%s ERROR %s\n" % (slug, tmp))
-        return 2
-    cell = os.path.join(ROOT, "Swift", "leetcode", slug)
-    rr = subprocess.run([binp], capture_output=True, text=True, cwd=cell, timeout=300)
+    tmp = tempfile.mkdtemp(prefix="hz_swift_validate_")
+    try:
+        binp, err = _build(slug, "validate", tmp)
+        if binp is None:
+            sys.stderr.write("VALIDATE slug=%s ERROR %s\n" % (slug, err))
+            return 2
+        cell = os.path.join(ROOT, "Swift", "leetcode", slug)
+        rr = subprocess.run([binp], capture_output=True, text=True, errors="replace",
+                            cwd=cell, timeout=300)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     if rr.stderr: sys.stderr.write(rr.stderr)
-    return rr.returncode
+    if rr.returncode == 0 or (rr.returncode == 1 and _FAIL_LINE.search(rr.stderr or "")):
+        return rr.returncode
+    # Anything else is a crash in the solution: a Swift trap (index out of
+    # range, nil unwrap, overflow) or a stack overflow ends the driver with a
+    # signal, and an exit() of the solution's own with another code. Never
+    # return a negative code: sys.exit(-n) would exit with 256-n.
+    marks = _CASE_MARK.findall(rr.stdout or "")
+    where = "case=%s passed=%s ncases=%s " % (marks[-1][2], marks[-1][0], marks[-1][1]) if marks else ""
+    sys.stderr.write("VALIDATE slug=%s RE %s%s\n" % (slug, where, _how(rr.returncode)))
+    return 3
+
+
+def build_prebuilt(slug):
+    """Build the measure driver into <cell>/.perf_build/driver for
+    run_harness.sh run mode, so a measured run never includes swiftc."""
+    tmp = tempfile.mkdtemp(prefix="hz_swift_build_")
+    try:
+        binp, err = _build(slug, "measure", tmp)
+        if binp is None:
+            print("TODO/compile_error %s: %s" % (slug, err), file=sys.stderr)
+            return 1
+        out = os.path.join(os.getcwd(), ".perf_build")
+        os.makedirs(out, exist_ok=True)
+        # copy, then rename: overwriting an executable in place makes macOS
+        # kill its next start (SIGKILL); a rename gives a new file
+        shutil.copy(binp, os.path.join(out, "driver.new"))
+        os.replace(os.path.join(out, "driver.new"), os.path.join(out, "driver"))
+        return 0
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def build_and_run(slug, budget, idx):
-    binp, info, tmp = _build(slug, "measure")
-    if binp is None:
-        return "compile_error", tmp, None
-    cell = os.path.join(ROOT, "Swift", "leetcode", slug)
-    rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True, text=True,
-                        cwd=cell, timeout=max(30, budget * 4 + 20))
+    tmp = tempfile.mkdtemp(prefix="hz_swift_measure_")
+    try:
+        binp, err = _build(slug, "measure", tmp)
+        if binp is None:
+            return "compile_error", err
+        cell = os.path.join(ROOT, "Swift", "leetcode", slug)
+        rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True, text=True,
+                            cwd=cell, timeout=max(30, budget * 4 + 20))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     if rr.returncode != 0:
-        return "runtime_error", (rr.stderr.strip().splitlines()[-1] if rr.stderr else "rc=%d" % rr.returncode), None
-    return "ok", rr.stderr.strip(), None
+        return "runtime_error", (rr.stderr.strip().splitlines()[-1] if rr.stderr else _how(rr.returncode))
+    return "ok", rr.stderr.strip()
 
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "validate":
-        sys.exit(build_and_validate(os.path.basename(os.getcwd())))
+    slug = os.path.basename(os.getcwd())
+    mode = sys.argv[1] if len(sys.argv) > 1 else ""
+    if mode == "validate":
+        sys.exit(build_and_validate(slug))
+    if mode == "compile":
+        sys.exit(compile_only(slug))
+    if mode == "build":
+        sys.exit(build_prebuilt(slug))
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx = int(sys.argv[2]) if len(sys.argv) > 2 else 0
-    status, msg, _ = build_and_run(os.path.basename(os.getcwd()), budget, idx)
+    status, msg = build_and_run(slug, budget, idx)
     if status == "ok":
         print(msg, file=sys.stderr)
     else:
-        print("TODO/%s %s: %s" % (status, os.path.basename(os.getcwd()), msg), file=sys.stderr)
+        print("TODO/%s %s: %s" % (status, slug, msg), file=sys.stderr)
         sys.exit(1)
 
 

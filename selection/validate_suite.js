@@ -37,6 +37,19 @@ function canon(r){
   if(r instanceof TreeNode) return JSON.stringify(treeToArr(r));
   try { return JSON.stringify(r); } catch(e){ return String(r); }
 }
+// Equal canonical JSON, except that two numbers match within 1e-5 when one of
+// them is not an integer: LeetCode accepts answers within 1e-5 on its float problems.
+function near(a, b){
+  if(Array.isArray(a) && Array.isArray(b)) return a.length === b.length && a.every((x, i) => near(x, b[i]));
+  if(typeof a === 'number' && typeof b === 'number')
+    return a === b || ((!Number.isInteger(a) || !Number.isInteger(b)) && Math.abs(a - b) <= 1e-5);
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+function sameResult(actual, expected){
+  const ca = canon(actual), ce = canon(expected);
+  if(ca === ce) return true;
+  try { return near(JSON.parse(ca), JSON.parse(ce)); } catch(e){ return false; }
+}
 
 const cell = process.cwd();
 const slug = path.basename(cell);
@@ -58,7 +71,7 @@ const SolutionCls = resolve('Solution');
 const hasSol = (typeof SolutionCls === 'function');
 const randomized = (slug === 'random-pick-index');
 // LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
-const UNORDERED = new Set(['uncommon-words-from-two-sentences','remove-invalid-parentheses','restore-the-array-from-adjacent-pairs']);
+const UNORDERED = new Set(['uncommon-words-from-two-sentences','remove-invalid-parentheses','restore-the-array-from-adjacent-pairs','ambiguous-coordinates']);
 function unorderedEq(a, e){
   if(!Array.isArray(a) || !Array.isArray(e)) return canon(a)===canon(e);
   const k = xs => xs.map(canon).sort();
@@ -107,7 +120,7 @@ for(let __i=0;__i<cases.length;__i++){
   const isDesign = ('ops' in c.input && 'args' in c.input);
   try { actual = runCase(c.input); }
   catch(e){ process.stderr.write(`VALIDATE slug=${slug} RE case=${c.name} passed=${__i} ncases=${__total} ${e}\n`); process.exit(3); }
-  const ok = isDesign ? seqOk(actual, c.output) : (UNORDERED.has(slug) ? unorderedEq(actual, c.output) : (canon(actual) === canon(c.output)));
+  const ok = isDesign ? seqOk(actual, c.output) : (UNORDERED.has(slug) ? unorderedEq(actual, c.output) : sameResult(actual, c.output));
   if(!ok){
     process.stderr.write(`VALIDATE slug=${slug} FAIL case=${c.name} passed=${__i} ncases=${__total} `
       + `expected=${canon(c.output).slice(0,120)} actual=${canon(actual).slice(0,120)}\n`);

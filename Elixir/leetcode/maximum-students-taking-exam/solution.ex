@@ -50,7 +50,7 @@ defmodule Solution do
     |> Enum.take(n)
     |> Enum.with_index()
     |> Enum.reduce(0, fn {cell, j}, acc ->
-      if cell == ".", do: bor(acc, bsl(1, j)), else: acc
+      if cell == ?., do: bor(acc, bsl(1, j)), else: acc
     end)
   end
 

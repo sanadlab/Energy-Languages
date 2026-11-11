@@ -39,7 +39,7 @@ row_mask(Row, N) -> row_mask(Row, 0, N, 0).
 row_mask([], _J, _N, Acc) -> Acc;
 row_mask(_Row, J, N, Acc) when J >= N -> Acc;
 row_mask([Cell | Rest], J, N, Acc) ->
-  Acc1 = case Cell =:= <<".">> of true -> Acc bor (1 bsl J); false -> Acc end,
+  Acc1 = case Cell =:= $. of true -> Acc bor (1 bsl J); false -> Acc end,
   row_mask(Rest, J + 1, N, Acc1).
 
 popcount(0) -> 0;

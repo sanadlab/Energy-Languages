@@ -81,27 +81,26 @@ LANGS: dict[str, Lang] = {
     "CSharp":     Lang("csharp",     "CSharp",     "cs",     "TestSuite.cs",     "test_suite",
                        "./test_suite",
                        "$(CSC) -out:test_suite solution.cs TestSuite.cs"),
-    # Go: solution.go has NO `package main`. Prepend one at compile
-    # time, then compile with test_suite.go which already declares it.
-    # NB: the temp file MUST NOT start with `_` — Go's build system
-    # excludes files with leading underscore/dot from compilation, so
-    # a `_sol_combined.go` name silently skips the whole solution.
-    "Go":         Lang("golang",     "Go",         "go",     "test_suite.go",    "test_suite",
-                       "./test_suite",
-                       "{ printf 'package main\\n\\n' ; cat solution.go ; } > sol_combined.go && "
-                       "$(GO) build -o test_suite sol_combined.go test_suite.go"),
+    # Go: the compile check builds the solution with the same generic
+    # harness (selection/harness_go.sh) that validates and measures it, in
+    # the module selection/go_lc_deps (gods), and keeps nothing: it never
+    # runs the solution. test_suite.go is no longer part of the build.
+    "Go":         Lang("golang",     "Go",         "go",     "test_suite.go",    "driver",
+                       "bash ../../../selection/harness_go.sh 0.2 0",
+                       "bash ../../../selection/harness_go.sh compile"),
     "JavaScript": Lang("javascript", "JavaScript", "js",     "test_suite.js",    "test_suite.js",
                        "node test_suite.js", ""),
     "PHP":        Lang("php",        "PHP",        "php",    "test_suite.php",   "test_suite.php",
                        "php test_suite.php", ""),
-    "Ruby":       Lang("ruby",       "Ruby",       "rb",     "test_suite.rb",    "test_suite.rb",
-                       "ruby test_suite.rb", ""),
+    # Ruby: `make compile` is a syntax check only (it never runs the code).
+    "Ruby":       Lang("ruby",       "Ruby",       "rb",     "test_suite.rb",    ".built",
+                       "ruby test_suite.rb", "ruby -c $(SOURCE) > /dev/null && touch .built"),
     # Rust: solution.rs has `impl Solution` but no `struct Solution;`.
     # Concatenate: header + solution.rs (has impl) + test_suite.rs body.
     "Rust":       Lang("rust",       "Rust",       "rs",     "test_suite.rs",    "test_suite",
                        "./test_suite",
-                       "{ grep -qE 'struct +Solution' solution.rs || printf 'pub struct Solution;\\n\\n' ; grep -q 'use rand' solution.rs && cat ../../../selection/rust_rand_shim.rs ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && "
-                       "$(RUSTC) -O _combined.rs -o test_suite"),
+                       "{ grep -qE 'struct +Solution' solution.rs || printf 'pub struct Solution;\\n\\n' ; cat solution.rs ; cat test_suite.rs ; } > _combined.rs && "
+                       "F=\"$$(python3 ../../../selection/harness_rust.py rustc-flags)\" && $(RUSTC) $$F _combined.rs -o test_suite"),
     # TS: --outFile is deprecated in modern tsc. Concatenate first, then
     # compile the single file → .js.
     "TypeScript": Lang("typescript", "TypeScript", "ts",     "test_suite.ts",    "combined.js",
@@ -425,7 +424,7 @@ def _bucket(lang_folder: str, ty: str) -> str:
         return T.INT_2D
     if any(k in tl for k in (
         "list<list<string>>", "vector<vector<string>>", "string[][]",
-        "list[list[str]]", "string[][]",
+        "list[list[str]]", "string[][]", "vec<vec<string>>", "[][]string",
     )):
         return T.STR_2D
     if any(k in tl for k in (

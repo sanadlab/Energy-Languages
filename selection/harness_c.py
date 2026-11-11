@@ -12,7 +12,7 @@ The trick: that whole convention is a DETERMINISTIC function of the logical
 + canonicalisation), then:
 
   * compile the model's solution.c with **gcc** (C-as-C++ breaks on un-cast
-    malloc), producing solution.o;
+    malloc) in LeetCode's gnu11, with uthash.h, producing solution.o;
   * generate a C++ driver that declares the solution `extern "C"`, marshals
     each JSON case into C values (building the ptr/size/out-param plumbing),
     calls it, marshals the result back to an `hz`-canonical string, and
@@ -21,6 +21,8 @@ The trick: that whole convention is a DETERMINISTIC function of the logical
 
 Contract (run FROM the cell dir, like harness_cpp.py):
     python3 harness_c.py validate       -> exit 0/1/3 (Accepted/WA/RE), 2 on setup
+    python3 harness_c.py compile        -> compile solution.c only (the cell's `make compile`)
+    python3 harness_c.py build          -> the measure driver into .perf_build/ (runs nothing)
     python3 harness_c.py <budget> <idx>  -> perf line on stderr
 
 Deterministic C-convention map (logical C++ type -> C params / C return):
@@ -53,11 +55,51 @@ C_NODES = (
 # malloc, memset, strlen, INT_MAX, isdigit, etc. without an #include. We prepend
 # them so a starter-style solution.c compiles standalone (mirrors the C++
 # harness prepending the STL headers the judge implicitly provides).
+# LeetCode's C also includes uthash.h by default (selection/uthash.h, found
+# through -I SEL), so a solution may use it with or without the #include.
 C_STD_PRELUDE = (
     "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n"
     "#include <stdbool.h>\n#include <math.h>\n#include <limits.h>\n"
-    "#include <ctype.h>\n#include <stdint.h>\n"
+    "#include <ctype.h>\n#include <stdint.h>\n#include \"uthash.h\"\n"
 )
+SEL = os.path.dirname(os.path.abspath(__file__))
+# LeetCode compiles C with gcc in the gnu11 standard (c11 hides strdup,
+# strtok_r and M_PI on glibc, and the GNU `typeof`).
+C_FLAGS = ["-O2", "-std=gnu11", "-w"]
+
+# Validate driver only: a signal in the solution (a crash, a stack overflow, an
+# abort) ends the run with exit 3 (Runtime Error) and the VALIDATE RE line of
+# the case it happened in. hz_mark_case() formats that line before each case,
+# so the handler only calls write() and _exit(), which are safe in a signal
+# handler. It runs on its own stack, so a stack overflow reaches it too.
+HZ_CRASH_C = r'''
+#include <signal.h>
+#include <unistd.h>
+static char hz_re_line[600];
+static size_t hz_re_len = 0;
+extern "C" void hz_on_crash(int sig) {
+    char tail[32]; int n = 0; char d[12]; int k = 0;
+    const char* p = " signal="; while (*p) tail[n++] = *p++;
+    do { d[k++] = (char)('0' + sig % 10); sig /= 10; } while (sig && k < 11);
+    while (k) tail[n++] = d[--k];
+    tail[n++] = '\n';
+    ssize_t w = write(2, hz_re_line, hz_re_len); w = write(2, tail, (size_t)n); (void)w;
+    _exit(3);
+}
+static void hz_mark_case(const std::string& slug, const std::string& name, size_t ci, size_t n) {
+    int k = snprintf(hz_re_line, sizeof hz_re_line, "VALIDATE slug=%s RE case=%s passed=%zu ncases=%zu",
+                     slug.c_str(), name.c_str(), ci, n);
+    hz_re_len = k < 0 ? 0 : std::min((size_t)k, sizeof hz_re_line - 1);
+}
+static struct HzCrashGuard {
+    HzCrashGuard() {
+        static char stack[1 << 16];
+        stack_t ss{}; ss.ss_sp = stack; ss.ss_size = sizeof stack; sigaltstack(&ss, nullptr);
+        struct sigaction sa{}; sa.sa_handler = hz_on_crash; sa.sa_flags = SA_ONSTACK; sigemptyset(&sa.sa_mask);
+        for (int s : {SIGSEGV, SIGBUS, SIGFPE, SIGILL, SIGABRT}) sigaction(s, &sa, nullptr);
+    }
+} hz_crash_guard;
+'''
 
 # Nodes come from malloc, as in LeetCode's C judge, so a solution may free() them.
 HZ_TREE_C = r'''
@@ -351,14 +393,26 @@ def _design_externs(className, cnorm, methods):
     return "\n".join(lines) + "\n"
 
 
-def _c_prelude(info):
+# Measure driver only: true when each C pointer in `p` still points into its
+# own container in `o` (the solution did not move or replace it).
+HZ_VIEWS_C = r'''
+template <class P, class O> static bool views_ok(const std::vector<P>& p, const std::vector<O>& o) {
+    if (p.size() != o.size()) return false;
+    for (size_t k = 0; k < o.size(); k++) if ((const void*)p[k] != (const void*)o[k].data()) return false;
+    return true;
+}
+'''
+
+
+def _c_prelude(info, measure=False, validate=False):
+    crash = HZ_CRASH_C if validate else ""
     if info["kind"] == "design":
         className, cnorm, methods = info["design"]
         uses_tree = uses_list = False
         for _op, _r, mn in methods:
             uses_tree = uses_tree or "TreeNode*" in mn
             uses_list = uses_list or "ListNode*" in mn
-        pre = (C_NODES if (uses_tree or uses_list) else "") + _design_externs(className, cnorm, methods)
+        pre = (C_NODES if (uses_tree or uses_list) else "") + _design_externs(className, cnorm, methods) + crash
         hz_extra = (HZ_TREE_C if uses_tree else "") + (HZ_LIST_C if uses_list else "")
         body = (cpp.PRELUDE.replace("__PRE_INCLUDE__", pre).replace("__HZ_EXTRA__", hz_extra))
         return body.replace('#include "__SOLUTION__"      // provides: class Solution (and, for some cells, TreeNode/ListNode)', "")
@@ -366,8 +420,11 @@ def _c_prelude(info):
     uses_tree = "TreeNode*" in info["norm"] or info["retn"] == "TreeNode*"
     uses_list = "ListNode*" in info["norm"] or info["retn"] == "ListNode*"
     pre = C_NODES if (uses_tree or uses_list) else ""
-    pre += _extern_decl(info["method"], info["norm"], info["retn"], node_ret)
+    pre += _extern_decl(info["method"], info["norm"], info["retn"], node_ret) + crash
     hz_extra = (HZ_TREE_C if uses_tree else "") + (HZ_LIST_C if uses_list else "")
+    if measure:
+        hz_extra += ((cpp.HZ_TREE_COPY if uses_tree else "") + (cpp.HZ_LIST_COPY if uses_list else "")
+                     + HZ_VIEWS_C)
     # reuse the C++ prelude, but DROP the `#include "solution"` (solution is C, linked).
     body = (cpp.PRELUDE
             .replace("__PRE_INCLUDE__", pre)
@@ -381,12 +438,18 @@ def gen_validate(slug, info):
     node_ret = info["retn"] in ("TreeNode*", "ListNode*")
     decls, args = _marshal_args(info["norm"], " " * 12)
     ret_lines = _marshal_return(info["retn"], node_ret, info["method"], args, " " * 12)
+    # free the result as the measure driver does (one policy, see _free_result);
+    # the validate inputs have the measure driver's names without the `a.`
+    ins = [x.replace("a.", "", 1) for x in _measure_inputs(info["norm"])[-1]]
+    if not node_ret:
+        ret_lines += _free_result(info["retn"], ins, " " * 12)
     unordered = slug in _UNORDERED
     exp_expr = "canonJVal_multiset(*outV)" if unordered else "canonJVal(*outV)"
     if unordered:                # re-canon `actual` as a multiset for special-judge
         ret_lines.append("            { hz::JVal _pa = hz::JP(actual).val(); actual = canonJVal_multiset(_pa); }")
-    body = "\n".join(decls + ret_lines)
-    return (_c_prelude(info)
+    mark = "            hz_mark_case(slug, name, ci, expected->arr.size());"
+    body = "\n".join([mark] + decls + ret_lines)
+    return (_c_prelude(info, validate=True)
             + cpp.MAIN_VALIDATE_PLAIN.replace("__OUTPUTS__", outs)
                                      .replace("__SLUG__", slug)
                                      .replace("__EXP_EXPR__", exp_expr)
@@ -394,14 +457,17 @@ def gen_validate(slug, info):
 
 
 # ── perf-measure driver ────────────────────────────────────────────────────────
-# As in the C++ driver: the inputs are parsed from JSON once, before timing, and
-# every call gets a fresh native copy (a solution may change its input). The call
-# returns its result as the C++ type of the logical signature, so MAIN_PLAIN folds
-# it with hz::cs exactly as it folds a C++ result. After the call, the driver
-# frees what LeetCode's contract says the caller frees (the returned arrays), but
-# never memory that is one of the call's own inputs (e.g. `return nums;`), and the
-# input trees and lists, as the C++ driver does. A returned string array keeps its
-# strings, which a solution often takes from its input.
+# As in the C++ driver (cpp.MAIN_PLAIN): the inputs are parsed from JSON once,
+# into `base`, before the warm-up. A mutation check then decides if every call
+# can get `base` itself, or needs a fresh copy, made outside the timed region.
+# An Args keeps the native containers and the C pointers into them (the C
+# calling convention). The call returns its result as the C++ type of the
+# logical signature, so MAIN_PLAIN folds it with hz::cs exactly as it folds a
+# C++ result. After the call, the driver frees what LeetCode's contract says
+# the caller frees (the returned arrays), but never memory that is one of the
+# call's own inputs (e.g. `return nums;`). A returned string array keeps its
+# strings, which a solution often takes from its input. The input trees and
+# lists are freed by release(), outside the timed region, as in the C++ driver.
 _SCALAR_FN = {"int": "to_int", "long": "to_ll", "longlong": "to_ll",
               "double": "to_double", "bool": "to_bool", "char": "to_char"}
 _VEC_ELEM = {"vector<int>": ("to_vint", "int"), "vector<longlong>": ("to_vll", "long long"),
@@ -410,77 +476,123 @@ _VEC_ELEM = {"vector<int>": ("to_vint", "int"), "vector<longlong>": ("to_vll", "
 
 
 def _measure_inputs(norm):
-    """(base, call, args, ins, frees): `base` parses each input once, before
-    timing; `call` makes the per-call copy and the C pointers into it; `ins`
-    names the input pointers (never freed); `frees` frees the input nodes."""
-    base, call, args, ins, frees = [], [], [], [], []
+    """(members, parse, copies, frees, same, views, args, ins) for
+    cpp._build_args: `args` are the C call arguments, `ins` name the input
+    pointers (never freed). Containers are compared with ==; the C pointers
+    into them with views_ok, so a solution that moves a pointer is seen."""
+    members, parse, copies, frees, same, views, args, ins = [], [], [], [], [], [], [], []
     for i, n in enumerate(norm):
         src = "E[%d].second" % i
-        if n in _SCALAR_FN:
-            base.append("    auto base%d = hz::%s(%s);" % (i, _SCALAR_FN[n], src))
-            call.append("        auto a%d = base%d;" % (i, i))
-            args.append("a%d" % i)
+        if n in _SCALAR_FN:              # passed by value: the solution cannot change it
+            members.append("decltype(hz::%s(hz::JVal{})) a%d{};" % (_SCALAR_FN[n], i))
+            parse.append("    base.a%d = hz::%s(%s);" % (i, _SCALAR_FN[n], src))
+            copies.append("a.a%d = base.a%d;" % (i, i))
+            args.append("a.a%d" % i)
         elif n == "string":
-            base.append("    std::string base%d = hz::to_str(%s);" % (i, src))
-            call.append("        std::string s{i} = base{i}; hz::opaque(s{i}); char* a{i} = s{i}.data();".format(i=i))
-            args.append("a%d" % i); ins.append("a%d" % i)
+            members.append("std::string s{i}; char* a{i}{{}};".format(i=i))
+            parse.append("    base.s%d = hz::to_str(%s);" % (i, src))
+            copies.append("a.s%d = base.s%d;" % (i, i))
+            views.append("a.a{i} = a.s{i}.data();".format(i=i))
+            same.append("a.s%d == base.s%d" % (i, i))
+            args.append("a.a%d" % i); ins.append("a.a%d" % i)
         elif n in _VEC_ELEM:
             fn, elem = _VEC_ELEM[n]
-            base.append("    std::vector<%s> base%d = hz::%s(%s);" % (elem, i, fn, src))
-            call.append("        std::vector<{e}> v{i} = base{i}; hz::opaque(v{i}); {e}* a{i} = v{i}.data(); "
-                        "int a{i}n = (int)v{i}.size();".format(e=elem, i=i))
-            args.append("a{i}, a{i}n".format(i=i)); ins.append("a%d" % i)
+            members.append("std::vector<{e}> v{i}; {e}* a{i}{{}}; int a{i}n{{}};".format(e=elem, i=i))
+            parse.append("    base.v%d = hz::%s(%s);" % (i, fn, src))
+            copies.append("a.v%d = base.v%d;" % (i, i))
+            views.append("a.a{i} = a.v{i}.data(); a.a{i}n = (int)a.v{i}.size();".format(i=i))
+            same.append("a.v%d == base.v%d" % (i, i))
+            args.append("a.a{i}, a.a{i}n".format(i=i)); ins.append("a.a%d" % i)
         elif n == "vector<bool>":
-            base.append("    std::vector<int> t{i} = hz::to_vint({s}); "
-                        "std::vector<unsigned char> base{i}(t{i}.begin(), t{i}.end());".format(i=i, s=src))
-            call.append("        std::vector<unsigned char> v{i} = base{i}; hz::opaque(v{i}); "
-                        "bool* a{i} = (bool*)v{i}.data(); int a{i}n = (int)v{i}.size();".format(i=i))
-            args.append("a{i}, a{i}n".format(i=i)); ins.append("a%d" % i)
+            members.append("std::vector<unsigned char> v{i}; bool* a{i}{{}}; int a{i}n{{}};".format(i=i))
+            parse.append("    {{ std::vector<int> t = hz::to_vint({s}); base.v{i}.assign(t.begin(), t.end()); }}".format(i=i, s=src))
+            copies.append("a.v%d = base.v%d;" % (i, i))
+            views.append("a.a{i} = (bool*)a.v{i}.data(); a.a{i}n = (int)a.v{i}.size();".format(i=i))
+            same.append("a.v%d == base.v%d" % (i, i))
+            args.append("a.a{i}, a.a{i}n".format(i=i)); ins.append("a.a%d" % i)
         elif n == "vector<string>":
-            base.append("    std::vector<std::string> base%d = hz::to_vstr(%s);" % (i, src))
-            call.append("        std::vector<std::string> vs{i} = base{i}; hz::opaque(vs{i}); std::vector<char*> cp{i}; "
-                        "for (auto& _s : vs{i}) cp{i}.push_back(_s.data()); char** a{i} = cp{i}.data(); "
-                        "int a{i}n = (int)vs{i}.size();".format(i=i))
-            args.append("a{i}, a{i}n".format(i=i)); ins.append("a%d" % i)
+            members.append("std::vector<std::string> vs{i}; std::vector<char*> cp{i}; char** a{i}{{}}; "
+                           "int a{i}n{{}};".format(i=i))
+            parse.append("    base.vs%d = hz::to_vstr(%s);" % (i, src))
+            copies.append("a.vs%d = base.vs%d;" % (i, i))
+            views.append("a.cp{i}.clear(); for (auto& _s : a.vs{i}) a.cp{i}.push_back(_s.data()); "
+                         "a.a{i} = a.cp{i}.data(); a.a{i}n = (int)a.vs{i}.size();".format(i=i))
+            same.append("a.vs{i} == base.vs{i} && hz::views_ok(a.cp{i}, a.vs{i})".format(i=i))
+            args.append("a.a{i}, a.a{i}n".format(i=i)); ins.append("a.a%d" % i)
         elif n in ("vector<vector<int>>", "vector<vector<char>>"):
             fn, elem = ("to_vvint", "int") if n == "vector<vector<int>>" else ("to_vvchar", "char")
-            base.append("    std::vector<std::vector<%s>> base%d = hz::%s(%s);" % (elem, i, fn, src))
-            call.append("        std::vector<std::vector<{e}>> vv{i} = base{i}; hz::opaque(vv{i}); std::vector<{e}*> rp{i}; "
-                        "std::vector<int> cz{i}; for (auto& _r : vv{i}) {{ rp{i}.push_back(_r.data()); "
-                        "cz{i}.push_back((int)_r.size()); }} {e}** a{i} = rp{i}.data(); int a{i}n = (int)vv{i}.size(); "
-                        "int* a{i}c = cz{i}.data();".format(e=elem, i=i))
-            args.append("a{i}, a{i}n, a{i}c".format(i=i)); ins += ["a%d" % i, "a%dc" % i]
+            members.append("std::vector<std::vector<{e}>> vv{i}; std::vector<{e}*> rp{i}; std::vector<int> cz{i}; "
+                           "{e}** a{i}{{}}; int a{i}n{{}}; int* a{i}c{{}};".format(e=elem, i=i))
+            parse.append("    base.vv%d = hz::%s(%s);" % (i, fn, src))
+            copies.append("a.vv%d = base.vv%d;" % (i, i))
+            views.append("a.rp{i}.clear(); a.cz{i}.clear(); for (auto& _r : a.vv{i}) {{ a.rp{i}.push_back(_r.data()); "
+                         "a.cz{i}.push_back((int)_r.size()); }} a.a{i} = a.rp{i}.data(); a.a{i}n = (int)a.vv{i}.size(); "
+                         "a.a{i}c = a.cz{i}.data();".format(i=i))
+            same.append("a.vv{i} == base.vv{i} && hz::views_ok(a.rp{i}, a.vv{i}) && a.cz{i} == base.cz{i}".format(i=i))
+            args.append("a.a{i}, a.a{i}n, a.a{i}c".format(i=i)); ins += ["a.a%d" % i, "a.a%dc" % i]
         elif n == "vector<vector<string>>":
-            base.append("    std::vector<std::vector<std::string>> base%d = hz::to_vvstr(%s);" % (i, src))
-            call.append("        std::vector<std::vector<std::string>> vv{i} = base{i}; hz::opaque(vv{i}); "
-                        "std::vector<std::vector<char*>> cc{i}(vv{i}.size()); std::vector<char**> rp{i}; "
-                        "std::vector<int> cz{i}; for (size_t _r = 0; _r < vv{i}.size(); _r++) {{ "
-                        "for (auto& _s : vv{i}[_r]) cc{i}[_r].push_back(_s.data()); rp{i}.push_back(cc{i}[_r].data()); "
-                        "cz{i}.push_back((int)vv{i}[_r].size()); }} char*** a{i} = rp{i}.data(); "
-                        "int a{i}n = (int)vv{i}.size(); int* a{i}c = cz{i}.data();".format(i=i))
-            args.append("a{i}, a{i}n, a{i}c".format(i=i)); ins += ["a%d" % i, "a%dc" % i]
+            members.append("std::vector<std::vector<std::string>> vv{i}; std::vector<std::vector<char*>> cc{i}; "
+                           "std::vector<char**> rp{i}; std::vector<int> cz{i}; char*** a{i}{{}}; int a{i}n{{}}; "
+                           "int* a{i}c{{}};".format(i=i))
+            parse.append("    base.vv%d = hz::to_vvstr(%s);" % (i, src))
+            copies.append("a.vv%d = base.vv%d;" % (i, i))
+            views.append("a.cc{i}.assign(a.vv{i}.size(), std::vector<char*>()); a.rp{i}.clear(); a.cz{i}.clear(); "
+                         "for (size_t _r = 0; _r < a.vv{i}.size(); _r++) {{ for (auto& _s : a.vv{i}[_r]) "
+                         "a.cc{i}[_r].push_back(_s.data()); a.rp{i}.push_back(a.cc{i}[_r].data()); "
+                         "a.cz{i}.push_back((int)a.vv{i}[_r].size()); }} a.a{i} = a.rp{i}.data(); "
+                         "a.a{i}n = (int)a.vv{i}.size(); a.a{i}c = a.cz{i}.data();".format(i=i))
+            same.append("a.vv{i} == base.vv{i} && hz::views_ok(a.rp{i}, a.cc{i}) && a.cz{i} == base.cz{i} "
+                        "&& [&] {{ for (size_t _r = 0; _r < a.vv{i}.size(); _r++) "
+                        "if (!hz::views_ok(a.cc{i}[_r], a.vv{i}[_r])) return false; return true; }}()".format(i=i))
+            args.append("a.a{i}, a.a{i}n, a.a{i}c".format(i=i)); ins += ["a.a%d" % i, "a.a%dc" % i]
         elif n in ("TreeNode*", "ListNode*"):
-            fn, free_fn = ("to_tree", "freeTree") if n == "TreeNode*" else ("to_list", "freeList")
-            call.append("        %s a%d = hz::%s(%s); hz::opaque(a%d);" % (n, i, fn, src, i))
-            args.append("a%d" % i); frees.append("        hz::%s(a%d);" % (free_fn, i))
+            node = "Tree" if n == "TreeNode*" else "List"
+            members.append("%s a%d{};" % (n, i))
+            parse.append("    base.a%d = hz::to_%s(%s);" % (i, node.lower(), src))
+            parse.append("    auto shape%d = hz::%sShape(base.a%d, (size_t)-1);" % (i, node.lower(), i))
+            copies.append("a.a%d = hz::clone%s(base.a%d);" % (i, node, i))
+            frees.append("hz::free%s(a.a%d);" % (node, i))
+            same.append("hz::%sShape(a.a%d, shape%d.size()) == shape%d" % (node.lower(), i, i, i))
+            args.append("a.a%d" % i)
         else:
             raise ValueError("unhandled C param type %s" % n)
-    return base, call, args, ins, frees
+    return members, parse, copies, frees, same, views, args, ins
 
 
-def _measure_result(retn, node_ret, method, args, ins, frees):
-    """Lines that call the solution, convert its result to the logical C++
-    type, free per LeetCode's contract, and return the converted result."""
+def _free_result(retn, ins, indent):
+    """Lines that free a call's result `_r` (and `_rcol`), as LeetCode's
+    contract says the caller does ("The returned array must be malloced,
+    assume caller calls free()"). The validate and the measure drivers both
+    run them, so code that passes validation also runs in the measurement: a
+    result that is not from malloc (a static buffer, a string literal, rows
+    inside one block) crashes the validation (Runtime Error), as an invalid
+    free does on LeetCode (AddressSanitizer). Memory that is one of the call's
+    own inputs `ins` (`return nums;`) is never freed. A returned string array
+    keeps its strings, which a solution often takes from its input; returned
+    nodes are not freed either (often a part of the input)."""
     def free_out(p):        # free p unless it is null or one of the inputs
         keep = "".join(" && (const void*)%s != (const void*)%s" % (p, x) for x in ins)
-        return "        if (%s%s) free(%s);" % (p, keep, p)
+        return "%sif (%s%s) free(%s);" % (indent, p, keep, p)
+    if retn in ("string", "vector<bool>", "vector<string>") or retn in _VEC_ELEM:
+        return [free_out("_r")]
+    if retn in ("vector<vector<int>>", "vector<vector<char>>", "vector<vector<string>>"):
+        keep = "".join(" && (const void*)_r != (const void*)%s" % x for x in ins)
+        return ["%sif (_r%s) { for (int _k = 0; _k < _rsz; _k++) free(_r[_k]); free(_r); }" % (indent, keep),
+                free_out("_rcol")]
+    return []
+
+
+def _measure_result(retn, node_ret, method, args, ins):
+    """Lines that call the solution, convert its result to the logical C++
+    type, free the result per LeetCode's contract (_free_result), and return
+    the converted result."""
     L = []
     if node_ret:
         node = "ListNode" if retn == "ListNode*" else "TreeNode"
         vals = "listVals" if node == "ListNode" else "treeVals_level"
         L.append("        %s* _r = %s(%s);" % (node, method, ", ".join(args)))
         L.append("        std::vector<int> _rv = hz::%s(_r);" % vals)
-        return L + frees + ["        return _rv;"]
+        return L + ["        return _rv;"]
     cret, outs = _ret_c(retn)
     extra = []
     if outs:
@@ -492,54 +604,49 @@ def _measure_result(retn, node_ret, method, args, ins, frees):
         L.append("        auto _rv = %s;" % call)
     elif retn == "string":
         L.append("        char* _r = %s; std::string _rv = _r ? std::string(_r) : std::string();" % call)
-        L.append(free_out("_r"))
     elif retn in _VEC_ELEM:
         elem = _VEC_ELEM[retn][1]
         L.append("        %s* _r = %s; std::vector<%s> _rv(_r, _r + _rsz);" % (elem, call, elem))
-        L.append(free_out("_r"))
     elif retn == "vector<bool>":
         L.append("        bool* _r = %s; std::vector<bool> _rv(_r, _r + _rsz);" % call)
-        L.append(free_out("_r"))
     elif retn == "vector<string>":
         L.append("        char** _r = %s; std::vector<std::string> _rv; for (int _k = 0; _k < _rsz; _k++) "
                  "_rv.push_back(_r[_k] ? std::string(_r[_k]) : std::string());" % call)
-        L.append(free_out("_r"))
     elif retn in ("vector<vector<int>>", "vector<vector<char>>"):
         elem = "int" if retn == "vector<vector<int>>" else "char"
         L.append("        {e}** _r = {c}; std::vector<std::vector<{e}>> _rv; for (int _k = 0; _k < _rsz; _k++) "
                  "_rv.emplace_back(_r[_k], _r[_k] + _rcol[_k]);".format(e=elem, c=call))
-        keep = "".join(" && (const void*)_r != (const void*)%s" % x for x in ins)
-        L.append("        if (_r%s) { for (int _k = 0; _k < _rsz; _k++) free(_r[_k]); free(_r); }" % keep)
-        L.append(free_out("_rcol"))
     elif retn == "vector<vector<string>>":
         L.append("        char*** _r = %s; std::vector<std::vector<std::string>> _rv; for (int _k = 0; _k < _rsz; _k++) "
                  "{ std::vector<std::string> _row; for (int _j = 0; _j < _rcol[_k]; _j++) "
                  "_row.push_back(_r[_k][_j] ? std::string(_r[_k][_j]) : std::string()); _rv.push_back(_row); }" % call)
-        keep = "".join(" && (const void*)_r != (const void*)%s" % x for x in ins)
-        L.append("        if (_r%s) { for (int _k = 0; _k < _rsz; _k++) free(_r[_k]); free(_r); }" % keep)
-        L.append(free_out("_rcol"))
     else:
         raise ValueError("unhandled C return type %s" % retn)
-    return L + frees + ["        return _rv;"]
+    return L + _free_result(retn, ins, " " * 8) + ["        return _rv;"]
 
 
 def gen_measure(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
     node_ret = info["retn"] in ("TreeNode*", "ListNode*")
-    base, call, args, ins, frees = _measure_inputs(info["norm"])
-    body = base + ["", "    auto do_call = [&]() {"] + call
-    body += _measure_result(info["retn"], node_ret, info["method"], args, ins, frees)
-    body.append("    };")
-    main = cpp.MAIN_PLAIN.replace("__OUTPUTS__", outs).replace("__BUILD_ARGS__", "\n".join(body))
-    return _c_prelude(info) + main
+    members, parse, copies, frees, same, views, args, ins = _measure_inputs(info["norm"])
+    call = cpp._opaque_args(len(info["norm"])) + _measure_result(info["retn"], node_ret, info["method"], args, ins)
+    build = cpp._build_args(members, parse, copies, frees, same, call, views)
+    main = cpp.MAIN_PLAIN.replace("__OUTPUTS__", outs).replace("__BUILD_ARGS__", build)
+    return _c_prelude(info, measure=True) + main
 
 
 # ── design driver codegen ──────────────────────────────────────────────────────
-def _design_construct(className, cnorm):
-    decls, cargs = _marshal_args(cnorm, " " * 12, srcexpr=lambda i: "ARG[0].arr[%d]" % i)
-    L = ["        void* obj = nullptr;", "        {"] + decls
-    L.append("            obj = %sCreate(%s);" % (_lcfirst(className), ", ".join(cargs)))
-    L.append("        }")
+def _design_construct(className, cnorm, mark=False):
+    """Create the object. As on LeetCode, the constructor's input containers
+    stay alive until xxxFree (a solution may keep a pointer to its input):
+    they live to the end of the replay, and the guard `hz_free`, declared after
+    them, calls xxxFree first when the replay ends. `mark` (validate driver):
+    name the case for a crash report (HZ_CRASH_C)."""
+    decls, cargs = _marshal_args(cnorm, " " * 8, srcexpr=lambda i: "ARG[0].arr[%d]" % i)
+    L = ["        hz_mark_case(slug, name, ci, expected->arr.size());"] if mark else []
+    L += decls
+    L.append("        void* obj = %sCreate(%s);" % (_lcfirst(className), ", ".join(cargs)))
+    L.append("        struct HzFree { void* o; ~HzFree() { %sFree(o); } } hz_free{obj};" % _lcfirst(className))
     L.append('        if (results) results->push_back("null");')
     return "\n".join(L)
 
@@ -567,11 +674,11 @@ def gen_validate_design(slug, info):
     outs = os.path.join(REF, "outputs", slug + ".json")
     className, cnorm, methods = info["design"]
     randomized = "true" if slug == "random-pick-index" else "false"
-    return (_c_prelude(info)
+    return (_c_prelude(info, validate=True)
             + cpp.MAIN_VALIDATE_DESIGN.replace("__OUTPUTS__", outs)
                                       .replace("__SLUG__", slug)
                                       .replace("__RANDOMIZED__", randomized)
-                                      .replace("__CONSTRUCT__", _design_construct(className, cnorm))
+                                      .replace("__CONSTRUCT__", _design_construct(className, cnorm, mark=True))
                                       .replace("__DISPATCH__", _design_dispatch(className, methods)))
 
 
@@ -580,9 +687,7 @@ def gen_measure_design(slug, info):
     className, cnorm, methods = info["design"]
     main = (cpp.MAIN_DESIGN.replace("__OUTPUTS__", outs)
             .replace("__CONSTRUCT__", _design_construct(className, cnorm))
-            .replace("__DISPATCH__", _design_dispatch(className, methods))
-            .replace("        return h;\n    };",
-                     "        %sFree(obj);\n        return h;\n    };" % _lcfirst(className)))
+            .replace("__DISPATCH__", _design_dispatch(className, methods)))
     return _c_prelude(info) + main
 
 
@@ -595,7 +700,8 @@ def _compile_solution_o(slug, info, tmp):
     import re as _re
     # LeetCode C solutions never define main(); a model-added one (test
     # scaffolding) collides with the harness driver's main. Strip a top-level
-    # `int main(...) { ... }` via brace matching.
+    # `int main(...) { ... }` via brace matching (keeping its line breaks, so
+    # the compiler's line numbers stay those of solution.c).
     mm = _re.search(r'\b(?:int|void)\s+main\s*\([^)]*\)\s*\{', src)
     if mm:
         depth, j = 0, mm.end() - 1
@@ -605,7 +711,7 @@ def _compile_solution_o(slug, info, tmp):
                 depth -= 1
                 if depth == 0: break
             j += 1
-        src = src[:mm.start()] + src[j + 1:]
+        src = src[:mm.start()] + "\n" * src.count("\n", mm.start(), j + 1) + src[j + 1:]
     def _defines(name):                    # a DEFINITION `struct X {`, not a reference
         # Strip comments first: models reproduce LeetCode's header comment,
         # which contains the struct definition INSIDE /** ... */ — matching
@@ -626,25 +732,29 @@ def _compile_solution_o(slug, info, tmp):
     if uses_list and not _defines("ListNode"):
         inject += "struct ListNode { int val; struct ListNode *next; };\n"
     cpath = os.path.join(tmp, "solution.c")
-    open(cpath, "w").write(C_STD_PRELUDE + inject + src)
+    # #line: the compiler reports the errors at the lines of solution.c
+    open(cpath, "w").write(C_STD_PRELUDE + inject + '#line 1 "solution.c"\n' + src)
     obj = os.path.join(tmp, "solution.o")
-    cc = subprocess.run(["gcc", *cpp.compile_flags(["-O2", "-std=c11", "-w"]), "-c", cpath, "-o", obj],
+    cc = subprocess.run(["gcc", *cpp.compile_flags(C_FLAGS), "-I", SEL, "-c", cpath, "-o", obj],
                         capture_output=True, text=True)
     if cc.returncode != 0:
         lines = cc.stderr.strip().splitlines() if cc.stderr else []
-        err = next((l for l in lines if "error:" in l), lines[-1] if lines else "gcc failed")
-        return None, err
+        return None, "\n".join(lines[:40]) or "gcc failed"
     return obj, None
 
 
 def _build(slug, mode):
+    """Compile the solution and the `mode` driver in a new temp dir.
+    -> (binary, info, temp dir), and the caller removes the temp dir; or
+    (None, info, error text), with the temp dir already removed."""
     info = analyze(slug)
     if info["kind"] == "unsupported":
         return None, info, info.get("reason", "unsupported")
     tmp = tempfile.mkdtemp(prefix="hz_c_%s_" % mode)
     obj, err = _compile_solution_o(slug, info, tmp)
     if obj is None:
-        return None, info, "solution.c: " + err
+        shutil.rmtree(tmp, ignore_errors=True)
+        return None, info, err
     if info["kind"] == "design":
         src = gen_validate_design(slug, info) if mode == "validate" else gen_measure_design(slug, info)
     else:
@@ -654,19 +764,49 @@ def _build(slug, mode):
     cc = subprocess.run(["g++", *cpp.compile_flags(["-O2", "-std=c++17"]), cpp_path, obj, "-o", binp],
                         capture_output=True, text=True)
     if cc.returncode != 0:
-        return None, info, "driver link: " + (cc.stderr.strip().splitlines()[-1] if cc.stderr else "")
+        # a missing or misnamed function shows up here, as a link error
+        shutil.rmtree(tmp, ignore_errors=True)
+        return None, info, "driver link: " + (cc.stderr or "").strip()[:1500]
     return binp, info, tmp
 
 
-def build_and_validate(slug, keep=False):
+def compile_only(slug):
+    """The cell's `make compile`: compile solution.c to an object and nothing
+    else, so it never runs the solution. 0 when it compiles, else 1 with the
+    compiler's errors on stderr."""
+    info = analyze(slug)
+    if info["kind"] == "unsupported":
+        sys.stderr.write("compile: %s\n" % info.get("reason", "unsupported"))
+        return 1
+    tmp = tempfile.mkdtemp(prefix="hz_c_compile_")
+    try:
+        obj, err = _compile_solution_o(slug, info, tmp)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    if obj is None:
+        sys.stderr.write(err + "\n")
+        return 1
+    return 0
+
+
+def build_and_validate(slug):
     binp, info, tmp = _build(slug, "validate")
     if binp is None:
         sys.stderr.write("VALIDATE slug=%s ERROR %s\n" % (slug, tmp))
         return 2
     celldir = os.path.join(ROOT, "C", "leetcode", slug)
-    rr = subprocess.run([binp], capture_output=True, text=True, cwd=celldir, timeout=300)
+    try:
+        rr = subprocess.run([binp], capture_output=True, text=True, cwd=celldir, timeout=300)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     if rr.stderr:
         sys.stderr.write(rr.stderr)
+    if rr.returncode < 0:
+        # A signal the driver did not catch (HZ_CRASH_C catches the usual
+        # ones) killed it: Runtime Error. sys.exit(-11) would exit with 245,
+        # which reads as Wrong Answer.
+        sys.stderr.write("VALIDATE slug=%s RE signal=%d\n" % (slug, -rr.returncode))
+        return 3
     return rr.returncode
 
 
@@ -675,8 +815,11 @@ def build_and_run(slug, budget, idx):
     if binp is None:
         return "compile_error", tmp, None
     celldir = os.path.join(ROOT, "C", "leetcode", slug)
-    rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True, text=True,
-                        cwd=celldir, timeout=max(30, budget * 4 + 20))
+    try:
+        rr = subprocess.run([binp, str(budget), str(idx)], capture_output=True, text=True,
+                            cwd=celldir, timeout=max(30, budget * 4 + 20))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     if rr.returncode != 0:
         return "runtime_error", (rr.stderr.strip().splitlines()[-1] if rr.stderr else "rc=%d" % rr.returncode), None
     return "ok", rr.stderr.strip(), None
@@ -686,6 +829,8 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "validate":
         slug = os.path.basename(os.getcwd())
         sys.exit(build_and_validate(slug))
+    if len(sys.argv) > 1 and sys.argv[1] == "compile":
+        sys.exit(compile_only(os.path.basename(os.getcwd())))
     if len(sys.argv) > 1 and sys.argv[1] == "build":
         # Prebuild the driver into <cell>/.perf_build/driver for run_harness.sh
         # run mode, so a measured run never includes the compilers.
@@ -701,6 +846,7 @@ def main():
             # kill its next start (SIGKILL); a rename gives a new file
             shutil.copy(os.path.join(tmp, f), os.path.join(out, f + ".new"))
             os.replace(os.path.join(out, f + ".new"), os.path.join(out, f))
+        shutil.rmtree(tmp, ignore_errors=True)
         sys.exit(0)
     budget = float(sys.argv[1]) if len(sys.argv) > 1 else 1.0
     idx    = int(sys.argv[2]) if len(sys.argv) > 2 else 0

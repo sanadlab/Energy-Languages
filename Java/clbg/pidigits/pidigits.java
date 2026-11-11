@@ -1,58 +1,132 @@
+/**
+ * The Computer Language Benchmarks Game
+ * http://benchmarksgame.alioth.debian.org/
+ * contributed by Mike Pall
+ * java port by Stefan Krause
+*/
 import java.math.BigInteger;
 
 public class pidigits {
-    public static void main(String[] args) {
-        final int n = Integer.parseInt(args[0]);
-        final BigInteger THREE = BigInteger.valueOf(3);
-        final BigInteger TEN = BigInteger.TEN;
+   
+   final GmpInteger q = new GmpInteger(), r = new GmpInteger(),
+   s = new GmpInteger(), t = new GmpInteger(); 
+   final GmpInteger u = new GmpInteger(), v = new GmpInteger(),
+   w = new GmpInteger(); 
 
-        BigInteger numerator = BigInteger.ONE;
-        BigInteger denominator = BigInteger.ONE;
-        BigInteger accumulator = BigInteger.ZERO;
+   int i, k, c; 
+   int digit;
+   int d;
+   StringBuffer strBuf = new StringBuffer(20);
+   final int n;
+   
+   private pidigits(int n)
+   {
+      this.n=n;
+   }
+   
+   private void compose_r(int bq, int br, int bs, int bt)
+   {
+     u.mul(r, bs);
+     r.mul(r, bq);
+     v.mul(t, br);
+     r.add(r, v);
+     t.mul(t, bt);
+     t.add(t, u);
+     s.mul(s, bt);
+     u.mul(q, bs);
+     s.add(s, u);
+     q.mul(q, bq);
+   }
 
-        StringBuilder output = new StringBuilder();
-        int emitted = 0;
-        long k = 0;
+   /* Compose matrix with numbers on the left. */
+   private void compose_l(int bq, int br, int bs, int bt)
+   {
+     r.mul(r, bt);
+     u.mul(q, br);
+     r.add(r, u);
+     u.mul(t, bs);
+     t.mul(t, bt);
+     v.mul(s, br);
+     t.add(t, v);
+     s.mul(s, bq);
+     s.add(s, u);
+     q.mul(q, bq);
+   }
 
-        while (emitted < n) {
-            ++k;
-            BigInteger factor = BigInteger.valueOf(2 * k + 1);
+   /* Extract one digit. */
+   private int extract(int j)
+   {
+     u.mul(q, j);
+     u.add(u, r);
+     v.mul(s, j);
+     v.add(v, t);
+     w.div(u, v);
+     return w.intValue();
+   }
 
-            accumulator = accumulator.add(numerator.shiftLeft(1)).multiply(factor);
-            numerator = numerator.multiply(BigInteger.valueOf(k));
-            denominator = denominator.multiply(factor);
+   /* Print one digit. Returns 1 for the last digit. */
+   private boolean prdigit(int y)
+   {
+      strBuf.append(y);
+      if (++i % 10 == 0 || i == n) {
+         if (i%10!=0) for (int j=10-(i%10);j>0;j--) { strBuf.append(" "); }
+         strBuf.append("\t:");
+         strBuf.append(i);
+         System.out.println(strBuf);
+         strBuf = new StringBuffer(20);
+      }
+      return i == n;
+   }
 
-            if (numerator.compareTo(accumulator) > 0) {
-                continue;
-            }
+   /* Generate successive digits of PI. */
+   void pidigits()
+   {
+     int k = 1;
+     d = 0;
+     i = 0;
+     q.set(1);
+     r.set(0);
+     s.set(0);
+     t.set(1);
+     for (;;) {
+       int y = extract(3);
+       if (y == extract(4)) {
+         if (prdigit(y)) return;
+         compose_r(10, -10*y, 0, 1);
+       } else {
+         compose_l(k, 4*k+2, 0, 2*k+1);
+         k++;
+       }
+     }
+   }
+      
+   public static void main(String[] args) {
+      pidigits m = new pidigits(Integer.parseInt(args[0]));
+      m.pidigits();
+   }
+}
 
-            BigInteger tripleNumerator = numerator.multiply(THREE);
-            BigInteger[] candidate = accumulator.add(tripleNumerator)
-                    .divideAndRemainder(denominator);
 
-            if (candidate[1].add(numerator).compareTo(denominator) >= 0) {
-                continue;
-            }
 
-            output.append((char) ('0' + candidate[0].intValue()));
-            ++emitted;
+class GmpInteger {
+   private BigInteger value;
 
-            if (emitted % 10 == 0) {
-                output.append('\t').append(':').append(emitted).append('\n');
-            }
+   public GmpInteger() { value = BigInteger.ZERO; }
 
-            accumulator = candidate[1].subtract(tripleNumerator).multiply(TEN);
-            numerator = numerator.multiply(TEN);
-        }
+   public GmpInteger(int value) {
+      this();
+      set(value);
+   }
+   
+   public void set(int value) { this.value = BigInteger.valueOf(value); }
 
-        int remaining = emitted % 10;
-        if (remaining != 0) {
-            for (int i = remaining; i < 10; ++i) {
-                output.append(' ');
-            }
-            output.append('\t').append(':').append(emitted).append('\n');
-        }
-
-        System.out.print(output);
-    }
+   public void mul(GmpInteger src, int val) { value = src.value.multiply(BigInteger.valueOf(val)); }
+   
+   public void add(GmpInteger op1, GmpInteger op2) { value = op1.value.add(op2.value); }
+   
+   public void div(GmpInteger op1, GmpInteger op2) { value = op1.value.divide(op2.value); }
+   
+   public int intValue() { return value.intValue(); }
+   
+   public double doubleValue() { return value.doubleValue(); }
 }

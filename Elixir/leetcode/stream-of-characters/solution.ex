@@ -22,7 +22,7 @@ defmodule StreamChecker do
   # Insert a word into the trie in REVERSED order (suffix trie), matching the
   # reference. Terminal nodes carry a :end marker.
   defp add_word(trie, w) do
-    chars = w |> String.graphemes() |> Enum.reverse()
+    chars = w |> String.to_charlist() |> Enum.reverse()
     insert(trie, chars)
   end
 

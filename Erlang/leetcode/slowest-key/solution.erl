@@ -2,7 +2,7 @@
 -export([slowest_key/2]).
 -include("node.hrl").
 
--spec slowest_key(ReleaseTimes :: [integer()], KeysPressed :: unicode:unicode_binary()) -> binary().
+-spec slowest_key(ReleaseTimes :: [integer()], KeysPressed :: unicode:unicode_binary()) -> char().
 slowest_key(ReleaseTimes, KeysPressed) ->
     [K0 | KRest] = binary_to_list(KeysPressed),
     [RT0 | _] = ReleaseTimes,
@@ -15,4 +15,4 @@ slowest_key(ReleaseTimes, KeysPressed) ->
                 false -> {Best, BestDur}
             end
         end, {K0, RT0}, Triples),
-    <<BestKey>>.
+    BestKey.

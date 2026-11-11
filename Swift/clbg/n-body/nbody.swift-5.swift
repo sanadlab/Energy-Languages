@@ -5,7 +5,11 @@
  converted to Swift 3 by Sergo Beruashvili
  */
 
+#if canImport(Darwin)
+import Darwin
+#else
 import Glibc
+#endif
 //import Darwin
 
 struct Body {

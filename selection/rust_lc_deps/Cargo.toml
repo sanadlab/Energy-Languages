@@ -1,0 +1,16 @@
+# The crates LeetCode's Rust judge provides (its environment page: edition 2024,
+# rand 0.8, regex 1, itertools 0.14). harness_rust.py builds them once and links
+# them into every LeetCode Rust solution with `rustc --extern`.
+[package]
+name = "perfarena-lc-rust-deps"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+rand = "0.8"
+regex = "1"
+itertools = "0.14"

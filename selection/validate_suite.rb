@@ -4,7 +4,7 @@
 # Reuses harness.rb's tree/list/canon/name-resolution logic so correctness
 # judges the exact same shared inputs the measurement harness does.
 # Prints one VALIDATE line to STDERR. Exit: 0 Accepted, 1 Wrong Answer,
-# 3 Runtime Error, 2 setup error.
+# 3 Runtime Error, 2 the solution cannot be loaded (syntax error) or setup error.
 require 'json'
 require 'set'
 
@@ -74,13 +74,45 @@ module HNS
     return camel if obj.respond_to?(camel, true)
     snake
   end
+  # Receiver and method name of a plain (non-design) problem. A `def self.x`
+  # inside `class Solution` is a method of the class, not of an instance:
+  # LeetCode's dispatch lifts the class body to top level, so it works there.
+  def receiver(has_sol, camel)
+    recv = has_sol ? Solution.new : Object.new
+    if has_sol && !recv.respond_to?(resolve(recv, camel), true) &&
+       Solution.respond_to?(resolve(Solution, camel), true)
+      recv = Solution
+    end
+    [recv, resolve(recv, camel)]
+  end
+  # Do two results match? Equal canon forms match. Otherwise numbers match when
+  # one of them is a non-integer float and they differ by at most 1e-5
+  # (LeetCode accepts answers within 1e-5 on its float problems); arrays and
+  # hashes match element by element; everything else must be equal.
+  def same(a, e)
+    return true if canon(a) == canon(e)
+    num_close(JSON.parse("[#{canon(a)}]")[0], JSON.parse("[#{canon(e)}]")[0])
+  rescue StandardError
+    false
+  end
+  def num_close(a, e)
+    if a.is_a?(Numeric) && e.is_a?(Numeric)
+      a == e || ((a.is_a?(Float) || e.is_a?(Float)) && (a - e).abs <= 1e-5)
+    elsif a.is_a?(Array) && e.is_a?(Array)
+      a.length == e.length && a.each_index.all? { |i| num_close(a[i], e[i]) }
+    elsif a.is_a?(Hash) && e.is_a?(Hash)
+      a.keys.sort == e.keys.sort && a.keys.all? { |k| num_close(a[k], e[k]) }
+    else
+      a == e
+    end
+  end
 end
 
 def seq_ok(actual, expected)
   return false unless actual.is_a?(Array) && expected.is_a?(Array) && actual.length == expected.length
   # design/trace: a null in expected marks a void op (LeetCode discards its
   # return); compare strictly only at value-returning positions.
-  actual.each_index.all? { |i| expected[i].nil? || HNS.canon(actual[i]) == HNS.canon(expected[i]) }
+  actual.each_index.all? { |i| expected[i].nil? || HNS.same(actual[i], expected[i]) }
 end
 
 cell = Dir.pwd
@@ -94,14 +126,15 @@ begin
   prev = $VERBOSE; $VERBOSE = nil
   load File.join(cell, 'solution.rb')
   $VERBOSE = prev
-rescue StandardError => e
-  STDERR.puts "VALIDATE slug=#{slug} ERROR load: #{e}"; exit 2
+rescue StandardError, ScriptError => e
+  # ScriptError: SyntaxError, LoadError (not a StandardError) -> Compile Error
+  STDERR.puts "VALIDATE slug=#{slug} ERROR load: #{e.class}: #{e}"; exit 2
 end
 
 has_sol   = defined?(Solution) && Solution.is_a?(Class)
 randomized = (slug == 'random-pick-index')
 # LeetCode accepts these answers in ANY order (special judge) -> multiset compare.
-UNORDERED = ['uncommon-words-from-two-sentences', 'remove-invalid-parentheses', 'restore-the-array-from-adjacent-pairs']
+UNORDERED = ['uncommon-words-from-two-sentences', 'remove-invalid-parentheses', 'restore-the-array-from-adjacent-pairs', 'ambiguous-coordinates']
 def unordered_eq(a, e)
   return HNS.canon(a) == HNS.canon(e) unless a.is_a?(Array) && e.is_a?(Array)
   a.map { |x| HNS.canon(x) }.sort == e.map { |x| HNS.canon(x) }.sort
@@ -124,8 +157,7 @@ def run_case(input, camel, has_sol, randomized)
     end
     return seq
   end
-  recv = has_sol ? Solution.new : Object.new
-  meth = HNS.resolve(recv, camel)
+  recv, meth = HNS.receiver(has_sol, camel)
   base = input.keys.map do |k|
     v = input[k]
     if k == 'root' then HNS.build_tree(HNS.deep(v))
@@ -142,12 +174,14 @@ out['expected'].each_with_index do |c, __i|
   is_design = inp.is_a?(Hash) && inp.key?('ops') && inp.key?('args')
   begin
     actual = run_case(inp, camel, has_sol, randomized)
-  rescue StandardError, ScriptError => e
+  rescue SystemExit
+    raise                       # the solution ended the process itself
+  rescue Exception => e         # also SystemStackError, NoMemoryError, ScriptError
     STDERR.puts "VALIDATE slug=#{slug} RE case=#{name} passed=#{__i} ncases=#{__total} #{e.class}: #{e}"; exit 3
   end
   ok = if is_design then seq_ok(actual, c['output'])
        elsif UNORDERED.include?(slug) then unordered_eq(actual, c['output'])
-       else HNS.canon(actual) == HNS.canon(c['output']) end
+       else HNS.same(actual, c['output']) end
   unless ok
     STDERR.puts "VALIDATE slug=#{slug} FAIL case=#{name} passed=#{__i} ncases=#{__total} " \
       "expected=#{HNS.canon(c['output'])[0,120]} actual=#{HNS.canon(actual)[0,120]}"

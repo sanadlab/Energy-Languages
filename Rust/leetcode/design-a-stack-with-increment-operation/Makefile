@@ -7,7 +7,7 @@ SOURCE      = solution.rs
 OUTPUT      = test_suite
 ARG         =
 RUN_CMD     = ./test_suite
-COMPILE_CMD = cat solution.rs test_suite.rs > _combined.rs && $(RUSTC) -O _combined.rs -o test_suite
+COMPILE_CMD = cat solution.rs test_suite.rs > _combined.rs && F="$$(python3 ../../../selection/harness_rust.py rustc-flags)" && $(RUSTC) $$F _combined.rs -o test_suite
 
 VALIDATION_N     = $(ARG)
 REFERENCE_OUTPUT = /dev/null

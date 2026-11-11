@@ -1,16 +1,14 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc spectralnorm.swift-3.swift -Ounchecked -whole-module-optimization  -o spectralnorm.swift-3.swift_run
+LANG    = Swift
+TEST    = spectral-norm
+SOURCE  = spectralnorm.swift-3.swift
+OUTPUT  = spectral-norm.swift_run
+ARG         = 4000
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./spectralnorm.swift-3.swift_run 5500" Swift spectral-norm
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./spectralnorm.swift-3.swift_run 5500
+VALIDATION_N       = 100
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/spectral-norm.txt
 
-mem:
-	/usr/bin/time -v ./spectralnorm.swift-3.swift_run 5500
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./spectralnorm.swift-3.swift_run 5500
-
+include ../../../perfarena.mk

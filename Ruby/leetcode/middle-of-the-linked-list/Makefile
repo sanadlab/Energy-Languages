@@ -5,7 +5,7 @@ SOURCE      = solution.rb
 OUTPUT      = .built
 ARG         =
 RUN_CMD     = ruby test_suite.rb
-COMPILE_CMD = touch .built
+COMPILE_CMD = ruby -c $(SOURCE) > /dev/null && touch .built
 
 VALIDATION_N     = $(ARG)
 REFERENCE_OUTPUT = /dev/null

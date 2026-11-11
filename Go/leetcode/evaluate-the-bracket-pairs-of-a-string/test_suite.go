@@ -2,5 +2,5 @@
 package main
 
 func main() {
-    _ = evaluate("abcde", []string{"a","b","c"})
+    _ = evaluate("abcde", [][]string{{"a","b"}})
 }

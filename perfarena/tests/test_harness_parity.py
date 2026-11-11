@@ -378,7 +378,7 @@ class CustomStack(_maxSize: Int) {
   def increment(k: Int, `val`: Int): Unit = { var i = 0; while (i < math.min(k, n)) { st(i) += `val`; i += 1 } }
 }""",
     "instance": """
-class Solution {
+object Solution {
   private var calls = 0
   def minSteps(n: Int): Int = { calls += 1; calls }
 }""",

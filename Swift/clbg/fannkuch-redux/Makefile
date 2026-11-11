@@ -1,15 +1,14 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc fannkuchredux.swift-3.swift -Ounchecked -whole-module-optimization  -o fannkuchredux.swift-3.swift_run
+LANG    = Swift
+TEST    = fannkuch-redux
+SOURCE  = fannkuchredux.swift-3.swift
+OUTPUT  = fannkuch-redux.swift_run
+ARG         = 11
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./fannkuchredux.swift-3.swift_run 12" Swift fannkuch-redux
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./fannkuchredux.swift-3.swift_run 12
+VALIDATION_N       = 7
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/fannkuch-redux.txt
 
-mem:
-	/usr/bin/time -v ./fannkuchredux.swift-3.swift_run 12
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./fannkuchredux.swift-3.swift_run 12
+include ../../../perfarena.mk

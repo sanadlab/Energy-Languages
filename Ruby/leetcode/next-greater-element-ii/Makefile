@@ -11,7 +11,7 @@ SOURCE      = solution.rb
 OUTPUT      = .built
 ARG         =
 RUN_CMD     = ruby test_suite.rb
-COMPILE_CMD = touch .built
+COMPILE_CMD = ruby -c $(SOURCE) > /dev/null && touch .built
 
 # validate: permanent PASS via empty-stream compare. Real correctness
 # is owned by whatever oracle the arena binds to this competition.

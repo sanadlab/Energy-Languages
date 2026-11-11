@@ -1,15 +1,15 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc regexredux.swift-2.swift -Ounchecked -whole-module-optimization  -o regexredux.swift-2.swift_run
+LANG    = Swift
+TEST    = regex-redux
+SOURCE  = regexredux.swift-2.swift
+OUTPUT  = regex-redux.swift_run
+ARG         = 0
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./regexredux.swift-2.swift_run 0 < ../../regexredux-input5000000.txt" Swift regex-redux
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./regexredux.swift-2.swift_run 0 < ../../regexredux-input5000000.txt
+VALIDATION_N       = 0
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/regex-redux.txt
+STDIN_FILE         = ../../../reference/clbg/inputs/fasta-500000.txt
 
-mem:
-	/usr/bin/time -v ./regexredux.swift-2.swift_run 0 < ../../regexredux-input5000000.txt
-
-valgrind:
-	valgrind --tool=massif --stacks=yes ./regexredux.swift-2.swift_run 0 < ../../regexredux-input5000000.txt
+include ../../../perfarena.mk

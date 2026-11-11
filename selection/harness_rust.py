@@ -10,14 +10,18 @@
 # parsed and marshalled AT RUNTIME by a small std-only JSON reader embedded in the
 # driver (mirroring harness_cpp.py's hz::JVal / hz::JP) -- the input is never baked
 # into the source as literals, so COMPILE TIME IS INDEPENDENT OF INPUT SIZE. It
-# emits a `fn main()` that rebuilds fresh args each iteration, calls
-# `Solution::method(...)`, and loops to a wall-time budget folding each result's
-# canonical string into a checksum. Every call site wraps its args AND the result
-# in `std::hint::black_box(...)` so the optimizer cannot hoist / const-fold / DCE
-# the loop body. The driver is concatenated after solution.rs (with a `pub struct
-# Solution;` header prepended when the solution doesn't declare one, mirroring the
-# existing Rust cell Makefiles) and compiled with `rustc -O`.
+# emits a `fn main()` that marshals the args once, calls `Solution::method(...)`
+# on a fresh copy of them per call (copies made outside the timed region, see
+# MEASURE_TEMPLATE), and loops to a wall-time budget folding each result into a
+# checksum. Every call site wraps its args in `std::hint::black_box(...)` so the
+# optimizer cannot hoist / const-fold / DCE the loop body. The driver is
+# concatenated after solution.rs (with a `pub struct Solution;` header prepended
+# when the solution doesn't declare one, mirroring the Rust cell Makefiles) and
+# compiled like LeetCode does: edition 2024, `rustc -O`, with the crates rand,
+# regex and itertools (see rustc_cmd).
 #
+#   python3 harness_rust.py build        (run_harness.sh build mode: .perf_build/driver)
+#   python3 harness_rust.py validate     (run_validate.sh: every reference case)
 #   python3 harness_rust.py <budget_seconds> <case_index>   (run from the Rust cell dir)
 #   - slug derived from cwd basename (Rust/leetcode/<slug>/)
 #   - the driver reads ../../../reference/leetcode/outputs/<slug>.json at RUNTIME
@@ -30,8 +34,9 @@
 # SEMANTICS of Harness.java (buildTree/buildList/replay/canon):
 #   * plain-data method calls (Vec/String/scalar args)
 #   * tree (Option<Rc<RefCell<TreeNode>>>) and linked-list (Option<Box<ListNode>>)
-#     entry methods: args built from level-order/array input; list results are
-#     serialized back to a JSON int array for the BEACON.
+#     entry methods: args built from level-order/array input (a tree is shared
+#     when the solution does not change it); list results are serialized back
+#     to a JSON int array for the BEACON.
 #   * design classes (input {ops,args}): each iteration re-instantiates the struct
 #     (ops[0]=::new with args[0]) and replays ops[i]/args[i], folding each return.
 
@@ -43,10 +48,74 @@ import sys
 import tempfile
 
 RUSTC = os.environ.get("RUSTC", "rustc")
+CARGO = os.environ.get("CARGO", "cargo")
+SEL = os.path.dirname(os.path.abspath(__file__))
+
+# LeetCode's Rust environment: edition 2024, opt-level 2 (rustc -O), and the
+# crates rand 0.8, regex 1 and itertools 0.14 (rust_lc_deps/Cargo.toml).
+EDITION = "2024"
+DEPS_DIR = os.path.join(SEL, "rust_lc_deps")
+DEP_CRATES = ("rand", "regex", "itertools")
+
+
+def dep_flags():
+    """rustc flags that link the LeetCode crates. Builds rust_lc_deps once with
+    cargo (Cargo.lock pins the versions); later calls only check it is up to
+    date. Raises RuntimeError when cargo fails, for example without network on
+    the first build."""
+    cp = subprocess.run(
+        [CARGO, "build", "--release", "--locked", "--quiet", "--message-format=json",
+         "--manifest-path", os.path.join(DEPS_DIR, "Cargo.toml")],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+        env={**os.environ, "RUSTC": RUSTC})
+    if cp.returncode != 0:
+        raise RuntimeError("cargo could not build the LeetCode crates: "
+                           + " | ".join(cp.stderr.strip().splitlines()[-3:]))
+    rlibs = {}
+    for line in cp.stdout.splitlines():
+        try:
+            m = json.loads(line)
+        except ValueError:
+            continue
+        if m.get("reason") == "compiler-artifact" and m["target"]["name"] in DEP_CRATES:
+            for f in m["filenames"]:
+                if f.endswith(".rlib"):
+                    rlibs[m["target"]["name"]] = f
+    missing = [c for c in DEP_CRATES if c not in rlibs]
+    if missing:
+        raise RuntimeError("cargo built no rlib for " + ", ".join(missing))
+    flags = ["-L", "dependency=" + os.path.dirname(rlibs[DEP_CRATES[0]])]
+    for c in DEP_CRATES:
+        flags += ["--extern", f"{c}={rlibs[c]}"]
+    return flags
+
+
+def rustc_cmd(src, out):
+    """The rustc command for a solution plus driver: LeetCode's edition and
+    crates, and -O unless PERFARENA_COMPILE_FLAGS gives other flags."""
+    opt = os.environ.get("PERFARENA_COMPILE_FLAGS", "").split() or ["-O"]
+    return [RUSTC, "--edition", EDITION, *opt, *dep_flags(), src, "-o", out]
+
+
+def compile_errors(stderr):
+    """The useful part of rustc's stderr: every `error` block, at most 40 lines."""
+    lines = (stderr or "").rstrip().splitlines()
+    first = next((i for i, l in enumerate(lines) if l.startswith("error")), 0)
+    return "\n".join(lines[first:first + 40])
+
+
+def strip_comments(src):
+    """`src` without // and /* */ comments (string and char literals kept), so
+    a check for `struct TreeNode` does not match LeetCode's commented-out
+    definition that solutions often keep."""
+    tok = re.compile(r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])\'|//[^\n]*|/\*[\s\S]*?\*/')
+    return tok.sub(lambda m: m.group(0) if m.group(0)[0] in "\"\'" else " ", src)
+
 
 # Problems LeetCode judges order-insensitively (special judge): multiset compare.
 _UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
-              "restore-the-array-from-adjacent-pairs"}
+              "restore-the-array-from-adjacent-pairs",
+              "ambiguous-coordinates"}
 
 
 def norm(s):
@@ -491,90 +560,111 @@ MAIN_PROLOGUE = """    let argv: Vec<String> = std::env::args().collect();
 """
 
 # ---------------------------------------------------------------------------
-# Plain-data path
+# Plain and tree/list paths: one measure driver
 # ---------------------------------------------------------------------------
 
-PLAIN_TEMPLATE = """
-// ---- generated harness driver (do not edit; produced by harness_rust.py) ----
-__JSON_MOD____HASH_FN____HFOLD_FN__
-fn main() {
-__PROLOGUE__
-    let do_call = || {
-__ARG_LETS__
-        Solution::__RNAME__(__CALL_ARGS__)
-    };
-    let first = do_call();
-    let beacon = format!("{:?}", &first);
-    if std::env::var("HARNESS_EMIT_RESULT").is_ok() {
-        println!("{:?}", &first);
-    }
-    let warm = budget * 0.3;
-    let mut warm_iters: u64 = 0;
-    let t0 = std::time::Instant::now();
-    while t0.elapsed().as_secs_f64() < warm {
-        std::hint::black_box(do_call());
-        warm_iters += 1;
-    }
-    // Estimate per-iteration cost from warmup and read the wall clock only every
-    // ~2ms (batch inner iterations) to amortize the Instant::now() syscall.
-    let per_iter = t0.elapsed().as_secs_f64() / (warm_iters.max(1) as f64);
-    let batch: u64 = ((0.002 / per_iter) as i64).clamp(1, 4096) as u64;
-    let mut acc: u64 = 0;
-    let mut iters: u64 = 0;
-    let tm = std::time::Instant::now();
-    while tm.elapsed().as_secs_f64() < budget - warm {
-        for _ in 0..batch {
-            let r = do_call();
-__FOLD_R__
+# Tree helpers for the measured loop. Both walk the tree with an explicit stack,
+# so a 1e5-node chain does not overflow the call stack.
+CANON_TREE_FN = """fn __canon_tree(t: &Option<std::rc::Rc<std::cell::RefCell<TreeNode>>>) -> String {
+    // pre-order with null markers; a walk longer than 1e7 steps (a cycle) gives
+    // a marker that never equals the canon of a real tree
+    let mut out = String::new();
+    let mut st = vec![t.clone()];
+    let mut steps = 0u64;
+    while let Some(n) = st.pop() {
+        steps += 1;
+        if steps > 10_000_000 { return String::from("cycle"); }
+        match n {
+            None => out.push_str("#,"),
+            Some(rc) => {
+                let b = rc.borrow();
+                out.push_str(&b.val.to_string());
+                out.push(',');
+                st.push(b.right.clone());
+                st.push(b.left.clone());
+            }
         }
-        iters += batch;
     }
-    let meas = tm.elapsed().as_secs_f64();
-    let beacon_t: String = beacon.chars().take(80).collect();
-    eprintln!("CASE={} ITERS={} ACC={} MEAS_S={:.6} BEACON={}", name, iters, acc, meas, beacon_t);
+    out
 }
 """
 
-# ---------------------------------------------------------------------------
-# Tree / list path (structured args and/or list result)
-# ---------------------------------------------------------------------------
+CLONE_TREE_FN = """fn __clone_tree(t: &Option<std::rc::Rc<std::cell::RefCell<TreeNode>>>) -> Option<std::rc::Rc<std::cell::RefCell<TreeNode>>> {
+    let src = match t { None => return None, Some(r) => std::rc::Rc::clone(r) };
+    let root = std::rc::Rc::new(std::cell::RefCell::new(TreeNode::new(src.borrow().val)));
+    let mut st = vec![(src, std::rc::Rc::clone(&root))];
+    while let Some((s, d)) = st.pop() {
+        let sb = s.borrow();
+        if let Some(l) = &sb.left {
+            let c = std::rc::Rc::new(std::cell::RefCell::new(TreeNode::new(l.borrow().val)));
+            d.borrow_mut().left = Some(std::rc::Rc::clone(&c));
+            st.push((std::rc::Rc::clone(l), c));
+        }
+        if let Some(r) = &sb.right {
+            let c = std::rc::Rc::new(std::cell::RefCell::new(TreeNode::new(r.borrow().val)));
+            d.borrow_mut().right = Some(std::rc::Rc::clone(&c));
+            st.push((std::rc::Rc::clone(r), c));
+        }
+    }
+    Some(root)
+}
+"""
 
-STRUCTURED_TEMPLATE = """
-// ---- generated harness driver (tree/list; produced by harness_rust.py) ----
+# The inputs are parsed and marshalled ONCE. Rust solutions take their
+# arguments by value, so every call needs its own copy: `prep` makes it OUTSIDE
+# the timed region, a batch at a time, and the batch's results are dropped after
+# the clock read. A tree argument is shared (an Rc clone, no copy) when one call
+# shows that the solution does not change it. The timed region holds only the
+# solution call and the result fold.
+MEASURE_TEMPLATE = """
+// ---- generated harness driver (do not edit; produced by harness_rust.py) ----
 __DEFS____JSON_MOD____BUILDERS____HASH_FN____HFOLD_FN__
 fn main() {
 __PROLOGUE__
-    let do_call = || {
-__ARG_LETS__
-        Solution::__RNAME__(__CALL_ARGS__)
-    };
-    let first = do_call();
+__BASES__
+    let fresh = || __FRESH__;
+__PREP__
+    let first = { let __PAT__ = prep(); Solution::__RNAME__(__ARGS__) };
     let beacon = __CANON_FIRST__;
     if std::env::var("HARNESS_EMIT_RESULT").is_ok() {
         println!("{}", &beacon);
     }
+    // the memory pass prepares one copy at a time, so its peak RSS holds one copy
+    let mem_pass = std::env::var("PERFARENA_MEM_PASS").map(|v| !v.is_empty()).unwrap_or(false);
     let warm = budget * 0.3;
     let mut warm_iters: u64 = 0;
     let t0 = std::time::Instant::now();
     while t0.elapsed().as_secs_f64() < warm {
-        std::hint::black_box(do_call());
+        let __PAT__ = prep();
+        std::hint::black_box(Solution::__RNAME__(__ARGS__));
         warm_iters += 1;
     }
-    // Estimate per-iteration cost from warmup and read the wall clock only every
-    // ~2ms (batch inner iterations) to amortize the Instant::now() syscall.
+    // Estimate the per-iteration cost from the warm-up and read the clock once
+    // per batch (~2 ms) to amortize the Instant::now() call.
     let per_iter = t0.elapsed().as_secs_f64() / (warm_iters.max(1) as f64);
-    let batch: u64 = ((0.002 / per_iter) as i64).clamp(1, 4096) as u64;
+    let batch: usize = if mem_pass { 1 } else { ((0.002 / per_iter) as i64).clamp(1, 4096) as usize };
+    // MEAS_S is the sum of the timed segments; the measured phase also stops at
+    // 4x its target in wall time, which only matters when copies are expensive.
+    let target = budget - warm;
+    let cap = 4.0 * target;
     let mut acc: u64 = 0;
     let mut iters: u64 = 0;
+    let mut meas: f64 = 0.0;
+    let mut ins = Vec::with_capacity(batch);
+    let mut outs = Vec::with_capacity(batch);
     let tm = std::time::Instant::now();
-    while tm.elapsed().as_secs_f64() < budget - warm {
-        for _ in 0..batch {
-            let r = do_call();
+    while meas < target && tm.elapsed().as_secs_f64() < cap {
+        for _ in 0..batch { ins.push(prep()); }
+        let t = std::time::Instant::now();
+        for __PAT__ in ins.drain(..) {
+            let r = Solution::__RNAME__(__ARGS__);
 __FOLD_R__
+            outs.push(r);
         }
-        iters += batch;
+        meas += t.elapsed().as_secs_f64();
+        iters += batch as u64;
+        outs.clear();
     }
-    let meas = tm.elapsed().as_secs_f64();
     let beacon_t: String = beacon.chars().take(80).collect();
     eprintln!("CASE={} ITERS={} ACC={} MEAS_S={:.6} BEACON={}", name, iters, acc, meas, beacon_t);
 }
@@ -659,80 +749,89 @@ fn main() {
 
 
 def solution_header(sol):
-    return "" if re.search(r"struct\s+Solution\b", sol) else "pub struct Solution;\n\n"
+    return "" if re.search(r"struct\s+Solution\b", strip_comments(sol)) else "pub struct Solution;\n\n"
 
 
-def rand_shim(sol):
-    """Prepend a minimal `rand` module when the solution imports the rand crate.
-    LeetCode ships `rand`; the crate-free rustc compile does not, so `use rand`
-    fails with `unresolved import`. See selection/rust_rand_shim.rs (deterministic
-    xorshift — fine for perf; correctness is the LeetCode oracle's)."""
-    if "use rand" not in sol:
-        return ""
-    try:
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               "rust_rand_shim.rs")) as f:
-            return f.read() + "\n"
-    except OSError:
-        return ""
-
-
-def build_structured(sol, name, sig, values):
-    """Tree/list entry method: build args from level-order/array input (parsed at
-    runtime), call, and canonicalize (list results -> JSON int array)."""
+def build_call(sol, name, sig, values):
+    """Plain or tree/list entry method -> measure driver (see MEASURE_TEMPLATE).
+    Tree args are level-order lists, list args int arrays; a ListNode result is
+    serialized back to a JSON int array for the BEACON."""
     rname, params, ret = sig
     if len(values) != len(params):
         raise RuntimeError(f"arity mismatch: {len(params)} params vs {len(values)} inputs")
 
-    need_tree = False
-    need_list = False
-    arg_lets = []
-    call_args = []
+    need_tree = need_list = False
+    bases, fresh, shared, tree_ks = [], [], [], []
     for k, (pname, ptype) in enumerate(params):
         jref = f"&ev[{k}].1"
         if "TreeNode" in ptype:
             need_tree = True
-            arg_lets.append(
-                "        let a" + str(k) + " = { let __v: Vec<Option<i32>> = ("
-                + jref + ").as_arr().iter().map(|__e| if __e.is_null() { None } "
-                "else { Some(__e.as_i64() as i32) }).collect(); __build_tree(&__v) };")
+            tree_ks.append(k)
+            bases.append(
+                f"    let b{k} = {{ let __v: Vec<Option<i32>> = ({jref}).as_arr().iter()"
+                ".map(|__e| if __e.is_null() { None } else { Some(__e.as_i64() as i32) })"
+                ".collect(); __build_tree(&__v) };")
+            fresh.append(f"__clone_tree(&b{k})")
+            shared.append(f"b{k}.clone()")
         elif "ListNode" in ptype:
             need_list = True
-            arg_lets.append(
-                "        let a" + str(k) + " = { let __v: Vec<i32> = ("
-                + jref + ").as_arr().iter().map(|__e| __e.as_i64() as i32).collect(); "
-                "__build_list(&__v) };")
+            bases.append(f"    let b{k}: Vec<i32> = ({jref}).as_arr().iter()"
+                         ".map(|__e| __e.as_i64() as i32).collect();")
+            fresh.append(f"__build_list(&b{k})")
+            shared.append(f"__build_list(&b{k})")
         else:
-            arg_lets.append(f"        let a{k} = {marshal_expr(ptype, jref)};")
-        call_args.append(f"std::hint::black_box(a{k})")
+            bases.append(f"    let b{k} = {marshal_expr(ptype, jref)};")  # ValueError -> unsupported
+            fresh.append(f"b{k}.clone()")
+            shared.append(f"b{k}.clone()")
     if "ListNode" in ret:
         need_list = True
 
+    def tup(xs):
+        return "(" + "".join(x + ", " for x in xs).rstrip(" ") + ")" if xs else "()"
+    pat = tup([f"a{k}" for k in range(len(params))])
+    args = ", ".join(f"std::hint::black_box(a{k})" for k in range(len(params)))
+    if tree_ks:
+        same = " && ".join(f"__canon_tree(&__keep.{n}) == __canon_tree(&b{k})"
+                           for n, k in enumerate(tree_ks))
+        prep = ("    // one call on fresh copies: does the solution change a tree argument?\n"
+                "    let share_trees: bool = {\n"
+                "        let __p = fresh();\n"
+                "        let __keep = " + tup([f"__p.{k}.clone()" for k in tree_ks]) + ";\n"
+                f"        let {pat} = __p;\n"
+                f"        std::hint::black_box(Solution::{rname}({args}));\n"
+                f"        {same}\n"
+                "    };\n"
+                f"    let prep = || if share_trees {{ {tup(shared)} }} else {{ fresh() }};")
+    else:
+        prep = "    let prep = fresh;"
+
     defs = ""
-    if need_tree and not re.search(r"struct\s+TreeNode\b", sol):
+    if need_tree and not re.search(r"struct\s+TreeNode\b", strip_comments(sol)):
         defs += TREE_DEF
-    if need_list and not re.search(r"struct\s+ListNode\b", sol):
+    if need_list and not re.search(r"struct\s+ListNode\b", strip_comments(sol)):
         defs += LIST_DEF
-
-    builder_block = ""
+    builders = ""
     if need_tree:
-        builder_block += BUILD_TREE_FN
+        builders += BUILD_TREE_FN + CANON_TREE_FN + CLONE_TREE_FN
     if need_list:
-        builder_block += BUILD_LIST_FN + CANON_LIST_FN
+        builders += BUILD_LIST_FN + CANON_LIST_FN
 
-    driver = (STRUCTURED_TEMPLATE
+    driver = (MEASURE_TEMPLATE
               .replace("__DEFS__", defs)
               .replace("__JSON_MOD__", JSON_MOD)
-              .replace("__BUILDERS__", builder_block)
+              .replace("__BUILDERS__", builders)
               .replace("__HASH_FN__", HASH_FN)
               .replace("__HFOLD_FN__", HFOLD_FN)
               .replace("__PROLOGUE__", MAIN_PROLOGUE)
-              .replace("__ARG_LETS__", "\n".join(arg_lets))
+              .replace("__BASES__", "\n".join(bases))
+              .replace("__FRESH__", tup(fresh))
+              .replace("__PREP__", prep)
+              .replace("__PAT__", pat)
               .replace("__RNAME__", rname)
-              .replace("__CALL_ARGS__", ", ".join(call_args))
+              .replace("__ARGS__", args)
               .replace("__CANON_FIRST__", canon_expr(ret, "first"))
               .replace("__FOLD_R__", fold_snippet(ret)))
-    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver, name
+    return solution_header(sol) + sol + "\n" + driver, name
 
 
 def build_design(sol, name, inp, cases):
@@ -745,11 +844,11 @@ def build_design(sol, name, inp, cases):
         raise RuntimeError("empty ops")
 
     struct = str(ops[0])
-    if not re.search(r"\b(struct|impl)\s+" + re.escape(struct) + r"\b", sol):
+    if not re.search(r"\b(struct|impl)\s+" + re.escape(struct) + r"\b", strip_comments(sol)):
         struct = "Solution"
 
     ctor_args = args[0] if args else []
-    csig = find_method(sol, norm("new"), len(ctor_args))
+    csig = find_method(strip_comments(sol), norm("new"), len(ctor_args))
     if csig is None:
         raise RuntimeError("no ::new constructor found")
     _cn, cparams, _cr = csig
@@ -785,7 +884,7 @@ def build_design(sol, name, inp, cases):
                     break
             if found:
                 break
-        msig = find_method(sol, norm(opn), argc)
+        msig = find_method(strip_comments(sol), norm(opn), argc)
         if msig is None:
             raise RuntimeError(f"no method matching op {opn!r}")
         mn, mparams, mret = msig
@@ -824,7 +923,7 @@ def build_design(sol, name, inp, cases):
               .replace("__REPLAY_DISPATCH__", "\n".join(replay_branches))
               .replace("__DUMP_DISPATCH__", "\n".join(dump_branches)))
     # Design solutions already declare their structs; no Solution header needed.
-    return rand_shim(sol) + sol + "\n" + driver, name
+    return sol + "\n" + driver, name
 
 
 # ===========================================================================
@@ -956,6 +1055,18 @@ def build_validate_call(sol, slug, sig):
             "            }")
     elif "TreeNode" in ret:
         raise RuntimeError("validate: TreeNode result unsupported")
+    elif ret.replace(" ", "") in ("f64", "f32", "Vec<f64>", "Vec<f32>"):
+        # LeetCode accepts answers within 1e-5 on its float problems.
+        exp_marsh = marshal_expr(ret, "expected")
+        near = ("(__actual as f64 - __exp as f64).abs() <= 1e-5" if not ret.replace(" ", "").startswith("Vec")
+                else "__actual.len() == __exp.len() && __actual.iter().zip(__exp.iter())"
+                     ".all(|(a, e)| (*a as f64 - *e as f64).abs() <= 1e-5)")
+        cmp = (
+            f"            let __exp: {ret} = {exp_marsh};\n"
+            f"            if __actual != __exp && !({near}) {{\n"
+            '                eprintln!("VALIDATE slug={} FAIL case={} passed={} ncases={} expected={:?} actual={:?}", slug, name, __ci, __total, __exp, __actual);\n'
+            "                return 1i32;\n"
+            "            }")
     else:
         exp_marsh = marshal_expr(ret, "expected")   # ValueError -> unsupported
         cmp = (
@@ -966,8 +1077,8 @@ def build_validate_call(sol, slug, sig):
             "            }")
 
     defs = ""
-    if need_tree and not re.search(r"struct\s+TreeNode\b", sol): defs += TREE_DEF
-    if need_list and not re.search(r"struct\s+ListNode\b", sol): defs += LIST_DEF
+    if need_tree and not re.search(r"struct\s+TreeNode\b", strip_comments(sol)): defs += TREE_DEF
+    if need_list and not re.search(r"struct\s+ListNode\b", strip_comments(sol)): defs += LIST_DEF
     builders = ""
     if need_tree: builders += BUILD_TREE_FN
     if need_list: builders += BUILD_LIST_FN + CANON_LIST_FN
@@ -981,7 +1092,7 @@ def build_validate_call(sol, slug, sig):
               .replace("__RNAME__", rname)
               .replace("__CALL_ARGS__", ", ".join(call_args))
               .replace("__CMP__", cmp))
-    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver
+    return solution_header(sol) + sol + "\n" + driver
 
 
 def build_validate_design(sol, slug, inp, cases, randomized):
@@ -989,10 +1100,10 @@ def build_validate_design(sol, slug, inp, cases, randomized):
     if not ops:
         raise RuntimeError("empty ops")
     struct = str(ops[0])
-    if not re.search(r"\b(struct|impl)\s+" + re.escape(struct) + r"\b", sol):
+    if not re.search(r"\b(struct|impl)\s+" + re.escape(struct) + r"\b", strip_comments(sol)):
         struct = "Solution"
     ctor_args = args[0] if args else []
-    csig = find_method(sol, norm("new"), len(ctor_args))
+    csig = find_method(strip_comments(sol), norm("new"), len(ctor_args))
     if csig is None:
         raise RuntimeError("no ::new constructor found")
     _cn, cparams, _cr = csig
@@ -1017,7 +1128,7 @@ def build_validate_design(sol, slug, inp, cases, randomized):
                 if str(o) == opn:
                     argc = len(cin["args"][k]); found = True; break
             if found: break
-        msig = find_method(sol, norm(opn), argc)
+        msig = find_method(strip_comments(sol), norm(opn), argc)
         if msig is None:
             raise RuntimeError(f"no method matching op {opn!r}")
         mn, mparams, mret = msig
@@ -1059,7 +1170,7 @@ def build_validate_design(sol, slug, inp, cases, randomized):
               .replace("__RANDOMIZED__", "true" if randomized else "false")
               .replace("__CTOR__", ctor)
               .replace("__VALIDATE_DISPATCH__", dispatch))
-    return rand_shim(sol) + sol + "\n" + driver
+    return sol + "\n" + driver
 
 
 def build_validate_combined(cell, slug, ref):
@@ -1077,7 +1188,7 @@ def build_validate_combined(cell, slug, ref):
         wl = json.load(f)
     ep = str(wl.get("entry_point", ""))
     method_tok = ep.split(".")[-1].replace("()", "").strip()
-    sig = find_signature(sol, norm(method_tok))
+    sig = find_signature(strip_comments(sol), norm(method_tok))
     if sig is None:
         raise RuntimeError(f"no method matching entry_point {ep!r}")
     return build_validate_call(sol, slug, sig)
@@ -1098,11 +1209,14 @@ def run_validate(cell, slug, ref):
     with open(src_path, "w") as f:
         f.write(combined)
     try:
-        cp = subprocess.run([RUSTC, *(os.environ.get("PERFARENA_COMPILE_FLAGS","").split() or ["-O"]), src_path, "-o", bin_path],
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        try:
+            cmd = rustc_cmd(src_path, bin_path)
+        except RuntimeError as e:
+            sys.stderr.write(f"VALIDATE slug={slug} ERROR setup: {e}\n")
+            return 2
+        cp = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if cp.returncode != 0:
-            last = cp.stderr.strip().splitlines()[-1] if cp.stderr else ""
-            sys.stderr.write(f"VALIDATE slug={slug} ERROR compile: {last}\n")
+            sys.stderr.write(f"VALIDATE slug={slug} ERROR compile:\n{compile_errors(cp.stderr)}\n")
             return 2
         run = subprocess.run([bin_path], text=True, cwd=cell, timeout=300)
         return run.returncode
@@ -1134,36 +1248,38 @@ def build_combined(cell, slug, ref, idx):
         wl = json.load(f)
     ep = str(wl.get("entry_point", ""))
     method_tok = ep.split(".")[-1].replace("()", "").strip()
-    sig = find_signature(sol, norm(method_tok))
+    sig = find_signature(strip_comments(sol), norm(method_tok))
     if sig is None:
         raise RuntimeError(f"no method matching entry_point {ep!r}")
-    _rname, params, ret = sig
+    return build_call(sol, name, sig, list(inp.values()))
 
-    joined = " ".join(t for _, t in params) + " " + ret
-    values = list(inp.values())
-    if "TreeNode" in joined or "ListNode" in joined:
-        return build_structured(sol, name, sig, values)
 
-    # plain-data path
-    if len(values) != len(params):
-        raise RuntimeError(f"arity mismatch: {len(params)} params vs {len(values)} inputs")
-    arg_lets = []
-    call_args = []
-    for k, (pname, ptype) in enumerate(params):
-        expr = marshal_expr(ptype, f"&ev[{k}].1")  # raises ValueError -> unsupported
-        arg_lets.append(f"        let a{k} = {expr};")
-        call_args.append(f"std::hint::black_box(a{k})")
-
-    driver = (PLAIN_TEMPLATE
-              .replace("__JSON_MOD__", JSON_MOD)
-              .replace("__HASH_FN__", HASH_FN)
-              .replace("__HFOLD_FN__", HFOLD_FN)
-              .replace("__PROLOGUE__", MAIN_PROLOGUE)
-              .replace("__ARG_LETS__", "\n".join(arg_lets))
-              .replace("__RNAME__", _rname)
-              .replace("__CALL_ARGS__", ", ".join(call_args))
-              .replace("__FOLD_R__", fold_snippet(ret)))
-    return solution_header(sol) + rand_shim(sol) + sol + "\n" + driver, name
+def build_prebuilt(cell):
+    """Build mode: compile the measure driver into <cell>/.perf_build/driver,
+    for run_harness.sh run mode, so a measured run never includes the compiler.
+    The driver reads the case index at run time, so one build serves every
+    case. Exit 0 when built, 1 otherwise."""
+    slug = os.path.basename(cell)
+    ref = os.path.join(cell, "..", "..", "..", "reference", "leetcode")
+    out = os.path.join(cell, ".perf_build")
+    os.makedirs(out, exist_ok=True)
+    src_path = os.path.join(out, "driver.rs")
+    bin_path = os.path.join(out, "driver")
+    if os.path.exists(bin_path):
+        os.remove(bin_path)
+    try:
+        combined, _name = build_combined(cell, slug, ref, 0)
+        cmd = rustc_cmd(src_path, bin_path)
+    except (ValueError, RuntimeError) as e:
+        sys.stderr.write(f"BUILD_FAIL slug={slug}: {e}\n")
+        return 1
+    with open(src_path, "w") as f:
+        f.write(combined)
+    cp = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    if cp.returncode != 0:
+        sys.stderr.write(f"COMPILE_FAIL slug={slug}\n{compile_errors(cp.stderr)}\n")
+        return 1
+    return 0
 
 
 def main():
@@ -1172,6 +1288,16 @@ def main():
         slug = os.path.basename(cell)
         ref = os.path.join(cell, "..", "..", "..", "reference", "leetcode")
         return run_validate(cell, slug, ref)
+    if len(sys.argv) >= 2 and sys.argv[1] == "build":
+        return build_prebuilt(os.getcwd())
+    if len(sys.argv) >= 2 and sys.argv[1] == "rustc-flags":
+        # for the cell Makefiles: the same edition, opt level and crates
+        try:
+            print(" ".join(rustc_cmd("", "")[1:-3]))
+        except RuntimeError as e:
+            sys.stderr.write(f"{e}\n")
+            return 1
+        return 0
     if len(sys.argv) < 3:
         sys.stderr.write("usage: harness_rust.py <budget_seconds> <case_index>\n")
         return 2
@@ -1200,10 +1326,12 @@ def main():
     with open(src_path, "w") as f:
         f.write(combined)
     try:
-        cp = subprocess.run(
-            [RUSTC, "-O", src_path, "-o", bin_path],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-        )
+        try:
+            cmd = rustc_cmd(src_path, bin_path)
+        except RuntimeError as e:
+            sys.stderr.write(f"COMPILE_FAIL slug={slug}\n{e}\n")
+            return 5
+        cp = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if cp.returncode != 0:
             sys.stderr.write(f"COMPILE_FAIL slug={slug}\n{cp.stderr}\n")
             return 5

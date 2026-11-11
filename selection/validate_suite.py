@@ -31,7 +31,8 @@ REF = os.path.normpath(os.path.join(CELL, "..", "..", "..", "reference", "leetco
 # Problems where LeetCode accepts the answer in ANY order (special judge):
 # compare as a multiset so a correct permutation is not a false Wrong Answer.
 _UNORDERED = {"uncommon-words-from-two-sentences", "remove-invalid-parentheses",
-              "restore-the-array-from-adjacent-pairs"}
+              "restore-the-array-from-adjacent-pairs",
+              "ambiguous-coordinates"}
 
 
 # Node types LeetCode injects for tree/list problems (the solution references
@@ -172,7 +173,19 @@ def _seq_ok(actual, expected):
     return); compare strictly only at value-returning positions."""
     if not isinstance(actual, list) or not isinstance(expected, list) or len(actual) != len(expected):
         return False
-    return all(e is None or _norm(a) == _norm(e) for a, e in zip(actual, expected))
+    return all(e is None or _eq(_norm(a), _norm(e)) for a, e in zip(actual, expected))
+
+
+def _eq(a, b):
+    """Exact equality, except that two numbers match within 1e-5 when one of
+    them is a float: LeetCode accepts answers within 1e-5 on its float problems."""
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(_eq(x, y) for x, y in zip(a, b))
+    num = (int, float)
+    if (isinstance(a, float) or isinstance(b, float)) and isinstance(a, num) and isinstance(b, num) \
+            and not isinstance(a, bool) and not isinstance(b, bool):
+        return a == b or abs(a - b) <= 1e-5
+    return a == b
 
 
 def _unordered_eq(actual, expected):
@@ -208,7 +221,7 @@ def main():
         elif SLUG in _UNORDERED:
             ok = _unordered_eq(actual, expected)
         else:
-            ok = (actual == expected)
+            ok = _eq(actual, expected)
         if not ok:
             sys.stderr.write(
                 f"VALIDATE slug={SLUG} FAIL case={name} passed={i} ncases={total} "

@@ -1,15 +1,16 @@
-compile:
-	/usr/local/src/swift-2017-04-13-a-ubuntu16.10/usr/bin/swiftc mandelbrot.swift-3.swift -Ounchecked -whole-module-optimization  -o mandelbrot.swift-3.swift_run
+LANG    = Swift
+TEST    = mandelbrot
+SOURCE  = mandelbrot.swift-3.swift
+OUTPUT  = mandelbrot.swift_run
+ARG         = 3504
+RUN_CMD = ./$(OUTPUT) $(ARG)
 
-measure:
-	sudo modprobe msr
-	sudo ../../RAPL/main "./mandelbrot.swift-3.swift_run 16000" Swift mandelbrot
+SWIFTC ?= swiftc
+COMPILE_CMD = $(SWIFTC) -Ounchecked -wmo $(SOURCE) -o $(OUTPUT)
 
-run:
-	./mandelbrot.swift-3.swift_run 16000
+VALIDATION_N       = 200
+REFERENCE_OUTPUT   = ../../../reference/clbg/outputs/mandelbrot.pbm
+BINARY_OUTPUT      = 1
+BINARY_TOLERANCE_BYTES = 16
 
-mem:
-	/usr/bin/time -v  ./mandelbrot.swift-3.swift_run 16000
-
-valgrind:
-	valgrind --tool=massif --stacks=yes  ./mandelbrot.swift-3.swift_run 16000
+include ../../../perfarena.mk
