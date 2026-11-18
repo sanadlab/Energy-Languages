@@ -271,8 +271,8 @@ func eprint(_ s: String) { fputs(s, stderr) }
 // the solution kills the driver (a trap gives a signal, not an exit code),
 // harness_swift.py can still report the case
 func markCase(_ ci: Int, _ n: Int, _ name: String) { fputs("@@PERFARENA_CASE \(ci) \(n) \(name)\n", stdout); fflush(stdout) }
-func fmtG(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); snprintf(ptr: &b, 64, "%.6g", d); return String(cString: b) }
-func fmtF6(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); snprintf(ptr: &b, 64, "%.6f", d); return String(cString: b) }
+func fmtG(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); _ = withVaList([d]) { vsnprintf(&b, 64, "%.6g", $0) }; return String(cString: b) }
+func fmtF6(_ d: Double) -> String { var b = [CChar](repeating: 0, count: 64); _ = withVaList([d]) { vsnprintf(&b, 64, "%.6f", $0) }; return String(cString: b) }
 func nowS() -> Double { var ts = timespec(); clock_gettime(CLOCK_MONOTONIC, &ts); return Double(ts.tv_sec) + Double(ts.tv_nsec) / 1e9 }
 func readFile(_ path: String) -> String {
     guard let fp = fopen(path, "r") else { return "" }
